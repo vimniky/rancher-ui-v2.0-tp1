@@ -166,6 +166,23 @@ Router.map(function() {
         });
       });
 
+      // Tools
+      this.route('tools-tab', {path: '/tools', resetNamespace: true}, function() {
+        this.route('alerts', {path: '/alerts', resetNamespace: true}, function() {
+          this.route('new', { path: '/add' });
+          this.route('index', {path: '/'});
+        });
+        this.route('notifiers', {path: '/notifiers', resetNamespace: true}, function() {
+          this.route('email', {path: '/email'});
+          this.route('slack', {path: '/slack'});
+          this.route('pager-duty', {path: '/pager-duty'});
+        });
+        this.route('logging', {path: '/logging', resetNamespace: true}, function() {
+        });
+        this.route('dashboard', {path: '/dashboard', resetNamespace: true}, function() {
+        });
+      });
+
       // Catalog
       this.route('apps-tab', {path: '/apps', resetNamespace: true}, function() {
         this.route('index', {path: '/'});
