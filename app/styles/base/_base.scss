@@ -3,9 +3,11 @@
 // -----------------------------------------------------------------------------
 
 // Text indent, margins, and paddings from 5-50px in 5px increments
+// v stands for vertical & h stands for horizontal
 // e.g. in-10 - {text-indent: 10px}
 // e.g. p-10 - {padding: 10px}
 // e.g. mt-20 - {margin-top: 20px}
+// e.g. mv-30 - {margin-top: 30px; margin-bottom: 30px;}
 $spacing-property-map: (
     m:  margin,
     mt: margin-top,
@@ -26,6 +28,42 @@ $spacing-property-map: (
   @for $size from 1 through 10 {
     $val: $size * 5;
     .#{$keyword}-#{$val} { #{$property}: $val * 1px !important; }
+  }
+}
+
+.mh-0 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.mv-0 {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+.ph-0 {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.pv-0 {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+@for $size from 1 through 10 {
+  $val: $size * 5;
+  .mh-#{$val} {
+    margin-left: $val * 1px !important;
+    margin-right: $val * 1px !important;
+  }
+  .mv-#{$val} {
+    margin-top: $val * 1px !important;
+    margin-bottom: $val * 1px !important;
+  }
+  .ph-#{$val} {
+    padding-left: $val * 1px !important;
+    padding-right: $val * 1px !important;
+  }
+  .pv-#{$val} {
+    padding-top: $val * 1px !important;
+    padding-bottom: $val * 1px !important;
   }
 }
 

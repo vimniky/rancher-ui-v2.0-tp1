@@ -67,3 +67,19 @@ MAIN {
     color: $mid-grey;
   }
 }
+
+$border-property-map: (
+  b:  border,
+  bt: border-top,
+  br: border-right,
+  bl: border-left,
+  bb: border-bottom,
+);
+
+@each $keyword, $property in $border-property-map {
+  .#{$keyword}-0 { #{$property}: none !important; }
+
+  @for $size from 1 through 4 {
+    .#{$keyword}-#{$size} { #{$property}: $size * 1px solid $accent-border !important; }
+  }
+}
