@@ -31,7 +31,7 @@ button,
     &.bg-transparent {
         color: darken($link-color, 5);
     }
-    &:hover {
+    &:hover, &:link {
         text-decoration: none;
     }
     &.has-label {
