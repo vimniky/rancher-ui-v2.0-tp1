@@ -1,0 +1,77 @@
+<section class="header clearfix">
+  <div class="pull-left"><h1>{{t 'notifiersPage.index.header'}}</h1></div>
+</section>
+<section class="header has-tabs clearfix">
+  <ul class="tab-nav">
+    <li>{{#link-to "notifiers.email"}}{{t 'nav.tools.email'}}{{/link-to}}</li>
+    <li>{{#link-to "notifiers.slack"}}{{t 'nav.tools.slack'}}{{/link-to}}</li>
+    <li>{{#link-to "notifiers.pager-duty"}}{{t 'nav.tools.pagerDuty'}}{{/link-to}}</li>
+  </ul>
+</section>
+  {{#if (eq notifierType 'email')}}
+    <section class="clearfix">
+      <row>
+        <div class="col span-8">
+          <label class="acc-label">{{t 'notifiersPage.email.form.from.label'}}{{field-required}}</label>
+          {{input class="form-control input" type="text" value=model.emailConfig.smtpFrom placeholder=(t 'notifiersPage.email.form.from.placeholder')}}
+        </div>
+      </row>
+
+      <row>
+        <div class="col span-6">
+          <label class="acc-label">{{t 'notifiersPage.email.form.userName.label'}}{{field-required}}</label>
+          {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthUsername placeholder=(t 'notifiersPage.email.form.userName.placeholder')}}
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">{{t 'notifiersPage.email.form.password.label'}}{{field-required}}</label>
+          {{input class="form-control input" type="password" value=model.emailConfig.smtpAuthPassword placeholder=(t 'notifiersPage.email.form.password.placeholder')}}
+        </div>
+      </row>
+
+      <row>
+        <div class="col span-6">
+          <label class="acc-label">{{t 'notifiersPage.email.form.secret.label'}}{{field-required}}</label>
+          {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthSecret placeholder=(t 'notifiersPage.email.form.secret.placeholder')}}
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">{{t 'notifiersPage.email.form.identity.label'}}{{field-required}}</label>
+          {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthIdentity placeholder=(t 'notifiersPage.email.form.identity.placeholder')}}
+        </div>
+      </row>
+
+      <row>
+        <div class="col span-6">
+          <label class="acc-label">{{t 'notifiersPage.email.form.server.label'}}{{field-required}}</label>
+          {{input class="form-control input" type="text" value=model.emailConfig.smtpSmartHost placeholder=(t 'notifiersPage.email.form.server.placeholder')}}
+        </div>
+      </row>
+    </section>
+  {{else if (eq notifierType 'slack')}}
+    <div class="box">
+      <label style="width: 100px;" class="text-muted">
+        {{t 'notifiersPage.slack.form.apiUrl.label'}}{{field-required}}
+      </label>
+      {{input
+          class="form-control"
+          type="text"
+          value=model.slackConfig.slackApiUrl
+          placeholder=(t 'notifiersPage.slack.form.apiUrl.placeholder')
+          safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
+      }}
+    </div>
+  {{else if (eq notifierType 'pagerduty')}}
+    <div class="box">
+      <label style="width: 100px;" class="text-muted">
+        {{t 'notifiersPage.pagerDuty.form.clientUrl.label'}}{{field-required}}
+      </label>
+      {{input
+          class="form-control"
+          type="text"
+          value=model.pagerdutyConfig.pagerdutyUrl
+          placeholder=(t 'notifiersPage.pagerDuty.form.clientUrl.placeholder')
+          safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
+      }}
+    </div>
+  {{/if}}
+{{top-errors errors=errors}}
+{{save-cancel cancelDisabled=true editing=true save="save"}}
