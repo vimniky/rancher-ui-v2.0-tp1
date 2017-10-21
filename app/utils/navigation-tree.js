@@ -99,7 +99,41 @@ const navTree = [
     ],
   },
 
-  // Cluster
+  // Tools
+  {
+    id: 'tools',
+    localizedLabel: 'nav.tools.tab',
+    ctx: [getProjectId],
+    condition: function() { return this.get('hasProject'); },
+    submenu: [
+      {
+        id: 'tools-alerts',
+        localizedLabel: 'nav.tools.alerts',
+        route: 'alerts',
+        ctx: [getProjectId],
+      },
+      {
+        id: 'tools-notifiers',
+        localizedLabel: 'nav.tools.notifiers',
+        route: 'notifiers.email',
+        ctx: [getProjectId],
+      },
+      {
+        id: 'tools-logging',
+        localizedLabel: 'nav.tools.logging',
+        route: 'logging',
+        ctx: [getProjectId],
+      },
+      {
+        id: 'tools-dashboard',
+        localizedLabel: 'nav.tools.dashboard',
+        route: 'dashboard',
+        ctx: [getProjectId],
+      }
+    ],
+  },
+
+  // Admin
   {
     scope: 'cluster',
     id: 'cluster-hosts',

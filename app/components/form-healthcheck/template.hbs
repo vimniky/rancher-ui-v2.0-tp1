@@ -152,5 +152,10 @@
         {{/input-or-display}}
       {{/if}}
     {{/if}}
+
+    {{#if (and (not-eq checkType 'none') isService)}}
+      {{form-alerts serviceId=serviceId isService=isService showEmpty=false}}
+    {{/if}}
+
   {{/if}}
 {{/accordion-list-item}}

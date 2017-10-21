@@ -100,11 +100,20 @@
 
   {{form-healthcheck
       classNames="accordion-wrapper"
+      serviceId=service.id
       isService=isService
       healthCheck=launchConfig.healthCheck
       errors=healthCheckErrors
       expandAll=null
       editing=true
+      expandAll=al.expandAll
+      expandFn=expandFn
+  }}
+
+  {{container/form-logging
+      classNames="accordion-wrapper"
+      initialLabels=launchConfig.labels
+      setLabels=(action 'setLabels' 'user')
       expandAll=al.expandAll
       expandFn=expandFn
   }}
