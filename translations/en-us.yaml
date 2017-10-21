@@ -17,6 +17,7 @@ generic:
   command: Command
   confirm: Confirm
   containers: Containers
+  create: Create
   created: Created
   createdDate: "Created {date}"
   default: Default
@@ -1105,6 +1106,116 @@ waitingPage:
   hosts:
     setup:
       kubernetes: Setting up Kubernetes
+
+alertsPage:
+  index:
+    header: Accounts
+    localLink: Add Account
+    table:
+      name: Alert Name
+      rules: Rules
+      endpoint: Endpoint
+      timestamp: Timestamp
+      noData: There are no alerts yet
+      noMatch: No alerts match the current search.
+  new:
+    header: Add an Alert
+
+notifiersPage:
+  index:
+    header: Notifier Config
+  email:
+    form:
+      from:
+        label: From
+        placeholder: e.g. rancherenv@rancher.com
+      server:
+        label: Server
+        placeholder: e.g. rancher@mail.com
+      userName:
+        label: Username
+        placeholder: Enter Username
+      password:
+        label: Password
+        placeholder: Enter Password
+      secret:
+        label: Secret
+        placeholder: Enter Secret
+      identity:
+        label: Identity
+        placeholder: Enter Identity
+  slack:
+    form:
+      from:
+        label: From
+        placeholder: e.g. rancherenv@rancher.com
+      server:
+        label: Server
+        placeholder: e.g. rancher@mail.com
+      userName:
+        label: Username
+        placeholder: Enter Username
+      password:
+        label: Password
+        placeholder: Enter Password
+      channel:
+        label: Channel
+        placeholder: e.g. bill@rancher.com
+      apiUrl:
+        label: API URL
+        placeholder: Enter api url
+      secret:
+        label: Secret
+        placeholder: Enter Secret
+  pagerDuty:
+    form:
+      from:
+        label: From
+        placeholder: e.g. rancherenv@rancher.com
+      serviceKey:
+        label: Server Key
+        placeholder: Enter service key
+      url:
+        label: URL
+        placeholder: Enter url
+      client:
+        label: Client
+        placeholder: Enter Client
+      clientUrl:
+        label: Client URL
+        placeholder: Enter Client url
+
+loggingPage:
+  header:
+    env: Configure logging at environment level
+    cluster: Configure logging at cluster level
+  configurationTip: Admins only. Congfiguration at cluster level is only available to admin level users
+  target:
+    label: Target
+  loggingEnvLevel: Configure targets at the envrinoment level
+  loggingClusterLevel: Configure targets at the envrinoment level
+  targetChoices:
+    elasticsearch: Elasticsearch
+    splunk: Splunk
+    syslog: Syslog
+  port:
+    label: Prot
+    placeholder: e.g. 9200
+  prefix:
+    label: Prefix
+    placeholder: e.g. fluentd
+  type:
+    label: Type
+  tagKey:
+    label: Tag Key
+  dateFormat:
+    label: Date Forma
+  flushInterval:
+    label: Flush interval
+    placeholder: e.g. 1
+  logstashFormat: Logstash format
+  includeTagKey: Include Tag Key
+
 
 ##############################
 # Partials
@@ -2342,6 +2453,53 @@ formVolumes:
     source: Source
     mountPoint: Mount Point
     opts: Access/Options
+
+formNewEditAlert:
+  name:
+    placeholder: e.g. db-down
+  severity:
+    info: Info
+    warning: Warning
+    critical: Critical
+  sendError: Send errors
+  sendAndResolved: Send errors and resolved
+  removeButtonLabel: Remove alert
+  addAlert: Add Alert
+
+formRecipient:
+  label:
+    reuse: Recipient
+    create: Recipient
+  toggle:
+    reuse: Use a existing recipient
+    create: Create a new recipient
+  notifier:
+    label: Notifier
+    value: Notifier
+  recipient:
+    label: Recipient
+    placeholder:
+      reuse: Choice a recipient
+      create: Enter a recipient
+      email: e.g. rancher@slack.com
+      slack: e.g. slack@slack.com
+      pagerduty: e.g. pagerduty@slack.com
+formObject:
+  placeholder: Choose a object
+
+
+formLogging:
+  title: Logging
+  detail: Consider Adding logging if yada yada.
+  path:
+    label: Path
+    placeholder: e.g. /var/log/mySQL.log
+  format:
+    label: Format
+    placeholder: e.g. NGinx
+
+  addAction: Add Another
+
 
 hookPage:
   receiver:
@@ -3645,6 +3803,18 @@ nav:
     keys: API Keys
     hooks: Webhooks
     templateKeys: Template Keys
+  tools:
+    tab: Tools
+    alerts: Alerts
+    addAlert: Add Alert
+    all: All
+    active: Active
+    notifiers: Notifiers
+    email: Email
+    slack: Slack
+    pagerDuty: Pager Duty
+    logging: Logging
+    dashboard: Dashboard
   admin:
     tab: Global Admin
     audit: Audit Log
