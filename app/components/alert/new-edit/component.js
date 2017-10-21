@@ -40,16 +40,16 @@ export default Ember.Component.extend(NewOrEdit, {
     const isService = this.get('isService');
     if (isService) {
       if (editing) {
-        // todo
+        // Todo
       } else {
-        // view mode
+        // View mode
       }
     } else {
       if (editing && originals && originals.length) {
-        // editing a single exists alert
+        // Editing a single exists alert
         this.editAlert();
       } else {
-        // create new alerts
+        // Create new alerts
         this.createAlert();
       }
     }
@@ -105,7 +105,7 @@ export default Ember.Component.extend(NewOrEdit, {
     const originals = this.get('originalModels') || [];
     const original = originals.filterBy('id', newData.get('id')).get('firstObject');
     if (original) {
-      // merge updated data to original model
+      // Merge updated data to original model
       original.merge(newData);
       return original;
     }
@@ -114,14 +114,15 @@ export default Ember.Component.extend(NewOrEdit, {
   willSave() {
     const alerts = this.get('alerts');
     return alerts.every(alert => {
-      // validate recipient
+      // Validate recipient
       const yes = this.validateRecipient(alert.get('newRecipient'));
       if (!yes) {
         return false;
       }
-      // validate recipient
+      // Transform alert data to match the alert schemea
       const p = alert.get('serviceRule').unhealthyPercentage;
       alert.set('serviceRule.unhealthyPercentage', String(p));
+      // Validate alert
       const ok = this.validate(alert)
       return ok;
     });
@@ -176,11 +177,10 @@ export default Ember.Component.extend(NewOrEdit, {
     // Don't need to create new recipient, so just let go.
     return true;
   },
-  // save alert bulk one by one
-  bulkSave(idx, cb) {
+  saveOneByOne(idx, cb) {
     const alerts = this.get('alerts');
     if (idx === alerts.length) {
-      // all alerts are saved now.
+      // All alerts are saved now
       cb();
       this.doneSaving();
       return;
@@ -188,32 +188,29 @@ export default Ember.Component.extend(NewOrEdit, {
     const alert = alerts.objectAt(idx);
     const newRecipient = alert.get('newRecipient');
     const isReuse = newRecipient.get('isReuse');
-
-    // Use a existing recipient, don't need to create a new one.
+    // Use a existing recipient, don't need to create a new one
     if (isReuse) {
-      // save alert
+      // Save alert
       alert.save().then((alertData) => {
         this.mergeResult(alertData);
-        // save next alert
-        this.bulkSave(idx + 1, cb);
+        // Save next alert
+        this.saveOneByOne(idx + 1, cb);
       }).catch(err => {
         this.set('errors', [err]);
         cb();
       });
       return;
     }
-
     // Create new recipient before creating the alert
-    newRecipient.save().then((recipient) => {
-      // set alert's recipientId
+    newRecipient.save().then(recipient => {
+      // Set alert's recipientId
       alert.set('recipientId', recipient.get('id'));
-      alert.save().then((alertData) => {
-        this.mergeResult(alertData);
-        this.bulkSave(idx + 1, cb);
-      }).catch(err => {
-        this.set('errors', [err]);
-        cb();
-      });
+      return alert.save();
+    }).then(alertData => {
+      // Merge data
+      this.mergeResult(alertData);
+      // Save next one
+      this.saveOneByOne(idx + 1, cb);
     }).catch(err => {
       this.set('errors', [err]);
       cb();
@@ -222,12 +219,12 @@ export default Ember.Component.extend(NewOrEdit, {
   actions: {
     save(cb) {
       const ok = this.willSave(cb);
-      // has any error ?
+      // Has any error?
       if (!ok) {
         cb(false);
       } else {
-        // if passed all validation
-        this.bulkSave(0, cb);
+        // If passed all validation, start to save alerts
+        this.saveOneByOne(0, cb);
       }
     },
     addAlert() {

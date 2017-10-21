@@ -1,27 +1,33 @@
 import Ember from 'ember';
 
-const emails = ['email', 'slack', 'pagerduty'];
+const recipientTypes = ['email', 'slack', 'pagerduty'];
 
 export default Ember.Component.extend({
   tagName: 'table',
-  recipients: [],
-  toNewRecipient: '',
-  recipientTypes: emails.map(value => ({label: value.capitalize(), value})),
+
+  // input
+  model: null,
+  recipients: null,
+  toNewRecipient: null,
+
+  recipientTypes: recipientTypes.map(value => ({label: value.capitalize(), value})),
   percent: Ember.computed.alias('model.serviceRule.unhealthyPercentage'),
   isReuse: Ember.computed.alias('model.newRecipient.isReuse'),
   recipientType: Ember.computed.alias('model.newRecipient.recipientType'),
+
   init() {
     this._super(...arguments);
     this.recipientIdChanged();
   },
   recipientTypeChanged: function() {
-    // empty toNewRecipient inpu box when recipientType changed
+    // Empty toNewRecipient inpu box when recipientType changed
     this.set('toNewRecipient', null);
   }.observes('recipientType'),
   toNewRecipientChanged: function() {
     const recipient = this.get('model.newRecipient');
     const type = this.get('recipientType');
     const value = this.get('toNewRecipient');
+    // Set model accordingly
     switch(type) {
     case 'email':
       recipient.set('emailRecipient.address', value);
