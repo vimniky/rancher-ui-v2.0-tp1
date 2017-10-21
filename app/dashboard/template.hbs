@@ -1,0 +1,44 @@
+<section class="clearfix mb-30">
+  <div class="row">
+    <div class="col span-6">
+      {{dashboard/host-activity
+          data=hostsActivity
+      }}
+    </div>
+    <div class="col span-3">
+      {{dashboard/host-storage
+          stroke=memoryStroke
+          data=hostsMemory
+          title="Total Memory"
+          unit="G"
+      }}
+    </div>
+    <div class="col span-3">
+      {{dashboard/host-storage
+          stroke=storageStroke
+          data=hostsStorage
+          title="Total Storage"
+          unit="TB"
+      }}
+    </div>
+  </div>
+</section>
+<section class="clearfix">
+  <div class="row">
+    <div class="col span-4">
+      {{stats-bar
+          name="Stacks"
+      }}
+    </div>
+    <div class="col span-4">
+      {{stats-bar
+          name="Services"
+      }}
+    </div>
+    <div class="col span-4">
+      {{stats-bar
+          name="Containers"
+      }}
+    </div>
+  </div>
+</section>
