@@ -1,0 +1,10 @@
+<div>
+  <h2>Host</h2>
+  <hr />
+  <p>Active <span class="text-success">{{active}}%</span></p>
+  <p>Deactived <span class="text-warning">{{deactivated}}%</span></p>
+  <p>Disconnected <span class="text-error">{{disconnected}}%</span></p>
+</div>
+<div>
+  {{donut-chart data=data title="Total Hosts" innerRadius=94 width=220}}
+</div>
