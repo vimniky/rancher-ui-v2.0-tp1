@@ -1,0 +1,250 @@
+import Ember from 'ember';
+import NewOrEdit from 'ui/mixins/new-or-edit';
+
+// Severity: [Info, Warning, Critical]
+const severities = ['info', 'warning', 'critical'];
+
+export default Ember.Component.extend(NewOrEdit, {
+  router: Ember.inject.service(),
+  intl: Ember.inject.service(),
+
+  originalModels: null,
+  editing: false,
+  errors: null,
+  isService: false,
+  severities: [],
+  alerts: [],
+  percent: 30,
+  object: Ember.computed.reads('serviceId'),
+  creating: function() {
+    const originals = this.get('originalModels');
+    return originals && originals.length && this.get('editing');
+  }.property('editing,originalModels.[]'),
+  allowAddMulti: function() {
+    return this.get('editing') && !this.get('isService');
+  }.property('editing', 'isService'),
+  init() {
+    this._super(...arguments);
+    this.set('alerts', []);
+    this.set('severities', severities.map(value => ({label: `formNewEditAlert.severity.${value}`, value})))
+    this.set('selectionGroups', [
+      // {type: 'container'},
+      {type: 'service'},
+      {type: 'stack'},
+      {type: 'host'},
+    ]);
+  },
+  didReceiveAttrs() {
+    const originals = this.get('originalModels');
+    const editing = this.get('editing');
+    const isService = this.get('isService');
+    if (isService) {
+      if (editing) {
+        // todo
+      } else {
+        // view mode
+      }
+    } else {
+      if (editing && originals && originals.length) {
+        // editing a single exists alert
+        this.editAlert();
+      } else {
+        // create new alerts
+        this.createAlert();
+      }
+    }
+  },
+  getRecipientTypeByid(id) {
+    const found = this.get('recipients').filterBy('id', id).get('firstObject');
+    if (found) {
+      return found.recipientType;
+    }
+  },
+  attachNewRecipient(alert) {
+    const recipientId = alert.get('recipientId');
+    let recipientType;
+    if (recipientId) {
+      recipientType = this.getRecipientTypeByid(recipientId);
+    }
+    const newRecipient = this.get('monitoringStore').createRecord({
+      type: 'recipient',
+      isReuse: true,
+      recipient: null,
+      // email | slack | pagerduty
+      recipientType: recipientType || 'email',
+      emailRecipient: {
+        address: null,
+      },
+      pagerdutyRecipient: {
+        serviceKey: null,
+      },
+      slackRecipient: {
+        channel: null,
+      },
+    });
+    alert.set('newRecipient', newRecipient);
+    return alert;
+  },
+  editAlert() {
+    const originals = this.get('originalModels');
+    const models = originals.map(original => {
+      const clone = original.clone();
+      return this.attachNewRecipient(clone);
+    });
+    this.set('models', models);
+    Ember.run.next(() => {
+      const alerts = this.get('alerts');
+      const models = this.get('models');
+      alerts.pushObjects(models);
+    });
+  },
+  createAlert() {
+    this.send('addAlert');
+  },
+  mergeResult(newData) {
+    const originals = this.get('originalModels') || [];
+    const original = originals.filterBy('id', newData.get('id')).get('firstObject');
+    if (original) {
+      // merge updated data to original model
+      original.merge(newData);
+      return original;
+    }
+    return newData;
+  },
+  willSave() {
+    const alerts = this.get('alerts');
+    return alerts.every(alert => {
+      // validate recipient
+      const yes = this.validateRecipient(alert.get('newRecipient'));
+      if (!yes) {
+        return false;
+      }
+      // validate recipient
+      const p = alert.get('serviceRule').unhealthyPercentage;
+      alert.set('serviceRule.unhealthyPercentage', String(p));
+      const ok = this.validate(alert)
+      return ok;
+    });
+  },
+  doneSaving: function() {
+    return this.send('cancel');
+  },
+  validate(model) {
+    const errors = model.validationErrors();
+    if ( errors.get('length') )
+    {
+      this.set('errors', errors);
+      return false;
+    }
+    this.set('errors', null);
+    return true;
+  },
+  getToRecipientValue(recipient) {
+    const type = recipient.get('recipientType');
+    let out = null;
+    switch(type) {
+      case 'email':
+        out = recipient.emailRecipient.address;
+        break
+      case 'slack':
+        out = recipient.slackRecipient.channel;
+        break
+      case 'pagerduty':
+        out = recipient.pagerdutyRecipient.serviceKey;
+        break
+      default:
+      }
+    return out;
+  },
+  validateRecipient(recipient) {
+    if (!recipient.get('isReuse')) {
+      const recipientType = recipient.get('recipientType');
+      if (!recipientType) {
+        this.set('errors', ['Notifier is required for new recipient']);
+        return false;
+      }
+      const input = this.getToRecipientValue(recipient);
+      if (!input) {
+        this.set('errors', ['Recipient is required']);
+        return false;
+      }
+      const ok = this.validate(recipient);
+      if (!ok) {
+        return false;
+      }
+    }
+    // Don't need to create new recipient, so just let go.
+    return true;
+  },
+  // save alert bulk one by one
+  bulkSave(idx, cb) {
+    const alerts = this.get('alerts');
+    if (idx === alerts.length) {
+      // all alerts are saved now.
+      cb();
+      this.doneSaving();
+      return;
+    }
+    const alert = alerts.objectAt(idx);
+    const newRecipient = alert.get('newRecipient');
+    const isReuse = newRecipient.get('isReuse');
+
+    // Use a existing recipient, don't need to create a new one.
+    if (isReuse) {
+      // save alert
+      alert.save().then((alertData) => {
+        this.mergeResult(alertData);
+        // save next alert
+        this.bulkSave(idx + 1, cb);
+      }).catch(err => {
+        this.set('errors', [err]);
+        cb();
+      });
+      return;
+    }
+
+    // Create new recipient before creating the alert
+    newRecipient.save().then((recipient) => {
+      // set alert's recipientId
+      alert.set('recipientId', recipient.get('id'));
+      alert.save().then((alertData) => {
+        this.mergeResult(alertData);
+        this.bulkSave(idx + 1, cb);
+      }).catch(err => {
+        this.set('errors', [err]);
+        cb();
+      });
+    }).catch(err => {
+      this.set('errors', [err]);
+      cb();
+    });
+  },
+  actions: {
+    save(cb) {
+      const ok = this.willSave(cb);
+      // has any error ?
+      if (!ok) {
+        cb(false);
+      } else {
+        // if passed all validation
+        this.bulkSave(0, cb);
+      }
+    },
+    addAlert() {
+      const alert = this.get('monitoringStore').createRecord({
+        type: 'alert',
+        sendResolved: false,
+        serviceRule: {
+          unhealthyPercentage: '30',
+        },
+      });
+      this.get('alerts').pushObject(this.attachNewRecipient(alert));
+    },
+    cancel() {
+      this.get('router').transitionTo('alerts');
+    },
+    removeAlert(alert) {
+      this.get('alerts').removeObject(alert);
+    },
+  },
+});

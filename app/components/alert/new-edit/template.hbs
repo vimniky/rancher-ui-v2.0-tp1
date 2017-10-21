@@ -1,0 +1,82 @@
+{{#if alerts}}
+  {{#each alerts as |alert idx|}}
+    {{#unless isService}}
+      {{#if (and (gt idx 0) (not-eq idx (sub alerts.length - 1)))}}
+        <hr class="mt-40 mb-20"/>
+      {{/if}}
+    {{/unless}}
+    {{#if (or isService (gt alerts.length 1))}}
+      <button class="btn bg-transparent text-small pull-right mh-0 p-0" style="margin-top:-10px" {{action "removeAlert" alert}}>
+        {{t 'formNewEditAlert.removeButtonLabel'}}
+      </button>
+    {{/if}}
+    <div class="{{if isService 'box mt-20 pt-10'}}" >
+      <div class="row">
+        <div class="col span-7-of-24">
+          {{form-name-description
+              model=alert
+              descriptionShown=false
+              nameDisabled=isUpgrade
+              bothColClass="col span-12 mt-0"
+              colClass="col span-12 mt-0"
+              namePlaceholder="formNewEditAlert.name.placeholder"
+              nameRequired=true
+          }}
+        </div>
+        <div class="col span-7-of-24">
+          <div><label class="acc-label">Object{{field-required}}</label></div>
+          {{#input-or-display editing value="Object"}}
+            {{alert/form-object value=alert.objectId groups=selectionGroups}}
+          {{/input-or-display}}
+        </div>
+        <div class="col span-4-of-24">
+          <div><label class="acc-label">Severity{{field-required}}</label></div>
+          {{#input-or-display editing value="Severity"}}
+            {{new-select
+                classNames="form-control"
+                content=severities
+                localizedLabel=true
+                value=alert.severity
+            }}
+          {{/input-or-display}}
+        </div>
+
+        <div class="col span-6-of-24">
+          <div style="padding-top: 10px">
+            <div class="radio">
+              <label>{{radio-button selection=alert.sendResolved value=false}} {{t 'formNewEditAlert.sendError'}}</label>
+            </div>
+            <div class="radio pv-0">
+              <label>{{radio-button selection=alert.sendResolved value=true}} {{t 'formNewEditAlert.sendAndResolved'}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{alert/form-recipient
+          model=alert
+          recipients=recipients
+      }}
+    </div>
+  {{/each}}
+{{/if}}
+
+{{#unless allowAddMulti}}
+  <div class="clearfix mt-30">
+    <button class="btn bg-link icon-btn pull-right" {{action "addAlert"}}>
+      <span class="darken"><i class="icon icon-plus text-small"/></span>
+      <span>{{t 'formNewEditAlert.addAlert'}}</span>
+    </button>
+  </div>
+{{/unless}}
+
+{{#if errors}}
+  <div class="mt-20">
+    {{top-errors errors=errors}}
+  </div>
+{{/if}}
+
+{{#unless isService}}
+  <div class="mv-20">
+    {{save-cancel createLabel=(if creating 'generic.save' 'generic.create') save="save" cancel="cancel"}}
+  </div>
+{{/unless}}
