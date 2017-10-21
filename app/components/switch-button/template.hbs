@@ -1,0 +1,16 @@
+<div class="{{if disabled 'text-muted'}}" style="display: flex; align-items: center;">
+  {{#if offLabel}}
+    <span {{action 'switchOff'}} class="pr-10">
+      {{if localizedLabel offLabel (t offLabel)}}
+    </span>
+  {{/if}}
+  <label class="switch {{className}} {{if disabled 'disabled'}}">
+    {{input type="checkbox" checked=checked}}
+    <span class="switch-slider round"></span>
+  </label>
+  {{#if onLabel}}
+    <span {{action 'switchOn'}} class="pl-10">
+      {{if localizedLabel onLabel (t onLabel)}}
+    </span>
+  {{/if}}
+</div>
