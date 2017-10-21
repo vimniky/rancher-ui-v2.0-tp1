@@ -1,0 +1,43 @@
+{{#accordion-list-item
+     title=(t 'formLogging.title')
+     detail=(t 'formLogging.detail')
+     status=status
+     statusClass=statusClass
+     expandAll=expandAll
+     expand=(action expandFn)
+}}
+  {{#if userLabelArray.length}}
+    <table class="table fixed no-lines">
+      <tr class="hidden-xs hidden-sm">
+        <th>{{t 'formLogging.path.label'}}{{field-required}}</th>
+        <th width="30">&nbsp;</th>
+        <th>{{t 'formLogging.format.label'}}</th>
+        <th width="40">&nbsp;</th>
+      </tr>
+      {{#each userLabelArray as |label|}}
+        <tr>
+          <td data-title="key">
+            {{input class="form-control input-sm key" type="text" value=label.key placeholder=(t 'formLogging.path.placeholder')}}
+          </td>
+
+          <td class="text-center">
+            <p class="input-sm">&nbsp;</p>
+          </td>
+
+          <td data-title="label">
+            {{input class="form-control input-sm" type="text" value=label.value placeholder=(t 'formLogging.format.placeholder')}}
+          </td>
+
+          <td class="text-right">
+            <button class="btn bg-primary btn-sm" {{action "removeLabel" label}}><i class="icon icon-minus"/><span class="sr-only">{{t 'generic.remove'}}</span></button>
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+  {{/if}}
+
+  <button class="btn bg-link icon-btn {{if userLabelArray.length 'mt-10'}}" {{action "addUserLabel"}}>
+    <span class="darken"><i class="icon icon-plus text-small"/></span>
+    <span>{{t 'formLogging.addAction'}}</span>
+  </button>
+{{/accordion-list-item}}
