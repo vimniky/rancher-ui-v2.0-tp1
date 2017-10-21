@@ -391,4 +391,13 @@ C.SUPPORTED_SCHEMA_INPUTS= [
   'secret',
 ];
 
+C.COLORS = {
+  PRIMARY: '#0075A8',
+  SECONDARY: '#34495E',
+  SUCCESS: '#27AA5E',
+  INFO: '#78C9CF',
+  WARNING: '#F1C40F',
+  ERROR: '#F15354',
+}
+
 export default C;
