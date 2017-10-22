@@ -11,22 +11,24 @@ export default Ember.Component.extend(NewOrEdit, {
   originalModels: null,
   editing: false,
   errors: null,
-  isService: false,
+  isStandalone: function() {
+    return this.get('mode') === 'standalone';
+  }.property('mode'),
   severities: [],
   alerts: [],
   percent: 30,
-  object: Ember.computed.reads('serviceId'),
   creating: function() {
     const originals = this.get('originalModels');
     return originals && originals.length && this.get('editing');
   }.property('editing,originalModels.[]'),
   allowAddMulti: function() {
-    return this.get('editing') && !this.get('isService');
-  }.property('editing', 'isService'),
+    return !this.get('isStandalone') || !this.get('editing');
+  }.property('editing', 'isStandalone'),
   init() {
     this._super(...arguments);
     this.set('alerts', []);
     this.set('severities', severities.map(value => ({label: `formNewEditAlert.severity.${value}`, value})))
+    this.set('recipients', this.get('monitoringStore').all('recipient'));
     this.set('selectionGroups', [
       // {type: 'container'},
       {type: 'service'},
@@ -37,20 +39,20 @@ export default Ember.Component.extend(NewOrEdit, {
   didReceiveAttrs() {
     const originals = this.get('originalModels');
     const editing = this.get('editing');
-    const isService = this.get('isService');
-    if (isService) {
-      if (editing) {
-        // Todo
-      } else {
-        // View mode
-      }
-    } else {
+    const isStandalone = this.get('isStandalone');
+    if (isStandalone) {
       if (editing && originals && originals.length) {
         // Editing a single exists alert
         this.editAlert();
       } else {
         // Create new alerts
         this.createAlert();
+      }
+    } else {
+      if (editing) {
+        // Todo
+      } else {
+        // View mode
       }
     }
   },

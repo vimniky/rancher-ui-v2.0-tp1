@@ -154,7 +154,7 @@
     {{/if}}
 
     {{#if (and (not-eq checkType 'none') isService)}}
-      {{form-alerts serviceId=serviceId isService=isService showEmpty=false}}
+      {{alert/new-edit mode=service objectId=serviceId}}
     {{/if}}
 
   {{/if}}
