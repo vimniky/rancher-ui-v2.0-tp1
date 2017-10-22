@@ -7,10 +7,14 @@ const severities = ['info', 'warning', 'critical'];
 export default Ember.Component.extend(NewOrEdit, {
   router: Ember.inject.service(),
   intl: Ember.inject.service(),
+  alertBus: Ember.inject.service('alert-bus'),
 
   originalModels: null,
   editing: false,
   errors: null,
+  // When add alerts to a existing container/service/host, ..., objectId is not null
+  // When creating new container/service/host or creating standalone alert, objectId will be null.
+  objectId: null,
   isStandalone: function() {
     return this.get('mode') === 'standalone';
   }.property('mode'),
@@ -30,11 +34,22 @@ export default Ember.Component.extend(NewOrEdit, {
     this.set('severities', severities.map(value => ({label: `formNewEditAlert.severity.${value}`, value})))
     this.set('recipients', this.get('monitoringStore').all('recipient'));
     this.set('selectionGroups', [
-      // {type: 'container'},
+      {type: 'container'},
       {type: 'service'},
       {type: 'stack'},
       {type: 'host'},
     ]);
+    if (!this.get('isStandalone')) {
+      const bus = this.get('alertBus');
+      // Do the validation
+      bus.on('validateAlert', this.willSave.bind(this));
+      bus.on('saveAlert', cb => {
+        if (typeof cb !== 'function') {
+          cb = noop => noop;
+        }
+        this.saveOneByOne(0, cb);
+      });
+    }
   },
   didReceiveAttrs() {
     const originals = this.get('originalModels');
@@ -71,6 +86,7 @@ export default Ember.Component.extend(NewOrEdit, {
     const newRecipient = this.get('monitoringStore').createRecord({
       type: 'recipient',
       isReuse: true,
+      objectId: this.get('objectId'),
       recipient: null,
       // email | slack | pagerduty
       recipientType: recipientType || 'email',
@@ -118,6 +134,7 @@ export default Ember.Component.extend(NewOrEdit, {
     return alerts.every(alert => {
       // Validate recipient
       const yes = this.validateRecipient(alert.get('newRecipient'));
+      console.log(this.get('errors'));
       if (!yes) {
         return false;
       }
@@ -240,10 +257,18 @@ export default Ember.Component.extend(NewOrEdit, {
       this.get('alerts').pushObject(this.attachNewRecipient(alert));
     },
     cancel() {
-      this.get('router').transitionTo('alerts');
+      if (this.get('standalone')) {
+        this.get('router').transitionTo('alerts');
+      }
+      // Do noting
     },
     removeAlert(alert) {
       this.get('alerts').removeObject(alert);
     },
+  },
+  willDestoryElement() {
+    const bus = this.get('alertBus');
+    bus.off('validate');
+    bus.off('save');
   },
 });

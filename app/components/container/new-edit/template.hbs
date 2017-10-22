@@ -101,9 +101,12 @@
   {{form-healthcheck
       classNames="accordion-wrapper"
       serviceId=service.id
+      alertObjectId=alertObjectId
       isService=isService
       healthCheck=launchConfig.healthCheck
+      mode=mode
       errors=healthCheckErrors
+      alertErrors=alertErrors
       expandAll=null
       editing=true
       expandAll=al.expandAll

@@ -9,6 +9,7 @@ export default Ember.Component.extend(NewOrEdit, {
   intl: Ember.inject.service(),
   prefs: Ember.inject.service(),
   settings: Ember.inject.service(),
+  alertBus: Ember.inject.service('alert-bus'),
 
   tagName: 'form',
 
@@ -40,6 +41,7 @@ export default Ember.Component.extend(NewOrEdit, {
   portErrors:                 null,
   stackErrors:                null,
   metadataErrors:             null,
+  alertErrors:                null,
 
   actions: {
     setImage(uuid) {
@@ -198,6 +200,7 @@ export default Ember.Component.extend(NewOrEdit, {
     errors.pushObjects(this.get('portErrors')||[]);
     errors.pushObjects(this.get('stackErrors')||[]);
     errors.pushObjects(this.get('metadataErrors')||[]);
+    errors.pushObjects(this.get('alertErrors')||[]);
 
     errors = errors.uniq();
 
@@ -285,6 +288,9 @@ export default Ember.Component.extend(NewOrEdit, {
     this.set('primaryResource', pr);
     this.set('originalPrimaryResource', pr);
 
+    // Validation alert
+    this.get('alertBus').trigger('validateAlert');
+
     let ok = this.validate();
     return ok;
   },
@@ -333,6 +339,23 @@ export default Ember.Component.extend(NewOrEdit, {
     })
   },
 
+  alertObjectId: function() {
+    const mode = this.get('mode');
+    const model = this.get('model');
+    if (this.get('isUpgrade')) {
+      switch (mode) {
+      case 'container':
+        return model.get('launchConfig.id');
+      case 'service':
+      case 'sidekick':
+      case 'global':
+        return model.get('id');
+      default:
+      }
+    }
+    // Not upgrade, don't have a container/service... id
+    return null
+  }.property('mode,isUpgrade,model.{id,launchConfig.id,service.id}'),
   doneSaving() {
     if ( !this.get('isUpgrade') ) {
       let mode = this.get('mode');
@@ -344,7 +367,13 @@ export default Ember.Component.extend(NewOrEdit, {
       this.set(`prefs.${C.PREFS.LAST_SCALE_MODE}`, mode);
       this.set(`prefs.${C.PREFS.LAST_STACK}`, this.get('stack.id'));
     }
+    // Trigger save alert event
+    // this.get('alertBus').trigger('save', this.get('alertObjectId'));
+
     this.sendAction('done');
+
+    // Save alerts
+    this.get('alertBus').trigger('saveAlert');
   },
 
   header: '',

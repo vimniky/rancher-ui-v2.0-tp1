@@ -5,12 +5,16 @@
         <hr class="mt-40 mb-20"/>
       {{/if}}
     {{/if}}
-    {{#if (or (not isStandalone) (gt alerts.length 1))}}
-      <button class="btn bg-transparent text-small pull-right mh-0 p-0" style="margin-top:-10px" {{action "removeAlert" alert}}>
-        {{t 'formNewEditAlert.removeButtonLabel'}}
-      </button>
-    {{/if}}
-    <div class="{{if (not isStandalone) 'box mt-20 pt-30'}}" >
+    <div class="{{if (not isStandalone) 'box mt-20 pt-10'}}" >
+      {{#if (or (not isStandalone) (gt alerts.length 1))}}
+        <button
+          class="btn bg-transparent text-small pull-right mh-0 p-0"
+          style="margin-top: {{if isStandalone "-10px" 0}}"
+          {{action "removeAlert" alert}}
+        >
+          {{t 'formNewEditAlert.removeButtonLabel'}}
+        </button>
+      {{/if}}
       <div class="row">
         <div class="col span-7-of-24">
           {{form-name-description
@@ -70,7 +74,7 @@
   </div>
 {{/if}}
 
-{{#if errors}}
+{{#if (and isStandalone errors)}}
   <div class="mt-20">
     {{top-errors errors=errors}}
   </div>

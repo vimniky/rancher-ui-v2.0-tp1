@@ -153,9 +153,13 @@
       {{/if}}
     {{/if}}
 
-    {{#if (and (not-eq checkType 'none') isService)}}
-      {{alert/new-edit mode=service objectId=serviceId}}
+    {{#if (and (not-eq checkType 'none') editing)}}
+      {{alert/new-edit
+          errors=alertErrors
+          mode=mode
+          isUpgrade=isUpgrade
+          objectId=alertObjectId
+      }}
     {{/if}}
-
   {{/if}}
 {{/accordion-list-item}}

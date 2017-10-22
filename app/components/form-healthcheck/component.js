@@ -18,6 +18,8 @@ export default Ember.Component.extend({
   // Inputs
   healthCheck: null,
   errors: null,
+  alertErrors: null,
+  alertObjectId: null,
   isService: null,
   showStrategy: true,
   dnsNote: false,
