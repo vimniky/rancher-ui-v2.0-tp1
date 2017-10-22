@@ -74,6 +74,8 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
         certificate:        ['projectSchemas',          this.cbFind('certificate')],
         secret:             ['projectSchemas',          this.toCb('loadSecrets')],
         identities:         ['userSchemas', this.cbFind('identity', 'userStore')],
+        recipients:         ['monitoringSchemas',       this.cbFind('recipient', 'monitoringStore')],
+        alerts:             ['monitoringSchemas',       this.cbFind('alert', 'monitoringStore')],
       };
 
       async.auto(tasks, xhrConcur, function(err, res) {
@@ -205,7 +207,6 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
       store._bulkAdd('schema', xhr.body.data);
     });
   },
-
   loadClusters() {
     return this.get('userStore').find('cluster', null, {url: 'clusters'});
   },

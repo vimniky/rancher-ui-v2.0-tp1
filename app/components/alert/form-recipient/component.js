@@ -18,6 +18,7 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
     this.recipientIdChanged();
+    this.set('recipients', this.get('monitoringStore').all('recipient'));
   },
   recipientTypeChanged: function() {
     // Empty toNewRecipient inpu box when recipientType changed

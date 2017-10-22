@@ -4,9 +4,7 @@ export default Ember.Route.extend({
   model(params, transition) {
     const id = transition.queryParams.alertId;
     const store = this.get('monitoringStore');
-    const hash = {
-      recipients: store.findAll('recipient'),
-    }
+    const hash = {}
     if (id) {
       hash.alert = store.find('alert', id);
     }
@@ -16,7 +14,6 @@ export default Ember.Route.extend({
     if (model.alert) {
       controller.set('models', [model.alert]);
     }
-    controller.set('recipients', model.recipients);
   },
   resetController: function (controller, isExisting/*, transition*/) {
     if (isExisting) {
@@ -25,7 +22,6 @@ export default Ember.Route.extend({
         upgrade: null,
         model: null,
         models: null,
-        recipients: null,
       })
     }
   }
