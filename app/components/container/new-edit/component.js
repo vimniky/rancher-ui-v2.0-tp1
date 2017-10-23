@@ -18,6 +18,7 @@ export default Ember.Component.extend(NewOrEdit, {
   service:                    null,
   launchConfig:               null,
   launchConfigIndex:          null, // null: not valid here, -1: Primary LC, 0-n: Sidekick SLCs
+  hasAlerts:                  false,
 
   stack:                      null,
   scale:                      1,
@@ -367,10 +368,22 @@ export default Ember.Component.extend(NewOrEdit, {
       this.set(`prefs.${C.PREFS.LAST_SCALE_MODE}`, mode);
       this.set(`prefs.${C.PREFS.LAST_STACK}`, this.get('stack.id'));
     }
-    this.sendAction('done');
+
+    // If there's alerts need to be saved, delay the route transition to after
+    // thoes alerts are saved.
+    if (!this.get('hasAlerts')) {
+      this.sendAction('done');
+    }
 
     // Trigger alert event
-    this.get('alertBus').trigger('saveAlert', this.get('originalModel').id);
+    this.get('alertBus').trigger(
+      'saveAlert',
+      this.get('originalModel').id,
+      // This callback will be invoked after all alerts (if has any) saved
+      () => {
+        this.sendAction('done');
+      }
+    );
   },
 
   header: '',

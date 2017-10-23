@@ -12,6 +12,13 @@ export default Ember.Component.extend(NewOrEdit, {
   originalModels: null,
   editing: false,
   errors: null,
+  alerts: [],
+  hasAlerts: false,
+  alertsChanged: function() {
+    const alerts = this.get('alerts');
+    const has = !!alerts && alerts.length > 0;
+    this.set('hasAlerts', has);
+  }.observes('alerts,alerts.length'),
   // When add alerts to a existing container/service/host, ..., objectId is not null
   // When creating new container/service/host or creating standalone alert, objectId will be null.
   objectId: null,
@@ -19,7 +26,6 @@ export default Ember.Component.extend(NewOrEdit, {
     return this.get('mode') === 'standalone';
   }.property('mode'),
   severities: [],
-  alerts: [],
   percent: 30,
   creating: function() {
     const originals = this.get('originalModels');
