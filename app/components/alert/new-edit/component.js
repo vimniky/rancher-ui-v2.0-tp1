@@ -36,9 +36,10 @@ export default Ember.Component.extend(NewOrEdit, {
   }.property('editing', 'isStandalone'),
   init() {
     this._super(...arguments);
+    const store = this.get('monitoringStore');
     this.set('alerts', []);
     this.set('severities', severities.map(value => ({label: `formNewEditAlert.severity.${value}`, value})))
-    this.set('recipients', this.get('monitoringStore').all('recipient'));
+    this.set('recipients', store.all('recipient'));
     this.set('selectionGroups', [
       {type: 'container'},
       {type: 'service'},
@@ -46,6 +47,14 @@ export default Ember.Component.extend(NewOrEdit, {
       {type: 'host'},
     ]);
     if (!this.get('isStandalone')) {
+      const objectId = this.get('objectId');
+      if (objectId) {
+        const alerts = store.all('alert').filterBy('objectId', objectId);
+        if (alerts && alerts.length) {
+          this.set('originalModels', alerts);
+          this.setupModelsAndAlerts();
+        }
+      }
       const bus = this.get('alertBus');
       // Do the validation
       bus.on('validateAlert', this, this.willSave);
@@ -70,7 +79,7 @@ export default Ember.Component.extend(NewOrEdit, {
     if (isStandalone) {
       if (editing && originals && originals.length) {
         // Editing a single exists alert
-        this.editAlert();
+        this.setupModelsAndAlerts();
       } else {
         // Create new alerts
         this.createAlert();
@@ -98,7 +107,7 @@ export default Ember.Component.extend(NewOrEdit, {
     const newRecipient = this.get('monitoringStore').createRecord({
       type: 'recipient',
       isReuse: true,
-      objectId: this.get('objectId'),
+      objectId: alert.get('objectId') || this.get('objectId'),
       recipient: null,
       // email | slack | pagerduty
       recipientType: recipientType || 'email',
@@ -115,7 +124,7 @@ export default Ember.Component.extend(NewOrEdit, {
     alert.set('newRecipient', newRecipient);
     return alert;
   },
-  editAlert() {
+  setupModelsAndAlerts() {
     const originals = this.get('originalModels');
     const models = originals.map(original => {
       const clone = original.clone();
@@ -207,6 +216,8 @@ export default Ember.Component.extend(NewOrEdit, {
     // Don't need to create new recipient, so just let go.
     return true;
   },
+  // Todo: can be improved by no firing save request to server
+  // when alerts haven't chagned.
   saveOneByOne(idx, cb) {
     const alerts = this.get('alerts');
     if (idx === alerts.length) {

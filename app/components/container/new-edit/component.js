@@ -371,19 +371,20 @@ export default Ember.Component.extend(NewOrEdit, {
 
     // If there's alerts need to be saved, delay the route transition to after
     // thoes alerts are saved.
-    if (!this.get('hasAlerts')) {
+    if (this.get('hasAlerts')) {
+      // Trigger alert event to save alerts
+      this.get('alertBus').trigger(
+        'saveAlert',
+        this.get('originalModel.id'),
+        // This callback will be invoked after all alerts (if has any) saved
+        () => {
+          this.sendAction('done');
+        }
+      );
+    } else {
       this.sendAction('done');
     }
 
-    // Trigger alert event
-    this.get('alertBus').trigger(
-      'saveAlert',
-      this.get('originalModel').id,
-      // This callback will be invoked after all alerts (if has any) saved
-      () => {
-        this.sendAction('done');
-      }
-    );
   },
 
   header: '',
