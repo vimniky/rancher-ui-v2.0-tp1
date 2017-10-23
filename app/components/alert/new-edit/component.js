@@ -57,13 +57,14 @@ export default Ember.Component.extend(NewOrEdit, {
       }
       const bus = this.get('alertBus');
       // Do the validation
-      bus.on('validateAlert', this, this.willSave);
-      bus.on('saveAlert', this, (id, cb) => {
+      bus.on('validateAlerts', this, this.willSave);
+      bus.on('saveAlerts', this, (id, cb) => {
         if (typeof cb !== 'function') {
           cb = noop => noop;
         }
         if (id) {
           // If id is not null
+          // When update, container/service's id may change (the container/service has been replaced with a new one)
           this.get('alerts').forEach(alert => {
             alert.set('objectId', id);
           });
@@ -288,9 +289,9 @@ export default Ember.Component.extend(NewOrEdit, {
       this.get('alerts').removeObject(alert);
     },
   },
-  willDestoryElement() {
+  willDestroyElement() {
     const bus = this.get('alertBus');
-    bus.off('validate');
-    bus.off('save');
+    bus.off('validateAlerts');
+    bus.off('saveAlerts');
   },
 });

@@ -34,14 +34,14 @@
                  and will be populated automatically.
                  So users don't need to fill in the objectId.
                -->
-            {{#if (not isStandalone)}}
-              {{#if (not objectId)}}
-                {{input type=text disabled=true placeholder="Object will be automatically fill in"}}
-              {{else}}
-                {{alert/form-object value=objectId disabled=true groups=selectionGroups}}
-              {{/if}}
-            {{else}}
+            {{#if isStandalone}}
               {{alert/form-object value=alert.objectId groups=selectionGroups}}
+            {{else}}
+              {{#if objectId}}
+                {{alert/form-object value=objectId disabled=true groups=selectionGroups}}
+              {{else}}
+                {{input type=text disabled=true placeholder="Object will be automatically filled in"}}
+              {{/if}}
             {{/if}}
           {{/input-or-display}}
         </div>

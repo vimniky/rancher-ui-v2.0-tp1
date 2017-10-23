@@ -290,7 +290,9 @@ export default Ember.Component.extend(NewOrEdit, {
     this.set('originalPrimaryResource', pr);
 
     // Validation alert
-    this.get('alertBus').trigger('validateAlert');
+    if (this.get('hasAlerts')) {
+      this.get('alertBus').trigger('validateAlerts');
+    }
 
     let ok = this.validate();
     return ok;
@@ -370,11 +372,12 @@ export default Ember.Component.extend(NewOrEdit, {
     }
 
     // If there's alerts need to be saved, delay the route transition to after
-    // thoes alerts are saved.
+    // those alerts are saved.
     if (this.get('hasAlerts')) {
       // Trigger alert event to save alerts
+      // If upgrade, objectId already passed, so there's no need to pass it to alert/new-edit again.
       this.get('alertBus').trigger(
-        'saveAlert',
+        'saveAlerts',
         this.get('originalModel.id'),
         // This callback will be invoked after all alerts (if has any) saved
         () => {
