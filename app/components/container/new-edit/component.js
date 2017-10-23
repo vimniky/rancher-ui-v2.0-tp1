@@ -367,13 +367,10 @@ export default Ember.Component.extend(NewOrEdit, {
       this.set(`prefs.${C.PREFS.LAST_SCALE_MODE}`, mode);
       this.set(`prefs.${C.PREFS.LAST_STACK}`, this.get('stack.id'));
     }
-    // Trigger save alert event
-    // this.get('alertBus').trigger('save', this.get('alertObjectId'));
-
     this.sendAction('done');
 
-    // Save alerts
-    this.get('alertBus').trigger('saveAlert');
+    // Trigger alert event
+    this.get('alertBus').trigger('saveAlert', this.get('originalModel').id);
   },
 
   header: '',

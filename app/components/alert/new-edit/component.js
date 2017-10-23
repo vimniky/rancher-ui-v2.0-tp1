@@ -42,10 +42,16 @@ export default Ember.Component.extend(NewOrEdit, {
     if (!this.get('isStandalone')) {
       const bus = this.get('alertBus');
       // Do the validation
-      bus.on('validateAlert', this.willSave.bind(this));
-      bus.on('saveAlert', cb => {
+      bus.on('validateAlert', this, this.willSave);
+      bus.on('saveAlert', this, (id, cb) => {
         if (typeof cb !== 'function') {
           cb = noop => noop;
+        }
+        if (id) {
+          // If id is not null
+          this.get('alerts').forEach(alert => {
+            alert.set('objectId', id);
+          });
         }
         this.saveOneByOne(0, cb);
       });
@@ -134,7 +140,6 @@ export default Ember.Component.extend(NewOrEdit, {
     return alerts.every(alert => {
       // Validate recipient
       const yes = this.validateRecipient(alert.get('newRecipient'));
-      console.log(this.get('errors'));
       if (!yes) {
         return false;
       }

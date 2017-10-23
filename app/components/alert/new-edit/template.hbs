@@ -30,8 +30,17 @@
         <div class="col span-7-of-24">
           <div><label class="acc-label">Object{{field-required}}</label></div>
           {{#input-or-display editing value="Object"}}
-            {{#if objectId}}
-              {{alert/form-object value=objectId disabled=true groups=selectionGroups}}
+            <!-- When creating new container/service,
+                 objectId is will be the new created container/service id
+                 and will be populated automatically.
+                 So users don't need to fill in the objectId.
+               -->
+            {{#if (not isStandalone)}}
+              {{#if (not objectId)}}
+                {{input type=text disabled=true placeholder="Object will be automatically fill in"}}
+              {{else}}
+                {{alert/form-object value=objectId disabled=true groups=selectionGroups}}
+              {{/if}}
             {{else}}
               {{alert/form-object value=alert.objectId groups=selectionGroups}}
             {{/if}}
