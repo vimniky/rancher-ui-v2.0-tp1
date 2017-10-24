@@ -294,6 +294,7 @@
 
     {{#if service.canHaveHealthCheck}}
       {{form-healthcheck
+        alertObjectId=service.id
         healthCheck=activeLaunchConfig.healthCheck
         editing=false
         expandAll=al.expandAll

@@ -1977,6 +1977,7 @@ formHealthCheck:
     label: When Unhealthy
     none: Take no action
     recreate: Delete container and schedule a replacement
+  alertsLabel: Alerts
 
 formKeyValue:
   addAction: Add Pair

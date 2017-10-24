@@ -162,5 +162,14 @@
           objectId=alertObjectId
       }}
     {{/if}}
+
+    {{#if (and (not-eq checkType 'none') (not editing))}}
+      <div class="mv-20">
+        <label class="acc-label">{{t 'formHealthCheck.alertsLabel'}}</label>
+        <hr class="mb-20"/>
+        {{alert-table objectId=alertObjectId alertState="all"}}
+      </div>
+    {{/if}}
+
   {{/if}}
 {{/accordion-list-item}}
