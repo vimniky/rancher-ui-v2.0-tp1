@@ -77,6 +77,7 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
         identities:         ['userSchemas', this.cbFind('identity', 'userStore')],
         recipients:         ['monitoringSchemas',       this.cbFind('recipient', 'monitoringStore')],
         alerts:             ['monitoringSchemas',       this.cbFind('alert', 'monitoringStore')],
+        pods:               ['monitoringSchemas',       this.cbFind('pod', 'monitoringStore')],
         logging:            ['loggingSchemas',          this.cbFind('logging', 'loggingStore')],
       };
 

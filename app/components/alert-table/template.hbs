@@ -12,7 +12,7 @@
   as |sortable kind row dt|
 }}
   {{#if (eq kind "row")}}
-    {{alert-row model=row isLocal=isLocal}}
+    {{alert-row model=row}}
   {{else if (eq kind "nomatch")}}
     <tr>
       <td colspan="{{sortable.fullColspan}}" class="text-center text-muted pt-20 pb-20">{{t 'alertsPage.index.table.noMatch'}}</td>

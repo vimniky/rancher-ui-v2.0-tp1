@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import NewOrEdit from 'ui/mixins/new-or-edit';
+import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
-export default Ember.Component.extend(NewOrEdit, {
+export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   intl: Ember.inject.service(),
 
   // input
@@ -14,8 +15,8 @@ export default Ember.Component.extend(NewOrEdit, {
 
   init() {
     this._super(...arguments);
-    const targetTypeOptions = this.getEnumOptions('targetType', 'logging');
-    const dateFormatOptions = this.getEnumOptions('outputLogstashDateformat', 'logging');
+    const targetTypeOptions = this.getSelectOptions('targetType', 'logging', 'loggingStore');
+    const dateFormatOptions = this.getSelectOptions('outputLogstashDateformat', 'logging', 'loggingStore');
     this.set('targetChoices', targetTypeOptions);
     this.set('dateFormatChoices', dateFormatOptions);
   },
@@ -24,17 +25,6 @@ export default Ember.Component.extend(NewOrEdit, {
     return this.get('loggingLevel') === 'cluster';
   }.property('isEnvLevel'),
 
-  getEnumOptions(fieldName, schemaId, storeName = 'loggingStore') {
-    let out = []
-    if (!schemaId) {
-      schemaId = this.get('model.type');
-    }
-    try {
-      out = this.get(storeName).getById('schema', schemaId).get(`resourceFields.${fieldName}.options`);
-    } catch(err) {
-    }
-    return out.map(option => ({value: option, label: option.capitalize()}))
-  },
   didReceiveAttrs() {
     const store = this.get('store');
     if (this.get('originalModel')) {

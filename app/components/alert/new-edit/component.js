@@ -1,10 +1,8 @@
 import Ember from 'ember';
 import NewOrEdit from 'ui/mixins/new-or-edit';
+import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
-// Severity: [Info, Warning, Critical]
-const severities = ['info', 'warning', 'critical'];
-
-export default Ember.Component.extend(NewOrEdit, {
+export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   router: Ember.inject.service(),
   intl: Ember.inject.service(),
   alertBus: Ember.inject.service('alert-bus'),
@@ -19,6 +17,7 @@ export default Ember.Component.extend(NewOrEdit, {
     const has = !!alerts && alerts.length > 0;
     this.set('hasAlerts', has);
   }.observes('alerts,alerts.length'),
+
   // When add alerts to a existing container/service/host, ..., objectId is not null
   // When creating new container/service/host or creating standalone alert, objectId will be null.
   objectId: null,
@@ -26,6 +25,7 @@ export default Ember.Component.extend(NewOrEdit, {
     return this.get('mode') === 'standalone';
   }.property('mode'),
   severities: [],
+  objectTypes: [],
   percent: 30,
   creating: function() {
     const originals = this.get('originalModels');
@@ -38,13 +38,16 @@ export default Ember.Component.extend(NewOrEdit, {
     this._super(...arguments);
     const store = this.get('monitoringStore');
     this.set('alerts', []);
-    this.set('severities', severities.map(value => ({label: `formNewEditAlert.severity.${value}`, value})))
+    this.set('severities',  this.getSelectOptions('severity', 'alert', 'monitoringStore'));
+    this.set('objectTypes', this.getSelectOptions('objectType', 'alert', 'monitoringStore'));
     this.set('recipients', store.all('recipient'));
-    this.set('selectionGroups', [
-      {type: 'container'},
+    this.set('objectGroups', [
+      {type: 'pod', optionLabelPath: 'id', storeName: 'monitoringStore'},
       {type: 'service'},
+      // {type: 'container'},
       {type: 'stack'},
       {type: 'host'},
+      {type: 'custom'},
     ]);
     if (!this.get('isStandalone')) {
       const objectId = this.get('objectId');
@@ -273,6 +276,7 @@ export default Ember.Component.extend(NewOrEdit, {
       const alert = this.get('monitoringStore').createRecord({
         type: 'alert',
         sendResolved: false,
+        objectType: 'pod',
         serviceRule: {
           unhealthyPercentage: '30',
         },
@@ -280,7 +284,7 @@ export default Ember.Component.extend(NewOrEdit, {
       this.get('alerts').pushObject(this.attachNewRecipient(alert));
     },
     cancel() {
-      if (this.get('standalone')) {
+      if (this.get('isStandalone')) {
         this.get('router').transitionTo('alerts');
       }
       // Do noting

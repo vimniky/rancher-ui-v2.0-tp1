@@ -12,7 +12,7 @@ const headers = [
     translationKey: 'alertsPage.index.table.name',
     name: 'name',
     sort: ['name'],
-    width: '150'
+    width: '180'
   },
   {
     translationKey: 'alertsPage.index.table.rules',
@@ -23,7 +23,7 @@ const headers = [
     translationKey: 'alertsPage.index.table.endpoint',
     name: 'endpoint',
     sort: ['endpoint'],
-    width: '150'
+    width: '200'
   },
   {
     translationKey: 'alertsPage.index.table.timestamp',

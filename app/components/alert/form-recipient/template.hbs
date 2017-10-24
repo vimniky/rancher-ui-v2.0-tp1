@@ -20,8 +20,13 @@
           </a>
         </div>
       </th>
-      <th width="5">&nbsp;</th>
-      <th width="14">&nbsp;</th>
+
+      {{#if (eq model.objectType 'pod')}}
+        <th width="19">&nbsp;</th>
+      {{else}}
+        <th width="5">&nbsp;</th>
+        <th width="14">&nbsp;</th>
+      {{/if}}
     </tr>
   </thead>
   <tbody>
@@ -29,7 +34,6 @@
     <td>
       {{new-select
           content=recipientTypes
-          prompt="Choose a notifier"
           value=recipientType
       }}
     </td>
@@ -49,22 +53,26 @@
         }}
       {{/if}}
     </td>
-    <td class="text-center">when ></td>
-    <td>
-      <div class="row">
-        <div class="col span-14-of-24" style="position: relative;">
-          {{input-slider
-              value=percent
-              valueMin=0
-              valueMax=100
-              step=1
-          }}
-          <div class="text-center" style="position: absolute;width: 100%;">
-            {{if percent percent 0}}%
+    {{#if (eq model.objectType 'pod')}}
+      <td class="pl-30">when pod is unhealthy</td>
+    {{else}}
+      <td class="text-center">when ></td>
+      <td>
+        <div class="row">
+          <div class="col span-14-of-24" style="position: relative;">
+            {{input-slider
+                value=percent
+                valueMin=0
+                valueMax=100
+                step=1
+            }}
+            <div class="text-center" style="position: absolute;width: 100%;">
+              {{if percent percent 0}}%
+            </div>
           </div>
+          <div class="col offset-1-of-24 span-9-of-24"> are unhealthy </div>
         </div>
-        <div class="col offset-1-of-24 span-9-of-24"> are unhealthy </div>
-      </div>
-    </td>
+      </td>
+    {{/if}}
   </tbody>
 </table>

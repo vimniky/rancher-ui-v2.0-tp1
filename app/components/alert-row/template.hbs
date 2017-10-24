@@ -10,11 +10,17 @@
   {{model.name}}
 </td>
 <td data-title="{{dt.rules}}" class="clip">
-  {{rules}}
+  <div class="text-small">{{model.objectType}}/{{model.objectId}}</div>
+  <div class="text-small text-muted">{{rules}}</div>
 </td>
 <td data-title="{{dt.endpoint}}" >
-  {{#if model.recipientId}}
-    <!-- {{model.recipientId}} -->
+  {{#if model.recipient}}
+    <div class="text-small">
+      {{model.recipient.recipientType}}
+    </div>
+    <div class="text-small text-muted">
+      {{model.recipient.recipientValue}}
+    </div>
   {{else}}
     <div class="text-muted">
       {{t 'generic.none'}}

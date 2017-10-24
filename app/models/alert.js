@@ -2,9 +2,22 @@ import Ember from 'ember';
 import Resource from 'ember-api-store/models/resource';
 import PolledResource from 'ui/mixins/cattle-polled-resource';
 
+const defaultStateMap = {
+  'inactive': {icon: 'icon icon-tag', color: 'text-muted'},
+  'active': {icon: 'icon icon-tag', color: 'text-error'},
+};
+
 var Alert = Resource.extend(PolledResource, {
   type: 'alert',
   router: Ember.inject.service(),
+  // Todo: why I need to do this? the resouce should be deleted(remove from the store) anyway after
+  // resource.delete() called.
+  // If resouces have a cb method on it, cb will be called when user `confirm deletion`.
+  cb() {
+    this.delete().then(() => {
+      this.get('store')._remove('alert', this);
+    });
+  },
   actions: {
     deactivate() {
       return this.doAction('deactivate');
@@ -16,22 +29,50 @@ var Alert = Resource.extend(PolledResource, {
       this.get('router').transitionTo('alerts.new', { queryParams: { alertId: this.get('id'), upgrade: true }});
     },
   },
+  recipient: function() {
+    if (this.get('recipientId')) {
+      return this.get('store').getById('recipient', this.get('recipientId'));
+    }
+    return null;
+  }.property('recipientId'),
+  // Overriding the stateColor method, cause alert is diffrent for displaying state colors.
+  stateColor: function() {
+    if ( this.get('isError') ) {
+      return 'text-error';
+    }
+    var map = this.constructor.stateMap;
+    var key = (this.get('relevantState')||'').toLowerCase();
+    if ( map && map[key] && map[key].color !== undefined )
+    {
+      if ( typeof map[key].color === 'function' )
+      {
+        return map[key].color(this);
+      }
+      else
+      {
+        return map[key].color;
+      }
+    }
 
+    if ( defaultStateMap[key] && defaultStateMap[key].color )
+    {
+      return defaultStateMap[key].color;
+    }
+
+    return this.constructor.defaultStateColor;
+  }.property('relevantState','isError'),
   availableActions: function() {
-    let a = this.get('actionLinks');
     let l = this.get('links');
 
     return [
       { label: 'action.edit',       icon: 'icon icon-edit',         action: 'edit',         enabled: !!l.update },
       { divider: true },
-      { label: 'action.activate',   icon: 'icon icon-play',         action: 'activate',     enabled: !!a.activate },
-      { label: 'action.deactivate', icon: 'icon icon-pause',        action: 'deactivate',   enabled: !!a.deactivate },
       { divider: true },
       { label: 'action.remove',     icon: 'icon icon-trash',        action: 'promptDelete', enabled: !!l.remove, altAction: 'delete' },
       { divider: true },
       { label: 'action.viewInApi',  icon: 'icon icon-external-link',action: 'goToApi',      enabled: true },
     ];
-  }.property('actionLinks.{activate,deactivate,restore}','links.{update,remove}'),
+  }.property('links.{update,remove}'),
 });
 
 Alert.reopenClass({

@@ -1119,7 +1119,8 @@ alertsPage:
       noData: There are no alerts yet
       noMatch: No alerts match the current search.
   new:
-    header: Add an Alert
+    addHeader: Add Alert
+    editHeader: Edit Alert
 
 notifiersPage:
   index:
