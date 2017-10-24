@@ -56,6 +56,7 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
       let tasks = {
         userSchemas:                                    this.toCb('loadUserSchemas'),
         monitoringSchemas:                              this.toCb('loadMonitoringSchemas'),
+        loggingSchemas:                                 this.toCb('loadLoggingSchemas'),
         clusters:                                       this.toCb('loadClusters'),
         projects:                                       this.toCb('loadProjects'),
         preferences:                                    this.toCb('loadPreferences'),
@@ -76,6 +77,7 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
         identities:         ['userSchemas', this.cbFind('identity', 'userStore')],
         recipients:         ['monitoringSchemas',       this.cbFind('recipient', 'monitoringStore')],
         alerts:             ['monitoringSchemas',       this.cbFind('alert', 'monitoringStore')],
+        logging:            ['loggingSchemas',          this.cbFind('logging', 'loggingStore')],
       };
 
       async.auto(tasks, xhrConcur, function(err, res) {
@@ -204,6 +206,12 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
   loadMonitoringSchemas() {
     let store = this.get('monitoringStore');
     return store.rawRequest({url:'/v5/schemas', dataType: 'json'}).then((xhr) => {
+      store._bulkAdd('schema', xhr.body.data);
+    });
+  },
+  loadLoggingSchemas() {
+    let store = this.get('loggingStore');
+    return store.rawRequest({url:'/v6/schemas', dataType: 'json'}).then((xhr) => {
       store._bulkAdd('schema', xhr.body.data);
     });
   },

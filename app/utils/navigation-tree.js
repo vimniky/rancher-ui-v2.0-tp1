@@ -115,7 +115,7 @@ const navTree = [
       {
         id: 'tools-notifiers',
         localizedLabel: 'nav.tools.notifiers',
-        route: 'notifiers.email',
+        route: 'notifiers',
         ctx: [getProjectId],
       },
       {

@@ -173,11 +173,15 @@ Router.map(function() {
           this.route('index', {path: '/'});
         });
         this.route('notifiers', {path: '/notifiers', resetNamespace: true}, function() {
+          this.route('index', {path: '/'});
           this.route('email', {path: '/email'});
           this.route('slack', {path: '/slack'});
           this.route('pager-duty', {path: '/pager-duty'});
         });
         this.route('logging', {path: '/logging', resetNamespace: true}, function() {
+          this.route('index', {path: '/'});
+          this.route('cluster', { path: '/cluster' });
+          this.route('environment', { path: '/environment' });
         });
         this.route('dashboard', {path: '/dashboard', resetNamespace: true}, function() {
         });

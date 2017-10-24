@@ -1189,27 +1189,29 @@ loggingPage:
   header:
     env: Configure logging at environment level
     cluster: Configure logging at cluster level
-  configurationTip: Admins only. Congfiguration at cluster level is only available to admin level users
-  target:
+  configurationTip: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment   owner will be able to configure a log target
+  targetType:
     label: Target
-  loggingEnvLevel: Configure targets at the envrinoment level
+    prompt: Choice a Target
+  loggingEnvLevel: Enable configure targets at the envrinoment level
   loggingClusterLevel: Configure targets at the envrinoment level
-  targetChoices:
-    elasticsearch: Elasticsearch
-    splunk: Splunk
-    syslog: Syslog
-  port:
+  outputHost:
+    label: Host
+    placeholder: e.g. 192.168.33.176
+  outputPort:
     label: Prot
     placeholder: e.g. 9200
-  prefix:
+  outputPrefix:
     label: Prefix
     placeholder: e.g. fluentd
-  type:
-    label: Type
-  tagKey:
+  outputTypeName:
+    label: Type Name
+    placeholder: e.g Access Log
+  outputTagKey:
     label: Tag Key
+    placeholder: e.g. Tag Key
   dateFormat:
-    label: Date Forma
+    label: Date Format
   flushInterval:
     label: Flush interval
     placeholder: e.g. 1
@@ -2477,6 +2479,7 @@ formRecipient:
   notifier:
     label: Notifier
     value: Notifier
+    prompt: Choose a notifier
   recipient:
     label: Recipient
     placeholder:
@@ -3816,6 +3819,8 @@ nav:
     pagerDuty: Pager Duty
     logging: Logging
     dashboard: Dashboard
+    clusterLogging: Cluster Congfiguration
+    envLogging: Environment Congfiguration
   admin:
     tab: Global Admin
     audit: Audit Log
