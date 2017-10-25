@@ -98,7 +98,9 @@
               }}
             </div>
           </div>
-          <button class="btn btn-sm bg-transparent" style="vertical-align: top" {{action "toggle"}}><i class="icon icon-minus-circle"></i></button>
+          {{#unless largeModeOnly}}
+            <button class="btn btn-sm bg-transparent" style="vertical-align: top" {{action "toggle"}}><i class="icon icon-minus-circle"></i></button>
+          {{/unless}}
         {{else}}
           <div class="row">
             <div class="col span-12 text-center">

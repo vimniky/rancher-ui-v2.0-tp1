@@ -1,8 +1,9 @@
-<section class="clearfix mb-30">
+<section class="clearfix">
   <div class="row">
     <div class="col span-6">
       {{dashboard/host-activity
           data=hostsActivity
+          total=hostsActivityTotal
       }}
     </div>
     <div class="col span-3">
@@ -23,7 +24,8 @@
     </div>
   </div>
 </section>
-<section class="clearfix">
+
+<section class="clearfix  mv-30">
   <div class="row">
     <div class="col span-4">
       {{stats-bar
@@ -41,4 +43,8 @@
       }}
     </div>
   </div>
+</section>
+
+<section id="dashboard-stats">
+  {{info-multi-stats mode="large" largeModeOnly=true model=host linkName="hostStats" largeTargetId="dashboard-stats"}}
 </section>

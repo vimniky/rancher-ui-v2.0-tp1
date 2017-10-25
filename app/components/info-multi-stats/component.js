@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   model: null,
   mode: 'small',
+  largeModeOnly: false,
   smallWidth: 60,
   smallHeight: 25,
   largeTargetId: null,
