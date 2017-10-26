@@ -26,6 +26,19 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   }.property('mode'),
   severities: [],
   objectTypes: [],
+  objectType: function() {
+    const m = this.get('mode');
+    switch (m) {
+    case 'container':
+      return m;
+    case 'service':
+    case 'global':
+    case 'sidekick':
+      return 'service';
+    default:
+      return null;
+    }
+  }.property('mode'),
   percent: 30,
   creating: function() {
     const originals = this.get('originalModels');
@@ -39,12 +52,20 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     const store = this.get('monitoringStore');
     this.set('alerts', []);
     this.set('severities',  this.getSelectOptions('severity', 'alert', 'monitoringStore'));
-    this.set('objectTypes', this.getSelectOptions('objectType', 'alert', 'monitoringStore'));
+    // this.set('objectTypes', this.getSelectOptions('objectType', 'alert', 'monitoringStore'));
+    this.set('objectTypes', [
+      {label: 'Host', value: 'host'},
+      {label: 'Pod', value: 'pod'},
+      {label: 'Stack', value: 'stack'},
+      {label: 'Service', value: 'service'},
+      {label: 'Container', value: 'container'},
+      {label: 'Custom', value: 'custom'},
+    ]);
     this.set('recipients', store.all('recipient'));
     this.set('objectGroups', [
       {type: 'pod', optionLabelPath: 'id', storeName: 'monitoringStore'},
       {type: 'service'},
-      // {type: 'container'},
+      {type: 'container'},
       {type: 'stack'},
       {type: 'host'},
       {type: 'custom'},
@@ -276,7 +297,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       const alert = this.get('monitoringStore').createRecord({
         type: 'alert',
         sendResolved: false,
-        objectType: 'pod',
+        objectType: this.get('objectType'),
         serviceRule: {
           unhealthyPercentage: '30',
         },

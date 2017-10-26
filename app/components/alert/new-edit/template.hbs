@@ -28,7 +28,11 @@
         </div>
         <div class="col span-5-of-24">
           <div><label class="acc-label">Object Type</label></div>
-          {{new-select content=objectTypes value=alert.objectType}}
+          {{#if isStandalone}}
+            {{new-select content=objectTypes value=alert.objectType}}
+          {{else}}
+            {{new-select disabled=objectId content=objectTypes value=objectType}}
+          {{/if}}
         </div>
         <div class="col span-7-of-24">
           <div><label class="acc-label">Object{{field-required}}</label></div>
@@ -49,8 +53,7 @@
               {{#if objectId}}
                 {{alert/form-object
                     grouping=false
-                    type=alert.objectType
-                    value=object
+                    value=objectId
                     disabled=true
                     types=objectGroups
                 }}

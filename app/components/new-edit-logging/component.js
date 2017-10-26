@@ -7,7 +7,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   // input
   enableClusterLogging: true,
-  loggingLevel: null,
   enableEnvLogging: false,
 
   targetChoices: null,
@@ -20,20 +19,23 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this.set('targetChoices', targetTypeOptions);
     this.set('dateFormatChoices', dateFormatOptions);
   },
-
   isClusterLevel: function() {
-    return this.get('loggingLevel') === 'cluster';
-  }.property('isEnvLevel'),
-
+    return this.get('namespace') === 'system';
+  }.property('namespace'),
+  headerLabel: function() {
+    const ns = this.get('namespace');
+    return this.get('intl').t(ns === 'system' ? 'loggingPage.header.cluster' : 'loggingPage.header.env');
+  }.property('namespace'),
   didReceiveAttrs() {
-    const store = this.get('store');
+    const store = this.get('loggingStore');
     if (this.get('originalModel')) {
       this.set('model', this.get('originalModel').clone());
     } else {
+      let namespace = this.get('namespace');
+      namespace = namespace === 'system' ? 'cattle-system' : namespace
       const newLogging = store.createRecord({
         type: 'logging',
-        // Todo
-        // namespace: 'cattle-system or env',
+        namespace,
       });
       this.set('model', newLogging);
     }

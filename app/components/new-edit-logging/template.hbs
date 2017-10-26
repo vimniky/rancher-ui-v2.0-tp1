@@ -1,8 +1,5 @@
-<section class="header has-tabs clearfix p-0">
-  <ul class="tab-nav">
-    <li>{{#link-to "logging.cluster"}}{{t 'nav.tools.clusterLogging'}}{{/link-to}}</li>
-    <li>{{#link-to "logging.environment"}}{{t 'nav.tools.envLogging'}}{{/link-to}}</li>
-  </ul>
+<section class="header has-tabs clearfix">
+  <h1>{{headerLabel}}</h1>
 </section>
 
 {{#if isClusterLevel}}
@@ -32,7 +29,6 @@
         </div>
         <div class="col span-9">
           {{new-select
-              prompt=(t 'loggingPage.targetType.prompt')
               disabled=(not enableClusterLogging)
               className="form-control inline-form"
               content=targetChoices
@@ -54,7 +50,7 @@
 
 {{#if enableClusterLogging}}
   <section class="mt-20 clearfix">
-    <row class="clearfix">
+    <div class="clearfix">
       <div class="col span-4">
         <label class="acc-label" for="">{{t 'generic.host'}}</label>
         {{input
@@ -83,8 +79,9 @@
             placeholder=(t 'loggingPage.outputPrefix.placeholder')
         }}
       </div>
-    </row>
-    <row class="clearfix mt-20">
+    </div>
+
+    <div class="clearfix mt-20">
       <div class="col span-4">
         <label class="acc-label" for="">{{t 'loggingPage.dateFormat.label'}}</label>
         {{new-select
@@ -97,15 +94,6 @@
         }}
       </div>
       <div class="col span-4">
-        <label class="acc-label" for="">{{t 'loggingPage.outputTypeName.label'}}</label>
-      {{input
-          type="text"
-          value=model.outputTypeName
-          className="form-control"
-          placeholder=(t 'loggingPage.outputTypeName.placeholder')
-      }}
-      </div>
-      <div class="col span-4">
         <label class="acc-label">{{t 'loggingPage.outputTagKey.label'}}</label>
         {{input
             type="text"
@@ -114,35 +102,30 @@
             placeholder=(t 'loggingPage.outputTagKey.placeholder')
         }}
       </div>
-    </row>
-
-    <row class="clearfix">
       <div class="col span-4">
-      <label class="acc-label">{{t 'loggingPage.flushInterval.label'}}</label>
-      <div class="input-group">
-        {{input-integer
-            value=model.outputFlushInterval
-            class="form-control"
-            placeholder=(t 'loggingPage.flushInterval.placeholder')
-            aria-describedby="basic-addon2"
-        }}
-        <span class="input-group-addon bg-default" id="basic-addon2">sec</span>
-      </div>
-      </div>
-
-      <div class="col span-4 offset-3">
-        <div class="row pt-35">
-          <div class="col span-6">
-            {{input type="checkbox" name="logstashFormat" id="logstashFormat" checked=model.outputLogstashFormat}}
-            <label for="logstashFormat">{{t 'loggingPage.logstashFormat'}}</label>
-          </div>
-          <div class="col span-6">
-            {{input type="checkbox" name="includeTagKey" id="includeTagKey" checked=model.outputIncludeTagKey}}
-            <label for="includeTagKey">{{t 'loggingPage.includeTagKey'}}</label>
-          </div>
+        <label class="acc-label">{{t 'loggingPage.flushInterval.label'}}</label>
+        <div class="input-group">
+          {{input-integer
+              value=model.outputFlushInterval
+              class="form-control"
+              placeholder=(t 'loggingPage.flushInterval.placeholder')
+              aria-describedby="basic-addon2"
+          }}
+          <span class="input-group-addon bg-default" id="basic-addon2">sec</span>
         </div>
       </div>
-    </row>
+    </div>
+
+    <div class="clearfix" style="display:flex;justify-content:flex-end;">
+      <div class="mr-50">
+        {{input type="checkbox" name="logstashFormat" id="logstashFormat" checked=model.outputLogstashFormat}}
+        <label for="logstashFormat">{{t 'loggingPage.logstashFormat'}}</label>
+      </div>
+      <div>
+        {{input type="checkbox" name="includeTagKey" id="includeTagKey" checked=model.outputIncludeTagKey}}
+        <label for="includeTagKey">{{t 'loggingPage.includeTagKey'}}</label>
+      </div>
+    </div>
   </section>
 {{/if}}
 

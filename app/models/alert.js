@@ -18,6 +18,18 @@ var Alert = Resource.extend(PolledResource, {
       this.get('store')._remove('alert', this);
     });
   },
+  objectName: function() {
+    const type = this.get('objectType');
+    const id = this.get('objectId');
+    let out;
+    if (type && id) {
+      const object = this.get('store').getById(type, id);
+      if (object) {
+        out = object.get('name');
+      }
+    }
+    return out || id;
+  }.property('objectType,objectId'),
   actions: {
     deactivate() {
       return this.doAction('deactivate');

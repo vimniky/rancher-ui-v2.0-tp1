@@ -1190,12 +1190,12 @@ loggingPage:
   header:
     env: Configure logging at environment level
     cluster: Configure logging at cluster level
-  configurationTip: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment   owner will be able to configure a log target
+  configurationTip: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment  owner will be able to configure a log target
   targetType:
     label: Target
     prompt: Choice a Target
-  loggingEnvLevel: Enable configure targets at the envrinoment level
-  loggingClusterLevel: Configure targets at the envrinoment level
+  loggingEnvLevel: Enable configure targets at the envirnoment level
+  loggingClusterLevel: Configure targets at the envirnoment level
   outputHost:
     label: Host
     placeholder: e.g. 192.168.33.176
@@ -1204,13 +1204,13 @@ loggingPage:
     placeholder: e.g. 9200
   outputPrefix:
     label: Prefix
-    placeholder: e.g. fluentd
+    placeholder: e.g. logstash
   outputTypeName:
     label: Type Name
     placeholder: e.g Access Log
   outputTagKey:
     label: Tag Key
-    placeholder: e.g. Tag Key
+    placeholder: e.g. k8s
   dateFormat:
     label: Date Format
   flushInterval:

@@ -179,9 +179,6 @@ Router.map(function() {
           this.route('pager-duty', {path: '/pager-duty'});
         });
         this.route('logging', {path: '/logging', resetNamespace: true}, function() {
-          this.route('index', {path: '/'});
-          this.route('cluster', { path: '/cluster' });
-          this.route('environment', { path: '/environment' });
         });
         this.route('dashboard', {path: '/dashboard', resetNamespace: true}, function() {
         });
