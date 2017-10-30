@@ -6,7 +6,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   intl: Ember.inject.service(),
 
   // input
-  enableClusterLogging: true,
+  enableLogging: true,
   enableEnvLogging: false,
 
   targetChoices: null,
@@ -36,6 +36,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       const newLogging = store.createRecord({
         type: 'logging',
         namespace,
+        outputLogstashPrefix: namespace,
       });
       this.set('model', newLogging);
     }
@@ -54,7 +55,8 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
           cb(false);
           return false;
         }
-        this.doSave()
+        this
+          .doSave()
           .then(this.didSave.bind(this))
           .then(neu => this.doneSaving(neu, cb))
           .catch((err) => {
@@ -64,9 +66,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
           });
       });
     },
-    setEvnLevel() {
-      this.set('isClusterLevel', false);
-    }
   },
   doneSaving(neu, cb) {
     cb(true);

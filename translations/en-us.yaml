@@ -1146,28 +1146,9 @@ notifiersPage:
         label: Identity
         placeholder: Enter Identity
   slack:
-    form:
-      from:
-        label: From
-        placeholder: e.g. rancherenv@rancher.com
-      server:
-        label: Server
-        placeholder: e.g. rancher@mail.com
-      userName:
-        label: Username
-        placeholder: Enter Username
-      password:
-        label: Password
-        placeholder: Enter Password
-      channel:
-        label: Channel
-        placeholder: e.g. bill@rancher.com
-      apiUrl:
-        label: API URL
-        placeholder: Enter api url
-      secret:
-        label: Secret
-        placeholder: Enter Secret
+    webhookUrl:
+      label: WebHook URL
+      placeholder: e.g. https://hooks.slack.com/services/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
   pagerDuty:
     form:
       from:
@@ -1190,17 +1171,20 @@ loggingPage:
   header:
     env: Configure logging at environment level
     cluster: Configure logging at cluster level
-  configurationTip: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment  owner will be able to configure a log target
+  tips:
+    env: Namespace target will not overwrite the cluster log.
+    cluster: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment  owner will be able to configure a log target
   targetType:
     label: Target
     prompt: Choice a Target
   loggingEnvLevel: Enable configure targets at the envirnoment level
   loggingClusterLevel: Configure targets at the envirnoment level
+  elasticsearchIndexTip: 'Elasticsearch uses <span class="text-muted text-italic">Prefix</span>  and <span class="text-muted text-italic">Date Format</span> to generate the date store index. The generated date store index will be:'
   outputHost:
     label: Host
     placeholder: e.g. 192.168.33.176
   outputPort:
-    label: Prot
+    label: Port
     placeholder: e.g. 9200
   outputPrefix:
     label: Prefix

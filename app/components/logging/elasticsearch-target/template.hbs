@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col span-6">
+    <label class="acc-label" for="">{{t 'generic.host'}}</label>
+    {{input
+        type="text"
+        value=model.outputHost
+        classNames="form-control"
+        placeholder=(t 'loggingPage.outputHost.placeholder')
+    }}
+  </div>
+  <div class="col span-6">
+    <label class="acc-label" for="">{{t 'loggingPage.outputPort.label'}}</label>
+    {{input-integer
+        class="form-control public"
+        min="1"
+        max="65535"
+        value=model.outputPort
+        placeholder=(t 'loggingPage.outputPort.placeholder')
+    }}
+  </div>
+</div>
+<div class="row mt-20">
+  <div class="col span-6 mb-0 pb-0">
+    <label class="acc-label" for="">{{t 'loggingPage.outputPrefix.label'}}</label>
+    {{input
+        type="text"
+        value=model.outputLogstashPrefix
+        className="form-control"
+        placeholder=(t 'loggingPage.outputPrefix.placeholder')
+    }}
+  </div>
+
+  <div class="col span-6 mb-0 pb-0">
+    <label class="acc-label" for="">{{t 'loggingPage.dateFormat.label'}}</label>
+    {{new-select
+        htmlSafe=false
+        class="form-control mb-15"
+        className="form-control"
+        content=dateFormatChoices
+        localizedLabel=false
+        value=model.outputLogstashDateformat
+    }}
+  </div>
+</div>
+<div class="text-info mb-20">
+  {{t 'loggingPage.elasticsearchIndexTip' htmlSafe=true}}<code class="text-italic">{{model.outputLogstashPrefix}}-{{dateFormatString}}</code>
+</div>
+
+<div class="row">
+  <div class="col span-4">
+    <label class="acc-label">{{t 'loggingPage.flushInterval.label'}}</label>
+    <div class="input-group">
+      {{input-integer
+          value=model.outputFlushInterval
+          class="form-control"
+          placeholder=(t 'loggingPage.flushInterval.placeholder')
+          aria-describedby="basic-addon2"
+      }}
+      <span class="input-group-addon bg-default" id="basic-addon2">sec</span>
+    </div>
+  </div>
+
+  <div class="col text-right span-4 offset-4" style="padding-top:33px;">
+    {{input type="checkbox" name="logstashFormat" id="logstashFormat" checked=model.outputLogstashFormat}}
+    <label for="logstashFormat">{{t 'loggingPage.logstashFormat'}}</label>
+  </div>
+</div>

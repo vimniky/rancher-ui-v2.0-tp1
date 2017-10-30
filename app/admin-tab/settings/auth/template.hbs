@@ -18,9 +18,6 @@
     <div class="row nav nav-boxes checked-active">
       {{#each drivers as |driver|}}
         {{#if driver.available}}
-          {{#link-to driver.route alt=driver.label classNames=(concat "col span-2 nav-box-item driver auth-driver " driver.css) href=false disabled=true}}
-            <p class="sr-only">{{driver.label}}</p>
-          {{/link-to}}
         {{/if}}
       {{/each}}
     </div>

@@ -3,75 +3,106 @@
 </section>
 <section class="header has-tabs clearfix p-0">
   <ul class="tab-nav">
-    <li>{{#link-to "notifiers.email"}}{{t 'nav.tools.email'}}{{/link-to}}</li>
     <li>{{#link-to "notifiers.slack"}}{{t 'nav.tools.slack'}}{{/link-to}}</li>
+    <li>{{#link-to "notifiers.email"}}{{t 'nav.tools.email'}}{{/link-to}}</li>
     <li>{{#link-to "notifiers.pager-duty"}}{{t 'nav.tools.pagerDuty'}}{{/link-to}}</li>
   </ul>
 </section>
-  {{#if (eq notifierType 'email')}}
-    <section class="clearfix">
-      <row>
-        <div class="col span-8">
-          <label class="acc-label">{{t 'notifiersPage.email.form.from.label'}}{{field-required}}</label>
-          {{input class="form-control input" type="text" value=model.emailConfig.smtpFrom placeholder=(t 'notifiersPage.email.form.from.placeholder')}}
-        </div>
-      </row>
 
-      <row>
-        <div class="col span-6">
-          <label class="acc-label">{{t 'notifiersPage.email.form.userName.label'}}{{field-required}}</label>
-          {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthUsername placeholder=(t 'notifiersPage.email.form.userName.placeholder')}}
-        </div>
-        <div class="col span-6">
-          <label class="acc-label">{{t 'notifiersPage.email.form.password.label'}}{{field-required}}</label>
-          {{input class="form-control input" type="password" value=model.emailConfig.smtpAuthPassword placeholder=(t 'notifiersPage.email.form.password.placeholder')}}
-        </div>
-      </row>
+<!-- <section>
+     <div class="row nav nav-boxes checked-active">
+     {{#each drivers as |driver|}}
+     {{#if driver.available}}
+     {{#link-to driver.route alt=driver.label classNames=(concat "col span-2 nav-box-item driver auth-driver " driver.css) href=false disabled=true}}
+     <p class="sr-only">{{driver.label}}</p>
+     {{/link-to}}
+     {{/if}}
+     {{/each}}
+     </div>
+     </section>
+   -->
+{{#if (eq notifierType 'email')}}
+  <section class="clearfix">
+    <row>
+      <div class="col span-8">
+        <label class="acc-label">{{t 'notifiersPage.email.form.from.label'}}{{field-required}}</label>
+        {{input class="form-control input" type="text" value=model.emailConfig.smtpFrom placeholder=(t 'notifiersPage.email.form.from.placeholder')}}
+      </div>
+    </row>
 
-      <row>
-        <div class="col span-6">
-          <label class="acc-label">{{t 'notifiersPage.email.form.secret.label'}}{{field-required}}</label>
-          {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthSecret placeholder=(t 'notifiersPage.email.form.secret.placeholder')}}
-        </div>
-        <div class="col span-6">
-          <label class="acc-label">{{t 'notifiersPage.email.form.identity.label'}}{{field-required}}</label>
-          {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthIdentity placeholder=(t 'notifiersPage.email.form.identity.placeholder')}}
-        </div>
-      </row>
+    <row>
+      <div class="col span-6">
+        <label class="acc-label">{{t 'notifiersPage.email.form.userName.label'}}{{field-required}}</label>
+        {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthUsername placeholder=(t 'notifiersPage.email.form.userName.placeholder')}}
+      </div>
+      <div class="col span-6">
+        <label class="acc-label">{{t 'notifiersPage.email.form.password.label'}}{{field-required}}</label>
+        {{input class="form-control input" type="password" value=model.emailConfig.smtpAuthPassword placeholder=(t 'notifiersPage.email.form.password.placeholder')}}
+      </div>
+    </row>
 
-      <row>
-        <div class="col span-6">
-          <label class="acc-label">{{t 'notifiersPage.email.form.server.label'}}{{field-required}}</label>
-          {{input class="form-control input" type="text" value=model.emailConfig.smtpSmartHost placeholder=(t 'notifiersPage.email.form.server.placeholder')}}
-        </div>
-      </row>
-    </section>
-  {{else if (eq notifierType 'slack')}}
-    <div class="box">
-      <label style="width: 100px;" class="text-muted">
-        {{t 'notifiersPage.slack.form.apiUrl.label'}}{{field-required}}
-      </label>
-      {{input
-          class="form-control"
-          type="text"
-          value=model.slackConfig.slackApiUrl
-          placeholder=(t 'notifiersPage.slack.form.apiUrl.placeholder')
-          safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
-      }}
+    <row>
+      <div class="col span-6">
+        <label class="acc-label">{{t 'notifiersPage.email.form.secret.label'}}{{field-required}}</label>
+        {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthSecret placeholder=(t 'notifiersPage.email.form.secret.placeholder')}}
+      </div>
+      <div class="col span-6">
+        <label class="acc-label">{{t 'notifiersPage.email.form.identity.label'}}{{field-required}}</label>
+        {{input class="form-control input" type="text" value=model.emailConfig.smtpAuthIdentity placeholder=(t 'notifiersPage.email.form.identity.placeholder')}}
+      </div>
+    </row>
+
+    <row>
+      <div class="col span-6">
+        <label class="acc-label">{{t 'notifiersPage.email.form.server.label'}}{{field-required}}</label>
+        {{input class="form-control input" type="text" value=model.emailConfig.smtpSmartHost placeholder=(t 'notifiersPage.email.form.server.placeholder')}}
+      </div>
+    </row>
+  </section>
+{{else if (eq notifierType 'slack')}}
+  <div class="box clearfix">
+    <div class="row">
+      <div class="col span-1">
+        <img width="64" height="64" src="{{app.baseAssets}}assets/images/providers/slack-webhook.png" class="mt-5" />
+      </div>
+      <div class="col span-11 pt-20">
+        <label class="text-muted pr-20">
+          {{t 'notifiersPage.slack.webhookUrl.label'}}{{field-required}}
+        </label>
+        {{input
+            class="form-control"
+            type="text"
+            value=model.slackConfig.slackApiUrl
+            placeholder=(t 'notifiersPage.slack.webhookUrl.placeholder')
+            safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
+        }}
+      </div>
     </div>
-  {{else if (eq notifierType 'pagerduty')}}
-    <div class="box">
-      <label style="width: 100px;" class="text-muted">
-        {{t 'notifiersPage.pagerDuty.form.clientUrl.label'}}{{field-required}}
-      </label>
-      {{input
-          class="form-control"
-          type="text"
-          value=model.pagerdutyConfig.pagerdutyUrl
-          placeholder=(t 'notifiersPage.pagerDuty.form.clientUrl.placeholder')
-          safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
-      }}
-    </div>
-  {{/if}}
+  </div>
+  <div class="box mv-20">
+    <h2>Setup a slack notifier</h2>
+    <hr>
+    <ol>
+      <li><a role="button" class="btn pl-0 btn-sm bg-transparent" target="blank" rel="nofollow noreferer" href="https://rancher.slack.com/apps/A0F7XDUAZ-incoming-webhooks?page=1">Click here</a>to go to the<span class="text-muted mh-10">Incoming WebHooks</span>page. If you haven't logined yet, please login first.</li>
+      <li>After logined, click the right<span class="text-muted mh-10">Add Configuration</span>button to enter the<span class="text-muted mh-10">New configuration</span>page.</li>
+      <li>At the bottom of the<span class="text-muted mh-10">New configuration</span>page, choose a existing channel from the dropdown input box or click the <span class="text-muted mh-10">create a new channel</span> link to create a new channel.</li>
+      <li>With a channel selected, click the<span class="text-muted mh-10">Add Incomming WebHooks Intergration</span>button to generate your Webhook URL. The generated Webhook URL looks like this<code class="mh-10">https://hooks.slack.com/services/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</code></li>
+      <li>Copy the generated Webhook URL, paste it in the above input box and then click the save button.</li>
+    </ol>
+  </div>
+{{else if (eq notifierType 'pagerduty')}}
+  <div class="box">
+    <label style="width: 100px;" class="text-muted">
+      {{t 'notifiersPage.pagerDuty.form.clientUrl.label'}}{{field-required}}
+    </label>
+    {{input
+        class="form-control"
+        type="text"
+        value=model.pagerdutyConfig.pagerdutyUrl
+        placeholder=(t 'notifiersPage.pagerDuty.form.clientUrl.placeholder')
+        safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
+    }}
+  </div>
+{{/if}}
 {{top-errors errors=errors}}
 {{save-cancel cancelDisabled=true editing=true save="save"}}

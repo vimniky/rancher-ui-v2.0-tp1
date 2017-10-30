@@ -1,0 +1,61 @@
+<section class="header has-tabs clearfix">
+  <h1>{{headerLabel}}</h1>
+</section>
+
+<div class="banner bg-info">
+  <div class="banner-icon"><span class="icon icon-info"></span></div>
+  <div class="banner-message">
+  {{#if isClusterLevel}}
+    <p>{{t 'loggingPage.tips.cluster'}}</p>
+  {{else}}
+    <p>{{t 'loggingPage.tips.env'}}</p>
+  {{/if}}
+  </div>
+</div>
+
+<section class="box">
+  <div class="row clearfix inline-form">
+    <div class="col span-3" style="padding-top: 14px">
+      {{switch-button
+          checked=enableLogging
+          onLabel="generic.enable"
+          offLabel="generic.disable"
+      }}
+    </div>
+    {{#if isClusterLevel}}
+      <div class="col span-8 offset-1">
+        <div style="padding-top: 12px">
+          {{input type="checkbox" name="checkbox" id="checkbox" checked=enableEnvLogging}}
+          <label for="checkbox">{{t 'loggingPage.loggingEnvLevel'}}</label>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</section>
+
+{{#if enableLogging}}
+  <section class="mt-20 clearfix">
+
+    <div class="row">
+      <div class="col span-7">
+        <label class="acc-label">{{t 'loggingPage.targetType.label'}}</label>
+        <div>
+          {{new-select
+              disabled=(not enableLogging)
+              className="form-control inline-form"
+              content=targetChoices
+              value=model.targetType
+          }}
+        </div>
+      </div>
+    </div>
+
+    {{logging/elasticsearch-target model=model dateFormatChoices=dateFormatChoices}}
+
+  </section>
+{{/if}}
+
+{{#if enableLogging}}
+  {{top-errors errors=errors}}
+  {{save-cancel cancelDisabled=true editing=true save="save"}}
+{{/if}}
