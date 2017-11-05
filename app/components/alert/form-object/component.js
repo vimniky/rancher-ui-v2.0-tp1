@@ -12,13 +12,13 @@ export default Ember.Component.extend({
   }.observes('value'),
   // grouped selection content
   choices: function() {
-    const type = this.get('type');
-    const types = this.get('types').filter(typeOpt => {
-      if (!type) {
-        return true;
-      }
-      return typeOpt.type === type;
-    });
+    // const type = this.get('type');
+    // const types = this.get('types').filter(typeOpt => {
+    //   if (!type) {
+    //     return true;
+    //   }
+    //   return typeOpt.type === type;
+    // });
     let out = [];
     if (types && types.length) {
       out = types.map(

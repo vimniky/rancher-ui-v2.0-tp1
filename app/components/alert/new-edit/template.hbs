@@ -16,7 +16,7 @@
         </button>
       {{/if}}
       <div class="row">
-        <div class="col span-7-of-24">
+        <div class="col span-4">
           {{form-name-description
               model=alert
               descriptionShown=false
@@ -26,45 +26,41 @@
               nameRequired=true
           }}
         </div>
-        <div class="col span-5-of-24">
-          <div><label class="acc-label">Object Type</label></div>
+        <div class="col span-4">
+          <div><label class="acc-label">Target{{field-required}}</label></div>
+          <!-- When creating new container/service,
+                objectId is will be the new created container/service id
+                and will be populated automatically.
+                So users don't need to fill in the objectId.
+              -->
           {{#if isStandalone}}
-            {{new-select content=objectTypes value=alert.objectType}}
+            {{searchable-select
+                content=objectChoices
+                optionGroupPath="type"
+                optionValuePath="id"
+                optionLabelPath="displayName"
+                prompt="Choose a Target..."
+                group=alert.objectType
+                value=alert.objectId
+            }}
           {{else}}
-            {{new-select disabled=objectId content=objectTypes value=objectType}}
-          {{/if}}
-        </div>
-        <div class="col span-7-of-24">
-          <div><label class="acc-label">Object{{field-required}}</label></div>
-          {{#input-or-display editing value="Object"}}
-            <!-- When creating new container/service,
-                 objectId is will be the new created container/service id
-                 and will be populated automatically.
-                 So users don't need to fill in the objectId.
-               -->
-            {{#if isStandalone}}
-              {{alert/form-object
-                  grouping=false
-                  type=alert.objectType
-                  value=alert.objectId
-                  types=objectGroups
+            {{#if objectId}}
+              {{searchable-select
+                  value=objectId
+                  content=objectChoices
+                  optionGroupPath="type"
+                  optionValuePath="id"
+                  optionLabelPath="displayName"
+                  prompt="Choose a Object"
+                  group=alert.objectType
               }}
             {{else}}
-              {{#if objectId}}
-                {{alert/form-object
-                    grouping=false
-                    value=objectId
-                    disabled=true
-                    types=objectGroups
-                }}
-              {{else}}
-                {{input type=text disabled=true placeholder="Object will be automatically filled in"}}
-              {{/if}}
+              {{input type=text disabled=true placeholder="Object will be automatically filled in"}}
             {{/if}}
-          {{/input-or-display}}
+          {{/if}}
         </div>
-        <div class="col span-5-of-24">
-          <div><label class="acc-label">Severity{{field-required}}</label></div>
+        <div class="col span-4">
+          <div><label class="acc-label">{{t 'formNewEditAlert.severity'}}</label></div>
           {{#input-or-display editing value="Severity"}}
             {{new-select
                 classNames="form-control"
@@ -73,17 +69,6 @@
             }}
           {{/input-or-display}}
         </div>
-        <!-- <div class="col span-6-of-24">
-             <div style="margin-top: 16px">
-             <div class="radio">
-             <label>{{radio-button selection=alert.sendResolved value=false}} {{t 'formNewEditAlert.sendError'}}</label>
-             </div>
-             <div class="radio pv-0">
-             <label>{{radio-button selection=alert.sendResolved value=true}} {{t 'formNewEditAlert.sendAndResolved'}}</label>
-             </div>
-             </div>
-             </div>
-           -->
       </div>
       {{alert/form-recipient model=alert recipients=recipients}}
     </div>

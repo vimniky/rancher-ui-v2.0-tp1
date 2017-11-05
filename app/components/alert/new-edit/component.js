@@ -25,7 +25,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     return this.get('mode') === 'standalone';
   }.property('mode'),
   severities: [],
-  objectTypes: [],
   objectType: function() {
     const m = this.get('mode');
     switch (m) {
@@ -45,31 +44,19 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     return originals && originals.length && this.get('editing');
   }.property('editing,originalModels.[]'),
   allowAddMulti: function() {
-    return !this.get('isStandalone') || !this.get('editing');
+    return !this.get('isStandalone');
   }.property('editing', 'isStandalone'),
   init() {
     this._super(...arguments);
     const store = this.get('monitoringStore');
     this.set('alerts', []);
     this.set('severities',  this.getSelectOptions('severity', 'alert', 'monitoringStore'));
-    // this.set('objectTypes', this.getSelectOptions('objectType', 'alert', 'monitoringStore'));
-    this.set('objectTypes', [
-      {label: 'Host', value: 'host'},
-      {label: 'Pod', value: 'pod'},
-      {label: 'Stack', value: 'stack'},
-      {label: 'Service', value: 'service'},
-      {label: 'Container', value: 'container'},
-      {label: 'Custom', value: 'custom'},
-    ]);
     this.set('recipients', store.all('recipient'));
-    this.set('objectGroups', [
-      {type: 'pod', optionLabelPath: 'id', storeName: 'monitoringStore'},
-      {type: 'service'},
-      {type: 'container'},
-      {type: 'stack'},
-      {type: 'host'},
-      {type: 'custom'},
-    ]);
+    const pods = store.all('pod');
+    const stacks = this.get('store').all('stack');
+    const out = [pods, stacks].reduce((sum, group) => sum.pushObjects(group.get('content')), []);
+    this.set('objectChoices', out);
+
     if (!this.get('isStandalone')) {
       const objectId = this.get('objectId');
       if (objectId) {
@@ -135,7 +122,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       objectId: alert.get('objectId') || this.get('objectId'),
       recipient: null,
       // email | slack | pagerduty
-      recipientType: recipientType || 'email',
+      recipientType: recipientType || 'slack',
       emailRecipient: {
         address: null,
       },

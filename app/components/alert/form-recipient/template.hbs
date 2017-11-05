@@ -2,17 +2,16 @@
   <thead>
     <tr>
       <th width="3">&nbsp;</th>
-      <th class="acc-label" width="9">
-        Notifier{{~#unless isReuse}}{{field-required~}}{{~/unless}}
-      </th>
+      <th class="acc-label" width="9">Notifier</th>
       <th width="3">&nbsp;</th>
       <th class="acc-label clearfix" width="14">
         <div class="pull-left">
           {{#if isReuse}}
             {{t 'formRecipient.label.reuse'}}
           {{else}}
-            {{t 'formRecipient.label.create'}}{{field-required}}
+            {{t 'formRecipient.label.create'}}
           {{/if}}
+          {{field-required}}
         </div>
         <div class="pull-right">
           <a role="button" class="btn bg-transparent p-0" {{action "toggle"}}>
@@ -40,7 +39,7 @@
     <td class="text-center">to</td>
     <td>
       {{#if isReuse}}
-        {{new-select
+        {{searchable-select
             content=filteredRecipients
             prompt=(t 'formRecipient.recipient.placeholder.reuse')
             value=model.recipientId

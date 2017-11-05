@@ -1172,14 +1172,17 @@ loggingPage:
     env: Configure logging at environment level
     cluster: Configure logging at cluster level
   tips:
-    env: Namespace target will not overwrite the cluster log.
-    cluster: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment  owner will be able to configure a log target
+    env: Namespace logging target will not overwrite cluster logging target.
+    cluster: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment owner will be able to configure a log target
   targetType:
     label: Target
     prompt: Choice a Target
   loggingEnvLevel: Enable configure targets at the envirnoment level
   loggingClusterLevel: Configure targets at the envirnoment level
-  elasticsearchIndexTip: 'Elasticsearch uses <span class="text-muted text-italic">Prefix</span>  and <span class="text-muted text-italic">Date Format</span> to generate the date store index. The generated date store index will be:'
+
+  indexPatternTip: 'In order to use Kibana you must configure at least one index pattern. <span class="text-muted text-italic">Index patterns</span> are used to identify the Elasticsearch index to run search and analytics against. They are also used to configure fields.'
+  resultTip: 'The generated index format will be:'
+
   outputHost:
     label: Host
     placeholder: e.g. 192.168.33.176
@@ -1187,7 +1190,7 @@ loggingPage:
     label: Port
     placeholder: e.g. 9200
   outputPrefix:
-    label: Prefix
+    label: Index Pattern
     placeholder: e.g. logstash
   outputTypeName:
     label: Type Name
@@ -2445,10 +2448,7 @@ formVolumes:
 formNewEditAlert:
   name:
     placeholder: e.g. db-down
-  severity:
-    info: Info
-    warning: Warning
-    critical: Critical
+  severity: Severity
   sendError: Send errors
   sendAndResolved: Send errors and resolved
   removeButtonLabel: Remove alert
@@ -2468,7 +2468,7 @@ formRecipient:
   recipient:
     label: Recipient
     placeholder:
-      reuse: Choice a recipient
+      reuse: Choice a recipient...
       create: Enter a recipient
       email: e.g. rancher@slack.com
       slack: e.g. slack@slack.com

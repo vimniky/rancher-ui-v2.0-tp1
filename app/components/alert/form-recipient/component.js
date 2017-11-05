@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const recipientTypes = ['email', 'slack', 'pagerduty'];
+const recipientTypes = ['slack', 'email','pagerduty'];
 
 export default Ember.Component.extend({
   tagName: 'table',
@@ -15,14 +15,37 @@ export default Ember.Component.extend({
   isReuse: Ember.computed.alias('model.newRecipient.isReuse'),
   recipientType: Ember.computed.alias('model.newRecipient.recipientType'),
 
+  latestSelectionMap: null,
   init() {
     this._super(...arguments);
-    this.recipientIdChanged();
+    this.set('latestSelectionMap');
     this.set('recipients', this.get('monitoringStore').all('recipient'));
   },
+  setLatestSelectionMap() {
+    const recipientId = this.get('model.recipientId');
+    const lsm = this.get('latestSelectionMap');
+    if (!lsm) {
+      this.set('latestSelectionMap', Ember.Object.create());
+    }
+    if (recipientId) {
+      this.set(`latestSelectionMap.${this.get('recipientType')}`, recipientId);
+    }
+  },
+  recipientChanged: function() {
+    // When reuse a exiting recipient, automatically detect and set recipientType when recipientId changed
+    const recipientId = this.get('model.recipientId');
+    const isReuse = this.get('isReuse');
+    if (recipientId && isReuse) {
+      this.setLatestSelectionMap();
+    }
+  }.observes('model.recipientId,isReuse'),
   recipientTypeChanged: function() {
-    // Empty toNewRecipient inpu box when recipientType changed
-    this.set('toNewRecipient', null);
+    const cached = this.get(`latestSelectionMap.${this.get('recipientType')}`);
+    if (cached) {
+      this.set('model.recipientId', cached);
+    } else {
+      this.set('model.recipientId', null);
+    }
   }.observes('recipientType'),
   toNewRecipientChanged: function() {
     const recipient = this.get('model.newRecipient');
@@ -42,18 +65,6 @@ export default Ember.Component.extend({
     default:
     }
   }.observes('toNewRecipient,recipientType'),
-  recipientIdChanged: function() {
-    // When reuse a exiting recipient, automatically detect and set recipientType when recipientId changed
-    const recipientId = this.get('model.recipientId');
-    const recipients = this.get('recipients');
-    const isReuse = this.get('isReuse');
-    if (recipientId && isReuse) {
-      const found = recipients.filterBy('id', recipientId).get('firstObject');
-      if (found) {
-        this.set('recipientType', found.recipientType);
-      }
-    }
-  }.observes('model.recipientId'),
   filteredRecipients: function() {
     const recipientType = this.get('recipientType');
     let recipients = this.get('recipients');
@@ -73,7 +84,7 @@ export default Ember.Component.extend({
         label = v.pagerdutyRecipient.serviceKey;
         break
       default:
-        label = v.emailRecipient.address;
+        label = v.slackRecipient.channel;
       }
       const out = {
         label,
@@ -84,7 +95,7 @@ export default Ember.Component.extend({
       }
       return out;
     });
-  }.property('recipients', 'recipients.length', 'recipientType'),
+  }.property('recipients','recipients.length','recipientType'),
   actions: {
     toggle() {
       this.set('isReuse', !this.get('isReuse'));
