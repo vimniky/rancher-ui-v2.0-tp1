@@ -2468,14 +2468,17 @@ formRecipient:
   recipient:
     label: Recipient
     placeholder:
-      reuse: Choice a recipient...
-      create: Enter a recipient
+      reuse:
+        slack: 'Choose a slack channel'
+        email: 'Choose an email address'
+        pagerduty: 'Choose a pagerduty service key'
+      new:
+        slack: 'Enter a slack channel'
+        email: 'Enter an email address'
+        pagerduty: 'Enter a pagerduty service key'
       email: e.g. rancher@slack.com
       slack: e.g. slack@slack.com
       pagerduty: e.g. pagerduty@slack.com
-formObject:
-  placeholder: Choose a object
-
 
 formLogging:
   title: Logging

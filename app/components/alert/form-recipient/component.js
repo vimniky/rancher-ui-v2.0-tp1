@@ -4,6 +4,7 @@ const recipientTypes = ['slack', 'email','pagerduty'];
 
 export default Ember.Component.extend({
   tagName: 'table',
+  intl: Ember.inject.service(),
 
   // input
   model: null,
@@ -47,6 +48,14 @@ export default Ember.Component.extend({
       this.set('model.recipientId', null);
     }
   }.observes('recipientType'),
+  recipientPrompt: function() {
+    const type = this.get('recipientType');
+    return this.get('intl').t(`formRecipient.recipient.placeholder.reuse.${type}`);
+  }.property('recipientType'),
+  newRecipientPlaceholder: function() {
+    const type = this.get('recipientType');
+    return this.get('intl').t(`formRecipient.recipient.placeholder.new.${type}`);
+  }.property('recipientType'),
   toNewRecipientChanged: function() {
     const recipient = this.get('model.newRecipient');
     const type = this.get('recipientType');

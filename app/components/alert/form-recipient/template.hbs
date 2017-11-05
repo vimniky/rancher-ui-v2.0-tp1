@@ -41,13 +41,13 @@
       {{#if isReuse}}
         {{searchable-select
             content=filteredRecipients
-            prompt=(t 'formRecipient.recipient.placeholder.reuse')
+            prompt=recipientPrompt
             value=model.recipientId
         }}
       {{else}}
         {{input
             type="text"
-            placeholder=(t 'formRecipient.recipient.placeholder.create')
+            placeholder=newRecipientPlaceholder
             value=toNewRecipient
         }}
       {{/if}}
