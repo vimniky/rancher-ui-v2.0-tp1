@@ -1,0 +1,28 @@
+<section class="header clearfix">
+  <div class="pull-left"><h1>{{t 'notifiersPage.index.header'}}</h1></div>
+</section>
+
+<div class="row nav nav-boxes checked-active mv-30">
+  {{#each targets as |target|}}
+    {{#if target.available}}
+      {{#link-to target.route
+        alt=target.label
+        classNames=(concat "col span-2 nav-box-item driver notifier-type " target.css)
+        disabled=target.disabled
+        href=false
+      }}
+        <p>{{target.label}}</p>
+      {{/link-to}}
+    {{/if}}
+  {{/each}}
+</div>
+
+{{#if (eq notifierType 'email')}}
+  {{notifier/form-email emailConfig=model.emailConfig}}
+{{else if (eq notifierType 'slack')}}
+  {{notifier/form-slack slackApiUrl=model.slackConfig.slackApiUrl}}
+{{else if (eq notifierType 'pagerduty')}}
+  {{notifier/form-pagerduty pagerdutyUrl=model.pagerdutyConfig.pagerdutyUrl}}
+{{/if}}
+{{top-errors errors=errors}}
+{{save-cancel cancelDisabled=true editing=true save="save"}}

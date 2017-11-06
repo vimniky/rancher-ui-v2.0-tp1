@@ -2445,7 +2445,7 @@ formVolumes:
     opts: Access/Options
 
 formNewEditAlert:
-  name:
+  description:
     placeholder: e.g. db-down
   severity: Severity
   sendError: Send errors

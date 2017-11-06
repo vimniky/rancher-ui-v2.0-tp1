@@ -1,0 +1,12 @@
+<div class="box">
+  <label style="width: 100px;" class="text-muted">
+    {{t 'notifiersPage.pagerDuty.form.clientUrl.label'}}{{field-required}}
+  </label>
+  {{input
+      class="form-control"
+      type="text"
+      value=pagerdutyUrl
+      placeholder=(t 'notifiersPage.pagerDuty.form.clientUrl.placeholder')
+      safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
+  }}
+</div>

@@ -174,9 +174,9 @@ Router.map(function() {
         });
         this.route('notifiers', {path: '/notifiers', resetNamespace: true}, function() {
           this.route('index', {path: '/'});
-          this.route('email', {path: '/email'});
-          this.route('slack', {path: '/slack'});
-          this.route('pager-duty', {path: '/pager-duty'});
+          this.route('email');
+          this.route('slack');
+          this.route('pagerduty');
         });
         this.route('logging', {path: '/logging', resetNamespace: true}, function() {
         });

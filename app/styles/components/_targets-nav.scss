@@ -4,7 +4,6 @@
     background-image: url('images/providers/elasticsearch.svg');
     background-size: 60px 60px;
     background-repeat: no-repeat;
-    // background-position: center center;
     background-position: center 30%!important;
   }
 
@@ -14,8 +13,27 @@
     background-repeat: no-repeat;
     background-position: center center;
   }
+}
 
-  &.local {
-    background-image: url('images/logos/provider-local.svg');
+.notifier-type {
+  &.slack {
+    background-image: url('images/providers/slack.svg');
+    background-size: 60px 60px;
+    background-repeat: no-repeat;
+    background-position: center 30%!important;
+  }
+
+  &.email {
+    background-image: url('images/providers/email.svg');
+    background-size: 90px 90px;
+    background-repeat: no-repeat;
+    background-position: center 30%!important;
+  }
+
+  &.pagerduty {
+    background-image: url('images/providers/pagerduty.svg');
+    background-size: 140px 80px;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 }

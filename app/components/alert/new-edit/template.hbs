@@ -17,13 +17,11 @@
       {{/if}}
       <div class="row">
         <div class="col span-4">
-          {{form-name-description
-              model=alert
-              descriptionShown=false
-              bothColClass="col span-12 mt-0"
-              colClass="col span-12 mt-0"
-              namePlaceholder="formNewEditAlert.name.placeholder"
-              nameRequired=true
+          <div><label class="acc-label">Description{{field-required}}</label></div>
+          {{input
+            class="form-control"
+            value=alert.description
+            placeholder=(t 'formNewEditAlert.description.placeholder')
           }}
         </div>
         <div class="col span-4">
