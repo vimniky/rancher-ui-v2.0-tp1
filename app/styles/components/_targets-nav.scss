@@ -1,0 +1,21 @@
+.logging-target {
+
+  &.elasticsearch {
+    background-image: url('images/providers/elasticsearch.svg');
+    background-size: 60px 60px;
+    background-repeat: no-repeat;
+    // background-position: center center;
+    background-position: center 30%!important;
+  }
+
+  &.splunk {
+    background-image: url('images/providers/splunk.svg');
+    background-size: 140px 80px;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  &.local {
+    background-image: url('images/logos/provider-local.svg');
+  }
+}

@@ -1,26 +1,26 @@
-<div class="row">
-  <div class="col span-6">
-    <label class="acc-label" for="">{{t 'generic.host'}}{{field-required}}</label>
-    {{input
-        type="text"
-        value=model.outputHost
-        classNames="form-control"
-        placeholder=(t 'loggingPage.outputHost.placeholder')
-    }}
-  </div>
-  <div class="col span-6">
-    <label class="acc-label" for="">{{t 'loggingPage.outputPort.label'}}{{field-required}}</label>
-    {{input-integer
-        class="form-control public"
-        min="1"
-        max="65535"
-        value=model.outputPort
-        placeholder=(t 'loggingPage.outputPort.placeholder')
-    }}
-  </div>
-</div>
 <section class="box">
-  <div class="text-info">{{t 'loggingPage.indexPatternTip' htmlSafe=true}}</div>
+  <div class="row">
+    <div class="col span-6 mt-0 pt-0">
+      <label class="acc-label" for="">{{t 'generic.host'}}{{field-required}}</label>
+      {{input
+          type="text"
+          value=model.outputHost
+          classNames="form-control"
+          placeholder=(t 'loggingPage.outputHost.placeholder')
+      }}
+    </div>
+    <div class="col span-6 mt-0 pt-0">
+      <label class="acc-label" for="">{{t 'loggingPage.outputPort.label'}}{{field-required}}</label>
+      {{input-integer
+          class="form-control public"
+          min="1"
+          max="65535"
+          value=model.outputPort
+          placeholder=(t 'loggingPage.outputPort.placeholder')
+      }}
+    </div>
+  </div>
+
   <div class="row">
     <div class="col span-6 mb-20 mt-10">
       <label class="acc-label" for="">{{t 'loggingPage.outputPrefix.label'}}{{field-required}}</label>
@@ -45,6 +45,18 @@
   </div>
   <div class="text-info">
     {{t 'loggingPage.resultTip' htmlSafe=true}}<code class="text-italic">{{model.outputLogstashPrefix}}-{{dateFormatString}}</code>
+  </div>
+  <hr/>
+  <div class="">
+    <!-- {{t 'loggingPage.indexPatternTip' htmlSafe=true}} -->
+    <p>Elacticsearch uses<span class="text-muted text-italic ph-5">Prefix</span>and<span class="text-muted text-italic ph-5">Date Format</span>to customize the index name pattern. The index name pattern is:<span class="text-muted text-italic pl-5">#{prefix}-#{date_format}</span>, where<span class="text-muted text-italic ph-5">Date Format</span>represents:
+    </p>
+    <ul>
+      <li><code>YYYY.MM.DD</code> for daily</li>
+      <li><code>YYYY.MM</code> for monthly</li>
+      <li><code>YYYY</code> for yearly</li>
+    </ul>
+    <p>With the current configuration, a new index name will be generated every {{dateFrequenceLabel}} and logging records will be inserted into index: <code class="text-italic">{{model.outputLogstashPrefix}}-{{dateFormatString}}</code>, where <code class="text-italic">{{dateFormatString}}</code> is the current {{dateFormatTypeLabel}} date.</p>
   </div>
 </section>
 

@@ -2,60 +2,49 @@
   <h1>{{headerLabel}}</h1>
 </section>
 
-<div class="banner bg-info">
-  <div class="banner-icon"><span class="icon icon-info"></span></div>
-  <div class="banner-message">
+<!-- <div class="banner bg-info">
+     <div class="banner-icon"><span class="icon icon-info"></span></div>
+     <div class="banner-message">
+     {{#if isClusterLevel}}
+     {{else}}
+     {{/if}}
+     </div>
+     </div>
+   -->
+<section class="box mv-20">
+  {{switch-button
+      checked=enableLogging
+      onLabel="generic.enable"
+      offLabel="generic.disable"
+  }}
+  <hr/>
+  <ul>
   {{#if isClusterLevel}}
-    <p>{{t 'loggingPage.tips.cluster'}}</p>
+    <li>{{t 'loggingPage.tips.cluster'}}</li>
+    <li>Disable/Enable configure target at the cluster level will not neccessary disable evironment level logging.</li>
   {{else}}
-    <p>{{t 'loggingPage.tips.env'}}</p>
+    <li>{{t 'loggingPage.tips.env'}}</li>
   {{/if}}
-  </div>
-</div>
-
-<section class="box">
-  <div class="row clearfix inline-form">
-    <div class="col span-3" style="padding-top: 14px">
-      {{switch-button
-          checked=enableLogging
-          onLabel="generic.enable"
-          offLabel="generic.disable"
-      }}
-    </div>
-    {{#if isClusterLevel}}
-      <div class="col span-8 offset-1">
-        <div style="padding-top: 12px">
-          {{input type="checkbox" name="checkbox" id="checkbox" checked=enableEnvLogging}}
-          <label for="checkbox">{{t 'loggingPage.loggingEnvLevel'}}</label>
-        </div>
-      </div>
-    {{/if}}
-  </div>
+  </ul>
 </section>
 
-{{#if enableLogging}}
-  <section class="mt-20 clearfix">
-
-    <div class="row">
-      <div class="col span-7">
-        <label class="acc-label">{{t 'loggingPage.targetType.label'}}</label>
-        <div>
-          {{new-select
-              disabled=(not enableLogging)
-              className="form-control inline-form"
-              content=targetChoices
-              value=model.targetType
-          }}
-        </div>
-      </div>
-    </div>
-
-    {{logging/elasticsearch-target model=model dateFormatChoices=dateFormatChoices}}
-
+{{#if isClusterLevel}}
+  <section class="box">
+    {{input type="checkbox" name="checkbox" id="checkbox" checked=enableEnvLogging}}
+    <label for="checkbox">{{t 'loggingPage.loggingEnvLevel'}}</label>
+    <hr/>
+    <ul>
+      <li>If enabled, an environment owner will be able to see the evironment logging page and configure a logging target.</li>
+      <li>Disable/Enable configure target at the envirnoment level will not neccessary disable evironment logging, it just prevent environment users from configuring the environment logging target.</li>
+    </ul>
   </section>
 {{/if}}
 
+
 {{#if enableLogging}}
+  {{logging/targets-nav}}
+  {{logging/elasticsearch-target model=model dateFormatChoices=dateFormatChoices}}
+
   {{top-errors errors=errors}}
   {{save-cancel cancelDisabled=true editing=true save="save"}}
 {{/if}}

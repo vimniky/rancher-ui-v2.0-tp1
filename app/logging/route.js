@@ -14,8 +14,12 @@ export default Ember.Route.extend({
       .get('firstObject');
   },
   setupController(controller, model) {
+    console.log('--------setupController', model.get('targetType'));
     this._super(controller, model);
     controller.set('namespace', this.get('namespace'));
+    if (model.get('targetType')) {
+      controller.set('targetType', model.get('targetType'));
+    }
   },
   resetController(controller, isExisting) {
     if (isExisting) {

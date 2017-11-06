@@ -1172,17 +1172,16 @@ loggingPage:
     env: Configure logging at environment level
     cluster: Configure logging at cluster level
   tips:
-    env: Namespace logging target will not overwrite cluster logging target.
-    cluster: Admins only. Congfiguration at cluster level is only available to admin level users. If the environment settings are enabled, an environment owner will be able to configure a log target
+    env:  Namespace logging target will not overwrite cluster logging target.
+    cluster: Admins only. Congfiguration at cluster level is only available to admin level users.
   targetType:
     label: Target
     prompt: Choice a Target
-  loggingEnvLevel: Enable configure targets at the envirnoment level
-  loggingClusterLevel: Configure targets at the envirnoment level
+  loggingEnvLevel: Enable configure target at the environment level
+  loggingClusterLevel: Configure target at the environment level
 
   indexPatternTip: 'In order to use Kibana you must configure at least one index pattern. <span class="text-muted text-italic">Index patterns</span> are used to identify the Elasticsearch index to run search and analytics against. They are also used to configure fields.'
-  resultTip: 'The generated index format will be:'
-
+  resultTip: 'The generated elasticsearch index name will be:'
   outputHost:
     label: Host
     placeholder: e.g. 192.168.33.176
@@ -1190,7 +1189,7 @@ loggingPage:
     label: Port
     placeholder: e.g. 9200
   outputPrefix:
-    label: Index Pattern
+    label: Prefix
     placeholder: e.g. logstash
   outputTypeName:
     label: Type Name

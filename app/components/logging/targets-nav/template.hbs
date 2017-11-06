@@ -1,0 +1,14 @@
+<div class="row nav nav-boxes checked-active mv-30">
+  {{#each targets as |target|}}
+    {{#if target.available}}
+      {{#link-to "logging" (query-params targetType=target.type)
+        alt=target.label
+        classNames=(concat "col span-2 nav-box-item driver logging-target " target.css)
+        disabled=target.disabled
+        href=false
+      }}
+        <p>{{target.label}}</p>
+      {{/link-to}}
+    {{/if}}
+  {{/each}}
+</div>
