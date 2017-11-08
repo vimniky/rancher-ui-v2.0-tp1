@@ -1205,6 +1205,14 @@ loggingPage:
   logstashFormat: Logstash format
   includeTagKey: Include Tag Key
 
+loggingDashboardPage:
+  table:
+    timestamp: Timestamp
+    log: Log
+    containerName: Container Name
+    noData: There no logs yet
+    noMatch: No logs match the current search
+
 
 ##############################
 # Partials
