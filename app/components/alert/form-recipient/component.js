@@ -14,13 +14,22 @@ export default Ember.Component.extend({
   recipientTypes: recipientTypes.map(value => ({label: value.capitalize(), value})),
   percent: Ember.computed.alias('model.serviceRule.unhealthyPercentage'),
   isReuse: Ember.computed.alias('model.newRecipient.isReuse'),
-  recipientType: Ember.computed.alias('model.newRecipient.recipientType'),
+  recipientType: null,
 
   latestSelectionMap: null,
   init() {
     this._super(...arguments);
-    this.set('latestSelectionMap');
-    this.set('recipients', this.get('monitoringStore').all('recipient'));
+    const recipients = this.get('monitoringStore').all('recipient');
+    const recipientId = this.get('model.recipientId');
+    if (recipientId) {
+      const recipient = recipients.filterBy('id', recipientId).get('firstObject');
+      // According to if recipient value exist or not to determine the recipientType.
+      if (recipient) {
+        this.set('recipientType', recipient.get('recipientType'));
+      }
+    }
+    this.setLatestSelectionMap();
+    this.set('recipients', recipients);
   },
   setLatestSelectionMap() {
     const recipientId = this.get('model.recipientId');
@@ -77,32 +86,16 @@ export default Ember.Component.extend({
   filteredRecipients: function() {
     const recipientType = this.get('recipientType');
     let recipients = this.get('recipients');
-    if (recipientType) {
-      recipients = recipients.filterBy('recipientType', recipientType);
-    }
-    return recipients.map(v => {
-      let label
-      switch(v.recipientType) {
-      case 'email':
-        label = v.emailRecipient.address;
-        break
-      case 'slack':
-        label = v.slackRecipient.channel;
-        break
-      case 'pagerduty':
-        label = v.pagerdutyRecipient.serviceKey;
-        break
-      default:
-        label = v.slackRecipient.channel;
+    return recipients.filter(v => {
+      if (!recipientType) {
+        return true;
       }
-      const out = {
-        label,
+      return recipientType === v.get('recipientType')
+    }).map(v => {
+      return {
+        label: v.get('recipientValue'),
         value: v.id,
       }
-      if (!recipientType) {
-        out.group = v.recipientType;
-      }
-      return out;
     });
   }.property('recipients','recipients.length','recipientType'),
   actions: {

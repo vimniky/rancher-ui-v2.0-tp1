@@ -9,9 +9,9 @@ const headers = [
     width: '125'
   },
   {
-    translationKey: 'alertsPage.index.table.name',
-    name: 'name',
-    sort: ['name', 'displayName'],
+    translationKey: 'alertsPage.index.table.description',
+    name: 'description',
+    sort: ['description'],
     width: '180'
   },
   {

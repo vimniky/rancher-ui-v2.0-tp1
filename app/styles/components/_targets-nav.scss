@@ -13,6 +13,12 @@
     background-repeat: no-repeat;
     background-position: center center;
   }
+  &.embedded {
+    background-image: url('images/logos/main.svg');
+    background-size: 140px 80px;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
 }
 
 .notifier-type {

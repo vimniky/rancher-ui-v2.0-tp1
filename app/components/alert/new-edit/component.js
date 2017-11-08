@@ -104,38 +104,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       }
     }
   },
-  getRecipientTypeByid(id) {
-    const found = this.get('recipients').filterBy('id', id).get('firstObject');
-    if (found) {
-      return found.recipientType;
-    }
-  },
-  attachNewRecipient(alert) {
-    const recipientId = alert.get('recipientId');
-    let recipientType;
-    if (recipientId) {
-      recipientType = this.getRecipientTypeByid(recipientId);
-    }
-    const newRecipient = this.get('monitoringStore').createRecord({
-      type: 'recipient',
-      isReuse: true,
-      objectId: alert.get('objectId') || this.get('objectId'),
-      recipient: null,
-      // email | slack | pagerduty
-      recipientType: recipientType || 'slack',
-      emailRecipient: {
-        address: null,
-      },
-      pagerdutyRecipient: {
-        serviceKey: null,
-      },
-      slackRecipient: {
-        channel: null,
-      },
-    });
-    alert.set('newRecipient', newRecipient);
-    return alert;
-  },
   setupModelsAndAlerts() {
     const originals = this.get('originalModels');
     const models = originals.map(original => {
@@ -300,6 +268,25 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     removeAlert(alert) {
       this.get('alerts').removeObject(alert);
     },
+  },
+  attachNewRecipient(alert) {
+    const newRecipient = this.get('monitoringStore').createRecord({
+      type: 'recipient',
+      isReuse: true,
+      objectId: alert.get('objectId') || this.get('objectId'),
+      recipient: null,
+      emailRecipient: {
+        address: null,
+      },
+      pagerdutyRecipient: {
+        serviceKey: null,
+      },
+      slackRecipient: {
+        channel: null,
+      },
+    });
+    alert.set('newRecipient', newRecipient);
+    return alert;
   },
   willDestroyElement() {
     const bus = this.get('alertBus');

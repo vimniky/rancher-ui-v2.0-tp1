@@ -15,4 +15,15 @@ export default Resource.extend({
       return null
     }
   }.property('recipientType,emailRecipient.address,slackRecipient.channel,pagerdutyRecipient.serviceKey'),
+
+  recipientType: function() {
+    if (this.get('emailRecipient.address')) {
+      return 'email';
+    } else if (this.get('slackRecipient.channel')) {
+      return 'slack';
+    } else if (this.get('pagerdutyRecipient.serviceKey')) {
+      return 'pagerduty';
+    }
+    return 'slack';
+  }.property('emailRecipient.address', 'slackRecipient.channel', 'pagerdutyRecipient.serviceKey'),
 });

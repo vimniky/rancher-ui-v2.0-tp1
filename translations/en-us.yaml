@@ -1112,7 +1112,7 @@ alertsPage:
     header: Accounts
     localLink: Add Account
     table:
-      name: Alert Name
+      description: Description
       rules: Rules
       endpoint: Endpoint
       timestamp: Timestamp
