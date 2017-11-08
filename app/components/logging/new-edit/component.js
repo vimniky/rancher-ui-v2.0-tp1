@@ -1,4 +1,5 @@
 import Ember from 'ember';
+const { getOwner } = Ember;
 import NewOrEdit from 'ui/mixins/new-or-edit';
 import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
@@ -50,6 +51,12 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   }.observes('enableClusterLogging'),
   actions: {
     save(cb) {
+      const targetType = this.get('targetType');
+      if (targetType === 'embedded') {
+        getOwner(this).lookup('router:main').transitionTo('logging.dashboard');
+        cb();
+        return;
+      }
       Ember.RSVP.resolve(this.willSave()).then(ok => {
         if (!ok) {
           cb(false);

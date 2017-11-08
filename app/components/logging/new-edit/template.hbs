@@ -1,5 +1,5 @@
 <section class="header has-tabs clearfix">
-  <h1>{{headerLabel}}</h1>
+  <h1 class="pull-left">{{headerLabel}}</h1>
 </section>
 
 <!-- <div class="banner bg-info">
@@ -43,7 +43,12 @@
 
 {{#if enableLogging}}
   {{logging/targets-nav}}
-  {{logging/elasticsearch-target model=model dateFormatChoices=dateFormatChoices}}
+  {{#if (eq targetType 'elasticsearch')}}
+    {{logging/target-elasticsearch model=model dateFormatChoices=dateFormatChoices}}
+  {{else if (eq targetType 'embedded')}}
+    {{logging/target-embedded model=model dateFormatChoices=dateFormatChoices}}
+  {{else if (eq targetType 'splunk')}}
+  {{/if}}
 
   {{top-errors errors=errors}}
   {{save-cancel cancelDisabled=true editing=true save="save"}}

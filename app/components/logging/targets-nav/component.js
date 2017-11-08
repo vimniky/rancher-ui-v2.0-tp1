@@ -11,6 +11,13 @@ export default Ember.Component.extend({
         disabled: false,
       },
       {
+        type: 'embedded',
+        label: 'Embedded',
+        css: 'embedded',
+        available: true,
+        disabled: false,
+      },
+      {
         label: '',
         type: 'splunk',
         css: 'splunk',

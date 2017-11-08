@@ -1,0 +1,35 @@
+.target-embedded {
+  .active {
+    border: 2px solid $link-color!important;
+  }
+  .logging-box {
+    cursor: pointer;
+    border: 2px solid $accent-border;
+    div:nth-child(1) {
+      padding: 20px 20px 0 20px;
+      ul {
+        font-weight: bold;
+      }
+      ul,li {
+        list-style: none;
+        padding-left: 0;
+        maring-left: 0;
+      };
+      li {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        i {
+          font-size: 8px;
+          margin-right: 10px;
+          color: $mid-grey;
+        }
+      }
+    }
+    div:nth-child(2) {
+      background: $accent-bg;
+      padding: 20px;
+      border-top: 1px solid $accent-border;
+    }
+  }
+}

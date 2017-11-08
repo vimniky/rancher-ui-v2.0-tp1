@@ -3,21 +3,17 @@
   &.elasticsearch {
     background-image: url('images/providers/elasticsearch.svg');
     background-size: 60px 60px;
-    background-repeat: no-repeat;
     background-position: center 30%!important;
   }
 
   &.splunk {
     background-image: url('images/providers/splunk.svg');
-    background-size: 140px 80px;
-    background-repeat: no-repeat;
-    background-position: center center;
+    background-size: 150px 80px;
   }
   &.embedded {
     background-image: url('images/logos/main.svg');
-    background-size: 140px 80px;
-    background-repeat: no-repeat;
-    background-position: center center;
+    background-size: 110px 70px;
+    background-position: center 30%!important;
   }
 }
 
@@ -25,21 +21,17 @@
   &.slack {
     background-image: url('images/providers/slack.svg');
     background-size: 60px 60px;
-    background-repeat: no-repeat;
     background-position: center 30%!important;
   }
 
   &.email {
     background-image: url('images/providers/email.svg');
     background-size: 90px 90px;
-    background-repeat: no-repeat;
     background-position: center 30%!important;
   }
 
   &.pagerduty {
     background-image: url('images/providers/pagerduty.svg');
     background-size: 140px 80px;
-    background-repeat: no-repeat;
-    background-position: center center;
   }
 }

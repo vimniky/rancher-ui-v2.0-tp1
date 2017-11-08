@@ -168,19 +168,18 @@ Router.map(function() {
 
       // Tools
       this.route('tools-tab', {path: '/tools', resetNamespace: true}, function() {
-        this.route('alerts', {path: '/alerts', resetNamespace: true}, function() {
-          this.route('new', { path: '/add' });
-          this.route('index', {path: '/'});
+        this.route('alerts', {resetNamespace: true}, function() {
+          this.route('new');
         });
-        this.route('notifiers', {path: '/notifiers', resetNamespace: true}, function() {
-          this.route('index', {path: '/'});
+        this.route('notifiers', {resetNamespace: true}, function() {
           this.route('email');
           this.route('slack');
           this.route('pagerduty');
         });
-        this.route('logging', {path: '/logging', resetNamespace: true}, function() {
+        this.route('logging', {resetNamespace: true}, function() {
+          this.route('dashboard');
         });
-        this.route('dashboard', {path: '/dashboard', resetNamespace: true}, function() {
+        this.route('dashboard', {resetNamespace: true}, function() {
         });
       });
 
