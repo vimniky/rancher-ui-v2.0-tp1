@@ -6,18 +6,24 @@ export default Ember.Route.extend({
   model() {
     const store = this.get('loggingStore');
     // system <--> cattle-system
+    // k8s' cattle-system namespace is mapped into rancher's system environemnt
     let ns = this.get('projects.current').name.toLowerCase();
     this.set('namespace', ns);
-    return store
-      .all('logging')
-      .filterBy('namespace', ns ==='system' ? 'cattle-system' : ns)
-      .get('firstObject');
+    return Ember.RSVP.hash({
+      logging: store.find('logging', null, {forceReload: true}).then(ls => {
+        ls.filterBy('namespace', ns ==='system' ? 'cattle-system' : ns) || null;
+      }),
+      loggingAuth: store.find('loggingAuth', null, {forceReload: true}).then(las => {
+        return las.get('firstObject');
+      }),
+    });
   },
   setupController(controller, model) {
     this._super(controller, model);
+    const logging = model.logging;
     controller.set('namespace', this.get('namespace'));
-    if (model.get('targetType')) {
-      controller.set('targetType', model.get('targetType'));
+    if (logging && logging.get('targetType')) {
+      controller.set('targetType', logging.get('targetType'));
     }
   },
   resetController(controller, isExisting) {

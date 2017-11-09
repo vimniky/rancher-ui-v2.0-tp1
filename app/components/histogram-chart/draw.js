@@ -43,9 +43,10 @@ export default function() {
   const xOverview = d3.time.scale().range([0, overviewWidth]);
   const yOverview = d3.scale.linear().range([overviewHeight, 0]);
 
-  const xAxis = d3.svg.axis().scale(x).orient('bottom');
-  const yAxis = d3.svg.axis().scale(y).orient('left');
-  const xAxisOverview = d3.svg.axis().scale(xOverview).orient('bottom');
+  const timeFormat = d3.time.format("%m-%d");
+  const xAxis = d3.svg.axis().scale(x).orient('bottom').tickFormat(timeFormat);
+  const yAxis = d3.svg.axis().scale(y).orient('left').ticks(4);
+  const xAxisOverview = d3.svg.axis().scale(xOverview).orient('bottom').tickFormat(timeFormat);
 
   const svg = d3
         .select(this.$().get(0))
@@ -61,7 +62,6 @@ export default function() {
         .attr('class', 'overview')
         .attr('transform', `translate(${om.l},${mainHeight + mm.t + mm.b + om.t})`);
 
-  // brush tool to let us zoom and pan using the overview chart
   const brush = d3.svg.brush()
         .x(xOverview)
         .on('brush', brushed);
@@ -139,7 +139,7 @@ export default function() {
       .selectAll('.bar')
       .attr('transform', function(d) {
         return `translate(${x(d.date)},0)`;
-      })
-      .select('.x.axis').call(xAxis);
+      });
+      main.select('.x.axis').call(xAxis);
   }
 }

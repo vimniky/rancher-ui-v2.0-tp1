@@ -1,10 +1,20 @@
 import Ember from 'ember';
+import { STATUS, STATUS_INTL_KEY, classForStatus } from 'ui/components/accordion-list-item/component';
+import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
-export default Ember.Component.extend({
-  dateFormatChoices: null,
-  model: null,
-  tags: null,
+export default Ember.Component.extend(getEnumFieldOptions, {
+  intl: Ember.inject.service(),
 
+  init() {
+    this._super();
+    const dateFormatOptions = this.getSelectOptions('esLogstashDateformat', 'logging', 'loggingStore');
+    this.set('dateFormatChoices', dateFormatOptions);
+  },
+  status: function() {
+    let k = STATUS.COUNTCONFIGURED;
+    this.set('statusClass', classForStatus(k));
+    // return this.get('intl').t(`${STATUS_INTL_KEY}.${k}`);
+  }.property('tags.@each.key'),
   dateFormatString: function() {
     const fmt = this.get('model.esLogstashDateformat');
     return moment().format(fmt);

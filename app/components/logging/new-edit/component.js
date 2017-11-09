@@ -7,26 +7,48 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   intl: Ember.inject.service(),
 
   // input
-  enableLogging: true,
-  enableEnvLogging: false,
+  enableTarget: true,
+  targetType: '',
+  loggingAuth: null,
+  tags: null,
 
+  errors: [],
   targetChoices: null,
-  dateFormatChoices: null,
+
+  noneTargetChanged: function() {
+    if (!this.get('enableTarget')) {
+      this.set('targetType', 'none');
+    }
+  }.observes('enableTarget'),
 
   init() {
     this._super(...arguments);
+    if (!this.get('tags')) {
+      this.set('tags', []);
+    }
     const targetTypeOptions = this.getSelectOptions('targetType', 'logging', 'loggingStore');
-    const dateFormatOptions = this.getSelectOptions('outputLogstashDateformat', 'logging', 'loggingStore');
+    if (!this.get('loggingAuth')) {
+      const la = this.get('loggingStore').createRecord({
+        type: 'loggingAuth',
+        enableNamespaceLogging: false,
+      });
+      this.set('loggingAuth', la);
+    }
     this.set('targetChoices', targetTypeOptions);
-    this.set('dateFormatChoices', dateFormatOptions);
   },
+  namespaceLoggingAuthChanged: function() {
+    // persistent loggingAuth when change
+    this.get('loggingAuth').save();
+  }.observes('loggingAuth.enableNamespaceLogging'),
   isClusterLevel: function() {
     return this.get('namespace') === 'system';
   }.property('namespace'),
+
   headerLabel: function() {
     const ns = this.get('namespace');
     return this.get('intl').t(ns === 'system' ? 'loggingPage.header.cluster' : 'loggingPage.header.env');
   }.property('namespace'),
+
   didReceiveAttrs() {
     const store = this.get('loggingStore');
     if (this.get('originalModel')) {
@@ -37,18 +59,35 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       const newLogging = store.createRecord({
         type: 'logging',
         namespace,
-        outputLogstashPrefix: namespace,
+        esLogstashPrefix: namespace,
+        esLogstashFormat: false,
+        targetType: this.get('targetType'),
       });
       this.set('model', newLogging);
     }
   },
-  enableClusterLoggingChanged: function() {
-    if (this.get('enableClusterLogging')) {
-      Ember.run.later(() => {
-        this.$('INPUT[type="text"]')[0].focus();
-      }, 250);
+
+  validateTags() {
+    return this.get('tags').every(t => {
+      if (!t.key || !t.value) {
+        this.set('errors', ['Tag key or value can\'t be empty.']);
+        return false;
+      }
+      return true;
+    });
+  },
+  willSave() {
+    const ok = this.validateTags();
+    if (!ok) {
+      return false;
     }
-  }.observes('enableClusterLogging'),
+    const tagMap =  {};
+    this.get('tags').forEach(tag => {
+      tagMap[tag.key] = tag.value;
+    });
+    this.set('model.outputRecords', tagMap);
+    return true;
+  },
   actions: {
     save(cb) {
       const targetType = this.get('targetType');
@@ -74,6 +113,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       });
     },
   },
+
   doneSaving(neu, cb) {
     cb(true);
     this._super(neu);

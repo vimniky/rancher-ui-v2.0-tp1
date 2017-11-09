@@ -1,0 +1,64 @@
+{{#accordion-list-item
+     title=(t 'formOutputTags.title')
+     detail=(t 'formOutputTags.detail')
+     status=status
+     statusClass=statusClass
+     expandAll=expandAll
+     expand=(action expandFn)
+}}
+  <button class="btn bg-link icon-btn" {{action "addTag"}}>
+    <span class="darken"><i class="icon icon-plus text-small"/></span>
+    <span>{{t 'formOutputTags.addAction'}}</span>
+  </button>
+
+  {{#if tags.length}}
+    <table class="table fixed no-lines mt-20">
+      <tr class="hidden-xs hidden-sm">
+        <th>{{t 'formOutputTags.key.label'}}{{field-required}}</th>
+        <th width="30">&nbsp;</th>
+        <th>{{t 'formOutputTags.value.label'}}{{field-required}}</th>
+        <th width="40">&nbsp;</th>
+      </tr>
+      {{#each tags as |tag|}}
+        <tr>
+          <td data-title="key">
+            {{input-paste
+                pasted="pastedLabels"
+                class="form-control input-sm key"
+                type="text"
+                value=tag.key
+                placeholder="formOutputTags.key.placeholder"
+            }}
+          </td>
+
+          <td class="text-center">
+            <p class="input-sm">{{t 'formOutputTags.separator'}}</p>
+          </td>
+
+          <td data-title="tag">
+            {{input
+                class="form-control input-sm"
+                type="text"
+                value=tag.value
+                placeholder=(t 'formOutputTags.value.placeholder')
+            }}
+          </td>
+          <td class="text-right">
+            <button
+              class="btn bg-primary btn-sm"
+              {{action "removeTag" tag}}
+            >
+              <i class="icon icon-minus"/>
+              <span class="sr-only">
+                {{t 'generic.remove'}}
+              </span>
+            </button>
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+    <div class="protip pt-10">
+      {{t 'formOutputTags.protip'}}
+    </div>
+  {{/if}}
+{{/accordion-list-item}}

@@ -1180,7 +1180,6 @@ loggingPage:
   loggingEnvLevel: Enable configure target at the environment level
   loggingClusterLevel: Configure target at the environment level
 
-  indexPatternTip: 'In order to use Kibana you must configure at least one index pattern. <span class="text-muted text-italic">Index patterns</span> are used to identify the Elasticsearch index to run search and analytics against. They are also used to configure fields.'
   resultTip: 'The generated elasticsearch index name will be:'
   outputHost:
     label: Host
@@ -1188,6 +1187,12 @@ loggingPage:
   outputPort:
     label: Port
     placeholder: e.g. 9200
+  esAuthUser:
+    label: User Name
+    placeholder: Enter your elasticsearch user name
+  esAuthPassword:
+    label: Password
+    placeholder: Enter your elasticsearch user password
   outputPrefix:
     label: Prefix
     placeholder: e.g. logstash
@@ -2498,6 +2503,19 @@ formLogging:
     placeholder: e.g. NGinx
 
   addAction: Add Another
+
+formOutputTags:
+  title: Tags
+  detail: Todo
+  addAction: Add Tag
+  key:
+    label: Key
+    placeholder: e.g. foo
+  separator: "="
+  value:
+    label: Value
+    placeholder: e.g. bar
+  protip: "ProTip: Paste one or more lines of key=value pairs into any key field for easy bulk entry."
 
 
 hookPage:

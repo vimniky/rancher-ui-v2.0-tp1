@@ -5,10 +5,10 @@ export default Ember.Controller.extend({
   targetType: 'embedded',
 
   targetTypeChanged: function() {
-    const model = this.get('model');
+    const logging = this.get('model.logging');
     const t = this.get('targetType');
-    if (model && model.get('targetType') !== t) {
-      model.set('targetType', t);
+    if (logging && logging.get('targetType') !== t) {
+      logging.set('targetType', t);
     }
-  }.observes('targetType', 'model.targetType'),
+  }.observes('targetType', 'logging.targetType'),
 });

@@ -8,8 +8,9 @@ export default Ember.Mixin.create({
       schemaId = this.get('model.type');
     }
     try {
-      out = store.getById('schema', schemaId).get(`resourceFields.${fieldName}.options`);
+      out = store.getById('schema', schemaId).get(`resourceFields.${fieldName}.options`) || [];
     } catch(err) {
+      return [];
     }
     return out
   },

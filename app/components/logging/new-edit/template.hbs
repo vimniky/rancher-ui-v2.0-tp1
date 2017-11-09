@@ -2,18 +2,9 @@
   <h1 class="pull-left">{{headerLabel}}</h1>
 </section>
 
-<!-- <div class="banner bg-info">
-     <div class="banner-icon"><span class="icon icon-info"></span></div>
-     <div class="banner-message">
-     {{#if isClusterLevel}}
-     {{else}}
-     {{/if}}
-     </div>
-     </div>
-   -->
 <section class="box mv-20">
   {{switch-button
-      checked=enableLogging
+      checked=enableTarget
       onLabel="generic.enable"
       offLabel="generic.disable"
   }}
@@ -30,7 +21,7 @@
 
 {{#if isClusterLevel}}
   <section class="box">
-    {{input type="checkbox" name="checkbox" id="checkbox" checked=enableEnvLogging}}
+    {{input type="checkbox" name="checkbox" id="checkbox" checked=loggingAuth.enableNamespaceLogging}}
     <label for="checkbox">{{t 'loggingPage.loggingEnvLevel'}}</label>
     <hr/>
     <ul>
@@ -41,12 +32,12 @@
 {{/if}}
 
 
-{{#if enableLogging}}
+{{#if enableTarget}}
   {{logging/targets-nav}}
   {{#if (eq targetType 'elasticsearch')}}
-    {{logging/target-elasticsearch model=model dateFormatChoices=dateFormatChoices}}
+    {{logging/target-elasticsearch model=model tags=tags}}
   {{else if (eq targetType 'embedded')}}
-    {{logging/target-embedded model=model dateFormatChoices=dateFormatChoices}}
+    {{logging/target-embedded model=model}}
   {{else if (eq targetType 'splunk')}}
   {{/if}}
 

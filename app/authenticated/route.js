@@ -78,7 +78,6 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
         recipients:         ['monitoringSchemas',       this.cbFind('recipient', 'monitoringStore')],
         alerts:             ['monitoringSchemas',       this.cbFind('alert', 'monitoringStore')],
         pods:               ['monitoringSchemas',       this.cbFind('pod', 'monitoringStore')],
-        logging:            ['loggingSchemas',          this.cbFind('logging', 'loggingStore')],
       };
 
       async.auto(tasks, xhrConcur, function(err, res) {

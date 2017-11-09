@@ -1,0 +1,48 @@
+{{#accordion-list-item
+    title="Elasticsearch Index Pattern"
+    detail="Elacticsearch uses an index pattern to generate index name"
+    status=status
+    statusClass=statusClass
+    expandAll=al.expandAll
+    expand=(action expandFn)
+}}
+  <section class="box">
+    <div class="row">
+      <div class="col span-6 mb-20 mt-10">
+        <label class="acc-label" for="">{{t 'loggingPage.outputPrefix.label'}}{{field-required}}</label>
+        {{input
+            type="text"
+            value=model.esLogstashPrefix
+            className="form-control"
+            placeholder=(t 'loggingPage.outputPrefix.placeholder')
+        }}
+      </div>
+      <div class="col span-6">
+        <label class="acc-label" for="">{{t 'loggingPage.dateFormat.label'}}</label>
+        {{new-select
+            htmlSafe=false
+            class="form-control mb-15"
+            className="form-control"
+            content=dateFormatChoices
+            localizedLabel=false
+            value=model.esLogstashDateformat
+        }}
+      </div>
+    </div>
+    <div class="text-info">
+      {{t 'loggingPage.resultTip' htmlSafe=true}}<code class="text-italic">{{model.esLogstashPrefix}}-{{dateFormatString}}</code>
+    </div>
+    <hr/>
+    <div class="">
+      <!-- {{t 'loggingPage.indexPatternTip' htmlSafe=true}} -->
+      <p>Elacticsearch uses an index pattern to generate index name. The index name pattern is:<span class="text-muted text-italic pl-5">#{prefix}-#{date_format}</span>, where<span class="text-muted text-italic ph-5">Date Format</span>represents:
+      </p>
+      <ul>
+        <li><code>YYYY.MM.DD</code> for daily</li>
+        <li><code>YYYY.MM</code> for monthly</li>
+        <li><code>YYYY</code> for yearly</li>
+      </ul>
+      <p>With the current configuration, a new index name will be generated every {{dateFrequenceLabel}} and logging records will be inserted into index: <code class="text-italic">{{model.esLogstashPrefix}}-{{dateFormatString}}</code>, where <code class="text-italic">{{dateFormatString}}</code> is the current {{dateFormatTypeLabel}} date.</p>
+    </div>
+  </section>
+{{/accordion-list-item}}
