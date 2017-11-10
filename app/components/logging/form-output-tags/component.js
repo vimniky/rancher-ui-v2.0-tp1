@@ -20,7 +20,7 @@ export default Ember.Component.extend({
           key,
           value: it[key],
         }
-        this.get('tags').push(t);
+        this.get('tags').pushObject(Ember.Object.create(t));
       });
     }
   },
@@ -47,11 +47,57 @@ export default Ember.Component.extend({
   }.property('tags.@each.key'),
 
   actions: {
-    addTag() {
-      this.get('tags').pushObject({
-        key: null,
-        value: null,
+    pastedTags(str, target) {
+      let ary = this.get('tags');
+      str = str.trim();
+      if (str.indexOf('=') === -1 && str.indexOf(':') === -1) {
+        // Just pasting a key
+        $(target).val(str);
+        return;
+      }
+
+      let lines = str.split(/\r?\n/);
+      lines.forEach((line) => {
+        line = line.trim();
+        if (!line) {
+          return;
+        }
+
+        let idx = line.indexOf('=');
+        if ( idx === -1 ) {
+          idx = line.indexOf(':');
+        }
+
+        let key = '';
+        let val = '';
+        if (idx > 0) {
+          key = line.substr(0,idx).trim();
+          val = line.substr(idx+1).trim();
+        }
+        else {
+          key = line.trim();
+          val = '';
+        }
+        let existing = ary.filterBy('key',key)[0];
+        if (existing) {
+          Ember.set(existing,'value',val);
+        }
+        else {
+          ary.pushObject(Ember.Object.create({key: key, value: val}));
+        }
       });
+
+      // Clean up empty user entries
+      let toRemove = [];
+      ary.forEach((item) => {
+        if (!item.get('key') && !item.get('value')) {
+          toRemove.push(item);
+        }
+      });
+      ary.removeObjects(toRemove);
+    },
+    addTag() {
+      this.get('tags').pushObject(Ember.Object.create({key: null, value: null}));
       Ember.run.next(() => {
         if ( this.isDestroyed || this.isDestroying ) {
           return;

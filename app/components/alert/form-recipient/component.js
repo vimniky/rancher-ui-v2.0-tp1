@@ -58,7 +58,7 @@ export default Ember.Component.extend({
     }
   }.observes('recipientType'),
   recipientPrompt: function() {
-    const type = this.get('recipientType');
+    const type = this.get('recipientType') || 'slack';
     return this.get('intl').t(`formRecipient.recipient.placeholder.reuse.${type}`);
   }.property('recipientType'),
   newRecipientPlaceholder: function() {
@@ -69,7 +69,6 @@ export default Ember.Component.extend({
     const recipient = this.get('model.newRecipient');
     const type = this.get('recipientType');
     const value = this.get('toNewRecipient');
-    // Set model accordingly
     switch(type) {
     case 'email':
       recipient.set('emailRecipient.address', value);
