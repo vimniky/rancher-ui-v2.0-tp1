@@ -3,28 +3,28 @@ import layout from './template';
 
 export default Ember.Component.extend({
   classNames: ['outside-click'],
+
+  onOutsideClick: null,
+
   layout,
   isOutside: false,
-  excludedClasses: [],
-
-  onOutsideClick() {},
 
   init() {
     this._super(...arguments);
-    this.handleDown = this.handleDown.bind(this);
-    this.handleUp = this.handleUp.bind(this);
+    this._boundHandleDown = this.handleDown.bind(this);
+    this._boundHandleUp = this.handleUp.bind(this);
   },
 
   didInsertElement() {
     this._super(...arguments);
-    document.addEventListener('mousedown', this.handleDown, true);
-    document.addEventListener('mouseup', this.handleUp, true);
+    document.addEventListener('mousedown', this._boundHandleDown, true);
+    document.addEventListener('mouseup', this._boundHandleUp, true);
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    document.removeEventListener('mousedown', this.handleDown, true);
-    document.removeEventListener('mouseup', this.handleUp, true);
+    document.removeEventListener('mousedown', this._boundHandleDown, true);
+    document.removeEventListener('mouseup', this._boundHandleUp, true);
   },
 
   handleDown(e) {
@@ -32,18 +32,14 @@ export default Ember.Component.extend({
       return;
     }
 
-    const isExcluded = this.get('excludedClasses').some((excludedClass) => {
-      return ` ${e.target.className} `.indexOf(` ${excludedClass} `) > -1;
-    });
-
-    if (!this.element.contains(e.target) && !isExcluded) {
+    if (!this.element.contains(e.target)) {
       this.set('isOutside', true);
     }
   },
 
   handleUp(e) {
     if (this.get('isOutside')) {
-      this.get('onOutsideClick')(e);
+      this.sendAction('onOutsideClick', e);
     }
     if (this.isDestroyed || this.isDestroying) {
       return;

@@ -21,29 +21,23 @@
 **/
 
 import Ember from 'ember';
-
-const KEY_CODES  = {
-  return: 13,
-  esc: 27,
-  up: 38,
-  down: 40,
-}
+import C from 'ui/utils/constants';
 
 export default Ember.Component.extend({
+  intl: Ember.inject.service(),
+
   classNames: ['searchable-select'],
   classNameBindings: ['class'],
 
-  intl: Ember.inject.service(),
-
   // input
+  class: null,
   value: null,
   prefix: null,
   suffix: null,
   prompt: null,
-  class: null,
   // If need to catch the group changes, you can pass a group prop in.
   group: null,
-  content: [],
+  content: null,
   optionLabelPath: 'label',
   optionValuePath: 'value',
   optionGroupPath: 'group',
@@ -60,11 +54,18 @@ export default Ember.Component.extend({
   // Show option image --> unGroupedContent only
   showOptionIcon: function() {
     return this.get('unGroupedContent').some(item => !!item.imgUrl);
-  }.property('unGroupedContent.@each.icon'),
+  }.property('unGroupedContent.@each.imgUrl'),
 
   smallMode: function() {
     return this.$().hasClass('input-sm');
   }.property('class'),
+
+  init() {
+    this._super();
+    if (!this.get('content')) {
+      this.set('content', []);
+    }
+  },
 
   displayLabel: function() {
     const value = this.get('value');
@@ -151,18 +152,19 @@ export default Ember.Component.extend({
 
   on() {
     this.$().on('keydown.searchable-keydown', event => {
+      const kc = event.keyCode;
       // Note: keyup event can't be prevented.
       if (!this.get('showOptions')) {
         return;
       }
-      if (event.keyCode === KEY_CODES.up) {
+      if (kc === C.KEY.UP) {
         this.stepThroughOptions(-1);
       }
-      if (event.keyCode === KEY_CODES.down) {
+      if (kc === C.KEY.DOWN) {
         this.stepThroughOptions(1);
       }
       // support using return key to select the current active option
-      if (event.keyCode === KEY_CODES.return) {
+      if (kc === C.KEY.CR || kc === C.KEY.LF) {
         event.preventDefault();
         const $activeTarget = this.get('$activeTarget');
         if ($activeTarget) {
@@ -182,7 +184,7 @@ export default Ember.Component.extend({
         }
       }
       // esc to hide
-      if (event.keyCode === KEY_CODES.esc) {
+      if (kc === C.KEY.ESCAPE) {
         this.send('hide');
       }
     });

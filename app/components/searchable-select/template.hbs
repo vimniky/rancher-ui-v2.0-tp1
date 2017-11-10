@@ -1,16 +1,12 @@
 {{#outside-click onOutsideClick=(action 'hide')}}
-  <select class="form-control {{if smallMode 'input-sm'}}" {{action 'show'}} value=value>
+  <select class="form-control {{class}}" {{action 'show'}} value=value>
     <option style="display:none;" value=value>{{displayLabel}}</option>
   </select>
 
   {{#if showOptions}}
     <section class="searchable-options {{if showSearch '' 'pt-10'}}">
       {{#if showSearch}}
-        {{#if smallMode}}
-          {{input class="form-control input-sm" type="search" placeholder=(t 'generic.search') type="text" value=filter}}
-        {{else}}
-          {{input class="form-control" type="search" placeholder=(t 'generic.search') type="text" value=filter}}
-        {{/if}}
+        {{input class=(concat 'form-control ' class) placeholder=(t 'generic.search') type="text" value=filter}}
       {{/if}}
       {{#if prompt}}
         <div
