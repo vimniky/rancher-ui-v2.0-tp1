@@ -1215,7 +1215,7 @@ loggingDashboardPage:
     timestamp: Timestamp
     log: Log
     containerName: Container Name
-    noData: There no logs yet
+    noData: There are no logs yet
     noMatch: No logs match the current search
 
 

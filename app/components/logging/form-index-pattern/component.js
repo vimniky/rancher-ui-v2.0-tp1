@@ -7,7 +7,7 @@ export default Ember.Component.extend(getEnumFieldOptions, {
 
   init() {
     this._super();
-    const dateFormatOptions = this.getSelectOptions('esLogstashDateformat', 'logging', 'loggingStore');
+    const dateFormatOptions = this.getEnumFieldOptions('esLogstashDateformat', 'logging', 'loggingStore');
     this.set('dateFormatChoices', dateFormatOptions);
   },
   status: function() {

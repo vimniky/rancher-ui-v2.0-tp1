@@ -26,7 +26,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     if (!this.get('tags')) {
       this.set('tags', []);
     }
-    const targetTypeOptions = this.getSelectOptions('targetType', 'logging', 'loggingStore');
+    const targetTypeOptions = this.getEnumFieldOptions('targetType', 'logging', 'loggingStore');
     if (!this.get('loggingAuth')) {
       const la = this.get('loggingStore').createRecord({
         type: 'loggingAuth',

@@ -39,6 +39,7 @@
   {{else if (eq targetType 'embedded')}}
     {{logging/target-embedded model=model}}
   {{else if (eq targetType 'splunk')}}
+    {{logging/target-splunk model=model}}
   {{/if}}
 
   {{top-errors errors=errors}}

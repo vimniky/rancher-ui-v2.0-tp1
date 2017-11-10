@@ -50,7 +50,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this._super(...arguments);
     const store = this.get('monitoringStore');
     this.set('alerts', []);
-    this.set('severities',  this.getSelectOptions('severity', 'alert', 'monitoringStore'));
+    this.set('severities',  this.getEnumFieldOptions('severity', 'alert', 'monitoringStore'));
     this.set('recipients', store.all('recipient'));
     const pods = store.all('pod');
     const stacks = this.get('store').all('stack');
