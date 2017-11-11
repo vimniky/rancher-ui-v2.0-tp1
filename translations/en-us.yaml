@@ -2506,7 +2506,7 @@ formLogging:
 
 formOutputTags:
   title: Tags
-  detail: Todo
+  detail: Tags are key/value paire that can be used to filter logs.
   addAction: Add Tag
   key:
     label: Key

@@ -55,7 +55,6 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
       let tasks = {
         userSchemas:                                    this.toCb('loadUserSchemas'),
-        loggingSchemas:                                 this.toCb('loadLoggingSchemas'),
         clusters:                                       this.toCb('loadClusters'),
         projects:                                       this.toCb('loadProjects'),
         preferences:                                    this.toCb('loadPreferences'),
@@ -197,18 +196,6 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
     let userStore = this.get('userStore');
     return userStore.rawRequest({url:'schema', dataType: 'json'}).then((xhr) => {
       userStore._bulkAdd('schema', xhr.body.data);
-    });
-  },
-  loadMonitoringSchemas() {
-    let store = this.get('monitoringStore');
-    return store.rawRequest({url:'/v5/schemas', dataType: 'json'}).then((xhr) => {
-      store._bulkAdd('schema', xhr.body.data);
-    });
-  },
-  loadLoggingSchemas() {
-    let store = this.get('loggingStore');
-    return store.rawRequest({url:'/v6/schemas', dataType: 'json'}).then((xhr) => {
-      store._bulkAdd('schema', xhr.body.data);
     });
   },
   loadClusters() {

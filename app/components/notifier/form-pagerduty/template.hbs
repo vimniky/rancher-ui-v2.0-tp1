@@ -1,5 +1,5 @@
 <div class="box">
-  <label style="width: 100px;" class="text-muted">
+  <label class="text-muted pr-20">
     {{t 'notifiersPage.pagerDuty.form.clientUrl.label'}}{{field-required}}
   </label>
   {{input
@@ -9,4 +9,8 @@
       placeholder=(t 'notifiersPage.pagerDuty.form.clientUrl.placeholder')
       safeStyle="width: calc(100% - 270px); display: inline-block; min-width: 300px;"
   }}
+  <p class="text-info text-small">
+    Rancher uses Prometheus for monitoring and alerting behind the scenes. You can find instructions on how to get the pagerduty integration key
+    <a href="https://www.pagerduty.com/docs/guides/prometheus-integration-guide/" target="_blank">here</a>.
+  </p>
 </div>
