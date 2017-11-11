@@ -17,7 +17,7 @@ const headers = [
   {
     translationKey: 'alertsPage.index.table.rules',
     name: 'rules',
-    sort: ['rules', 'id', 'objectType', 'recipientType'],
+    sort: ['rules', 'id', 'targetType', 'recipientType'],
   },
   {
     translationKey: 'alertsPage.index.table.endpoint',
@@ -37,23 +37,19 @@ export default Ember.Component.extend(FilterState, {
   access: Ember.inject.service(),
 
   // input
-  objectId: null,
+  model: null,
+  targetId: null,
 
   sortBy: 'name',
   queryParams: ['alertState'],
   alertState: 'all',
   headers,
 
-  init() {
-    this._super();
-    let alerts = this.get('monitoringStore').all('alert');
-    this.set('model', alerts);
-  },
   filteredAlerts: function() {
     let alerts = this.get('filtered');
-    const objectId = this.get('objectId');
-    if (objectId) {
-      alerts = alerts.filterBy('objectId', objectId);
+    const targetId = this.get('targetId');
+    if (targetId) {
+      alerts = alerts.filterBy('targetId', targetId);
     }
     return alerts.filter(alert => {
       const state = this.get('alertState');
@@ -64,5 +60,5 @@ export default Ember.Component.extend(FilterState, {
       }
       return true;
     });
-  }.property('filtered.[],alertState,objectId'),
+  }.property('filtered.[],alertState,targetId'),
 });

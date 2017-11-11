@@ -159,7 +159,7 @@
           mode=mode
           isUpgrade=isUpgrade
           hasAlerts=hasAlerts
-          objectId=alertObjectId
+          targetId=alertObjectId
       }}
     {{/if}}
 
@@ -167,7 +167,7 @@
       <div class="mv-20">
         <label class="acc-label">{{t 'formHealthCheck.alertsLabel'}}</label>
         <hr class="mb-20"/>
-        {{alert-table objectId=alertObjectId alertState="all"}}
+        {{alert-table targetId=alertObjectId alertState="all"}}
       </div>
     {{/if}}
 

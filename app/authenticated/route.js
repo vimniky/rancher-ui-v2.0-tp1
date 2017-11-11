@@ -55,7 +55,6 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
       let tasks = {
         userSchemas:                                    this.toCb('loadUserSchemas'),
-        monitoringSchemas:                              this.toCb('loadMonitoringSchemas'),
         loggingSchemas:                                 this.toCb('loadLoggingSchemas'),
         clusters:                                       this.toCb('loadClusters'),
         projects:                                       this.toCb('loadProjects'),
@@ -75,9 +74,6 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
         certificate:        ['projectSchemas',          this.cbFind('certificate')],
         secret:             ['projectSchemas',          this.toCb('loadSecrets')],
         identities:         ['userSchemas', this.cbFind('identity', 'userStore')],
-        recipients:         ['monitoringSchemas',       this.cbFind('recipient', 'monitoringStore')],
-        alerts:             ['monitoringSchemas',       this.cbFind('alert', 'monitoringStore')],
-        pods:               ['monitoringSchemas',       this.cbFind('pod', 'monitoringStore')],
       };
 
       async.auto(tasks, xhrConcur, function(err, res) {

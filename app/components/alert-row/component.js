@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   classNames: 'main-row',
   bulkActions: false,
   rules: function() {
-    const ot = this.get('model.objectType');
+    const ot = this.get('model.targetType');
     const p = this.get('model.serviceRule.unhealthyPercentage');
     let out;
     switch(ot) {
@@ -18,5 +18,5 @@ export default Ember.Component.extend({
       out = `When ${p}% are unhealthy`;
     }
     return out
-  }.property('model.serviceRule.unhealthyPercentage,model.objectType'),
+  }.property('model.serviceRule.unhealthyPercentage,model.targetType'),
 });

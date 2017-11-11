@@ -19,8 +19,8 @@ var Alert = Resource.extend(PolledResource, {
     });
   },
   objectName: function() {
-    const type = this.get('objectType');
-    const id = this.get('objectId');
+    const type = this.get('targetType');
+    const id = this.get('targetId');
     let out;
     if (type && id) {
       const object = this.get('store').getById(type, id);
@@ -29,7 +29,7 @@ var Alert = Resource.extend(PolledResource, {
       }
     }
     return out || id;
-  }.property('objectType,objectId'),
+  }.property('targetType,targetId'),
   actions: {
     deactivate() {
       return this.doAction('deactivate');

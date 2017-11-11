@@ -27,9 +27,9 @@
         <div class="col span-4">
           <div><label class="acc-label">Target{{field-required}}</label></div>
           <!-- When creating new container/service,
-                objectId is will be the new created container/service id
+                targetId is will be the new created container/service id
                 and will be populated automatically.
-                So users don't need to fill in the objectId.
+                So users don't need to fill in the targetId.
               -->
           {{#if isStandalone}}
             {{searchable-select
@@ -38,19 +38,19 @@
                 optionValuePath="id"
                 optionLabelPath="displayName"
                 prompt="Choose a Target"
-                group=alert.objectType
-                value=alert.objectId
+                group=alert.targetType
+                value=alert.targetId
             }}
           {{else}}
-            {{#if objectId}}
+            {{#if targetId}}
               {{searchable-select
-                  value=objectId
+                  value=targetId
                   content=objectChoices
                   optionGroupPath="type"
                   optionValuePath="id"
                   optionLabelPath="displayName"
                   prompt="Choose a Object"
-                  group=alert.objectType
+                  group=alert.targetType
               }}
             {{else}}
               {{input type=text disabled=true placeholder="Object will be automatically filled in"}}

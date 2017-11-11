@@ -375,7 +375,7 @@ export default Ember.Component.extend(NewOrEdit, {
     // those alerts are saved.
     if (this.get('hasAlerts')) {
       // Trigger alert event to save alerts
-      // If upgrade, objectId already passed, so there's no need to pass it to alert/new-edit again.
+      // If upgrade, targetId already passed, so there's no need to pass it to alert/new-edit again.
       this.get('alertBus').trigger(
         'saveAlerts',
         this.get('originalModel.id'),

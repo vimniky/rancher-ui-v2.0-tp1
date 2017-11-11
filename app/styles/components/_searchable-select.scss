@@ -25,6 +25,8 @@
   }
 
   .searchable-options {
+    max-height: 285px;
+    overflow-y: scroll;
     background: white;
     position: absolute;
     box-sizing: border-box;

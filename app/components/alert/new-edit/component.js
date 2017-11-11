@@ -18,14 +18,14 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this.set('hasAlerts', has);
   }.observes('alerts,alerts.length'),
 
-  // When add alerts to a existing container/service/host, ..., objectId is not null
-  // When creating new container/service/host or creating standalone alert, objectId will be null.
-  objectId: null,
+  // When add alerts to a existing container/service/host, ..., targetId is not null
+  // When creating new container/service/host or creating standalone alert, targetId will be null.
+  targetId: null,
   isStandalone: function() {
     return this.get('mode') === 'standalone';
   }.property('mode'),
   severities: [],
-  objectType: function() {
+  targetType: function() {
     const m = this.get('mode');
     switch (m) {
     case 'container':
@@ -52,15 +52,19 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this.set('alerts', []);
     this.set('severities',  this.getEnumFieldOptions('severity', 'alert', 'monitoringStore'));
     this.set('recipients', store.all('recipient'));
-    const pods = store.all('pod');
-    const stacks = this.get('store').all('stack');
-    const out = [pods, stacks].reduce((sum, group) => sum.pushObjects(group.get('content')), []);
+    const out = [
+      'node',
+      'deployment',
+      'pod',
+      'daemonset',
+    ].map(store.all.bind(store)).reduce((sum, resources) => sum.pushObjects(resources.get('content')), []);
+
     this.set('objectChoices', out);
 
     if (!this.get('isStandalone')) {
-      const objectId = this.get('objectId');
-      if (objectId) {
-        const alerts = store.all('alert').filterBy('objectId', objectId);
+      const targetId = this.get('targetId');
+      if (targetId) {
+        const alerts = store.all('alert').filterBy('targetId', targetId);
         if (alerts && alerts.length) {
           this.set('originalModels', alerts);
           this.setupModelsAndAlerts();
@@ -77,7 +81,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
           // If id is not null
           // When update, container/service's id may change (the container/service has been replaced with a new one)
           this.get('alerts').forEach(alert => {
-            alert.set('objectId', id);
+            alert.set('targetId', id);
           });
         }
         this.saveOneByOne(0, cb);
@@ -252,7 +256,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       const alert = this.get('monitoringStore').createRecord({
         type: 'alert',
         sendResolved: false,
-        objectType: this.get('objectType'),
+        targetType: this.get('targetType'),
         serviceRule: {
           unhealthyPercentage: '30',
         },
@@ -273,7 +277,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     const newRecipient = this.get('monitoringStore').createRecord({
       type: 'recipient',
       isReuse: true,
-      objectId: alert.get('objectId') || this.get('objectId'),
+      targetId: alert.get('targetId') || this.get('targetId'),
       recipient: null,
       emailRecipient: {
         address: null,

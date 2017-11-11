@@ -20,7 +20,7 @@
         </div>
       </th>
 
-      {{#if (eq model.objectType 'pod')}}
+      {{#if (eq model.targetType 'pod')}}
         <th width="19">&nbsp;</th>
       {{else}}
         <th width="5">&nbsp;</th>
@@ -52,7 +52,7 @@
         }}
       {{/if}}
     </td>
-    {{#if (eq model.objectType 'pod')}}
+    {{#if (eq model.targetType 'pod')}}
       <td class="pl-30">when pod is unhealthy</td>
     {{else}}
       <td class="text-center">when ></td>
