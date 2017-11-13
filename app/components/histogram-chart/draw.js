@@ -3,143 +3,199 @@ function dataGen(n) {
   for (; n > 0; n--) {
     let item = {}
     item.count = Math.ceil(Math.random() * 100);
-    item.date = moment().subtract(Math.floor(Math.random() * 90), 'days').format('DD/MM/YYYY');
+    item.date = d3.time.hour.offset(new Date(), Math.floor(Math.random() * 24));
     out.push(item);
   }
   return out;
 }
-export default function() {
-  const width = this.$().width();
 
-  // main-margin
-  // l --> left, r --> right, b --> bottom, t --> top
-  const mm =  {
-    l: 20,
-    r: 0,
-    t: 5,
-    b: 30,
-  };
-
-  // overview maring
-  const om =  {
-    l: 20,
-    r: 0,
-    t: 0,
-    b: 20,
-  };
-
-  const mainBarWidth = 15;
-  const overviewBarWidth = 5;
-  const mainHeight = 120;
-  const mainWidth = width - mm.l - mm.r;
-
-  const overviewHeight = 40;
-  const overviewWidth = width - om.l - om.r;
+// todos:
+// [1]. restict pan range
+// [2]. enable zoom out
+export default function(element) {
+  let updating = false;
+  const data = dataGen(100).filter((d, i) => i % 2);
+  const duration = 400;
+  const barWidth = 15;
   const barColor = '#A3C928';
-  const height = mainHeight + overviewHeight + mm.t + mm.b + om.t + om.b;
+  const margin = {top: 5, right: 0, bottom: 30, left: 40},
+      width = $(element).width() - margin.left - margin.right,
+      height = 150 - margin.top - margin.bottom;
 
-  const x = d3.time.scale().range([0, mainWidth]);
-  const y = d3.scale.linear().range([mainHeight, 0]);
-  const xOverview = d3.time.scale().range([0, overviewWidth]);
-  const yOverview = d3.scale.linear().range([overviewHeight, 0]);
+  const x = d3.time.scale()
+      .domain(d3.extent(data, d => d.date))
+      .range([0, width]);
 
-  const timeFormat = d3.time.format("%m-%d");
-  const xAxis = d3.svg.axis().scale(x).orient('bottom').tickFormat(timeFormat);
-  const yAxis = d3.svg.axis().scale(y).orient('left').ticks(4);
-  const xAxisOverview = d3.svg.axis().scale(xOverview).orient('bottom').tickFormat(timeFormat);
+  const y = d3.scale.linear()
+        .domain([0, d3.max(data, d => d.count)])
+        .range([height, 0]);
 
-  const svg = d3
-        .select(this.$().get(0))
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height);
-
-  const main = svg.append('g')
-        .attr('class', 'main')
-        .attr('transform', `translate(${mm.l},${mm.t})`);
-
-  const overview = svg.append('g')
-        .attr('class', 'overview')
-        .attr('transform', `translate(${om.l},${mainHeight + mm.t + mm.b + om.t})`);
-
-  const brush = d3.svg.brush()
-        .x(xOverview)
-        .on('brush', brushed);
-  function parse(d) {
-    const parseDate = d3.time.format('%d/%m/%Y').parse;
-    return {
-      date: parseDate(d.date),
-      count: d.count,
-    };
+  const initialBarAttr = {
+    class: 'bar',
+    width: d => x(d.date) >= 0 ? barWidth : 0,
+    height: d => y(0) - y(d.count),
+    x: d => x(d.date)  - 20,
+    y: d => y(d.count),
   }
-  useData(dataGen(100).slice(0, 100).map(parse))
-  function useData(data) {
-    x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain([0, d3.max(data, function(d) { return d.count; })]);
-    xOverview.domain(x.domain());
-    yOverview.domain(y.domain());
-    overview
-      .append('g')
-      .attr('class', 'x axis')
-      .attr('transform', `translate(0,${overviewHeight})`)
-      .call(xAxisOverview);
 
-    main.append('g')
-      .attr('class', 'bars')
-      .selectAll('.bar')
-      .data(data)
-      .enter()
+  const barAttr = {
+    width: d => x(d.date) >= 0 ? barWidth : 0,
+    height: d => y(0) - y(d.count),
+    x: d => x(d.date) ,
+    y: d => y(d.count),
+  }
+
+  const xAxis = d3.svg.axis()
+    .scale(x)
+    .orient('bottom')
+    .ticks(10)
+    .tickPadding(10)
+    .tickSize(6);
+
+  const yAxis = d3.svg.axis()
+    .scale(y)
+    .orient('left')
+    .ticks(5)
+    .tickSize(6)
+    .tickPadding(10);
+
+  const zoom = d3.behavior.zoom()
+      .x(x)
+      .scaleExtent([1, 10])
+      .size([width, height])
+      .on('zoom', zoomed);
+
+  const svg = d3.select(element).append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', `translate(${margin.left},${margin.top})`)
+    .call(zoom);
+// .on('dblclick.zoom', null)
+
+  svg.append('rect')
+    .attr('width', width)
+    .attr('height', height);
+
+  const bars = svg.append('g')
+    .attr('class', 'bars')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .selectAll('.bar')
+    .data(data)
+    .enter()
+    .append('rect')
+    .attr(initialBarAttr)
+    .style('fill', '#fff');
+
+  bars
+    .transition()
+    .ease('quadOut')
+    .duration(duration)
+    .attr(barAttr)
+    .style('fill', barColor);
+
+  svg.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(xAxis);
+
+  svg.append('g')
+    .attr('class', 'y axis')
+    .call(yAxis);
+
+  function zoomed() {
+    if (updating) {
+      return;
+    }
+    svg.select('.x.axis').call(xAxis);
+    svg.select('.y.axis').call(yAxis);
+    bars.attr(barAttr)
+  }
+
+  function update(data) {
+    updating = true;
+    x.domain(d3.extent(data, d => d.date));
+    y.domain([0, d3.max(data, d => d.count)]);
+    svg.select('.x.axis').transition().duration(duration).call(xAxis);
+    svg.select('.y.axis').transition().duration(duration).call(yAxis);
+    const bars = svg
+      .selectAll('.bars .bar')
+      .attr(initialBarAttr)
+      .data(data);
+
+    bars
+      .transition()
+      .ease('quadOut')
+      .duration(duration * 2)
+      .attr(barAttr)
+      .each('end', () => updating = false);
+
+    // enter
+    bars.enter()
       .append('rect')
-      .attr('class', 'bar')
-      .attr('width', mainBarWidth)
-      .attr('x', function(d) {
-        return x(d.date);
-      })
-      .attr('y', function(d) { return y(d.count); })
-      .attr('height', function(d) {
-        return y(0) - y(d.count);
-      })
-      .style('fill', barColor);
+      .attr(initialBarAttr)
+      .transition()
+      .ease('quadOut')
+      .duration(duration * 2)
+      .attr(barAttr);
 
-    main.append('g')
-      .attr('class', 'x axis')
-      .attr('transform', `translate(0,${mainHeight})`)
-      .call(xAxis);
-
-    main.append('g')
-      .attr('class', 'y axis')
-      .call(yAxis);
-
-    overview.append('g')
-      .attr('class', 'bars')
-      .selectAll('.bar')
-      .data(data)
-      .enter()
-      .append('rect')
-      .attr('class', 'bar')
-      .attr('x', function(d) {
-        return xOverview(d.date);
-      })
-      .attr('width', overviewBarWidth)
-      .attr('y', function(d) { return yOverview(d.count); })
-      .attr('height', function(d) { return overviewHeight - yOverview(d.count); });
-
-    overview
-      .append('g')
-      .attr('class', 'x brush')
-      .call(brush)
-      .selectAll('rect')
-      .attr('y', 0)
-      .attr('height', overviewHeight);
+    // remove
+    bars.exit().remove();
   }
 
-  function brushed() {
-    x.domain(brush.empty() ? xOverview.domain() : brush.extent());
-    main
-      .selectAll('.bar')
-      .attr('transform', function(d) {
-        return `translate(${x(d.date)},0)`;
-      });
-      main.select('.x.axis').call(xAxis);
-  }
+  // function clicked() {
+  //   svg.call(zoom.event); // https://github.com/mbostock/d3/issues/2387
+
+  //   // Record the coordinates (in data space) of the center (in screen space).
+  //   const center0 = zoom.center() || [width/2, height/2],
+  //         translate0 = zoom.translate(),
+  //         coordinates0 = coordinates(center0);
+  //   zoom.scale(zoom.scale() * Math.pow(2, +this.getAttribute('data-zoom')));
+
+  //   // Translate back to the center.
+  //   const center1 = point(coordinates0);
+  //   zoom.translate([
+  //     translate0[0] + center0[0] - center1[0],
+  //     translate0[1] + center0[1] - center1[1],
+  //   ]);
+
+  //   svg.transition().duration(750).call(zoom.event);
+  // }
+
+  // function coordinates(point) {
+  //   const scale = zoom.scale(),
+  //       translate = zoom.translate();
+  //   return [
+  //     (point[0] - translate[0]) / scale,
+  //     (point[1] - translate[1]) / scale,
+  //   ];
+  // }
+
+  // function point(coordinates) {
+  //   const scale = zoom.scale(),
+  //       translate = zoom.translate();
+  //   return [
+  //     coordinates[0] * scale + translate[0],
+  //     coordinates[1] * scale + translate[1],
+  //   ];
+  // }
+
+  // d3.selectAll('button[data-zoom]')
+  //   .on('click', clicked);
+  // d3.select(`${element} #reset`).on('click', reset);
+  // function reset() {
+  //   d3.transition().duration(750).tween('zoom', function() {
+  //     const ix = d3.interpolate(x.domain(), [0, width]),
+  //         iy = d3.interpolate(y.domain(), [0, height]);
+  //     return function(t) {
+  //       zoom.x(x.domain(ix(t))).y(y.domain(iy(t)));
+  //       zoomed();
+  //     };
+  //   });
+  // }
+
+  setInterval(() => {
+    // update(dataGen(60).filter((d, i) => i % 2));
+  }, 5000)
 }

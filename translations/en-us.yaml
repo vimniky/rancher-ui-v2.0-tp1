@@ -1150,22 +1150,9 @@ notifiersPage:
       label: WebHook URL
       placeholder: e.g. https://hooks.slack.com/services/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
   pagerDuty:
-    form:
-      from:
-        label: From
-        placeholder: e.g. rancherenv@rancher.com
-      serviceKey:
-        label: Server Key
-        placeholder: Enter service key
-      url:
-        label: URL
-        placeholder: Enter url
-      client:
-        label: Client
-        placeholder: Enter Client
-      clientUrl:
-        label: Client URL
-        placeholder: Enter Client url
+    clientUrl:
+      label: Integration Key
+      placeholder: Paste your integration key here
 
 loggingPage:
   header:

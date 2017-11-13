@@ -1,16 +1,24 @@
 .histogram-chart {
-  .axis {
+  svg {
     font: 10px sans-serif;
+    shape-rendering: crispEdges;
   }
+
+  rect {
+    fill: #fff;
+  }
+
   .axis path,
   .axis line {
     fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
+    stroke: $accent-border;
   }
-  .brush .extent {
-    stroke: #fff;
-    fill-opacity: .125;
-    shape-rendering: crispEdges;
+  .axis text {
+    // stroke: $text-muted;
+  }
+  .buttons {
+    position: absolute;
+    right: 30px;
+    top: 30px;
   }
 }

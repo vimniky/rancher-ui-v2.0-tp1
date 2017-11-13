@@ -5,6 +5,6 @@ export default Ember.Component.extend({
   classNames: ['histogram-chart'],
   attributeBindings: ['style'],
   didInsertElement() {
-    draw.bind(this)();
+    draw('.histogram-chart');
   }
 });
