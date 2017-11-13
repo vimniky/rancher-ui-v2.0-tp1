@@ -10,15 +10,34 @@ export default Ember.Component.extend(getEnumFieldOptions, {
     const dateFormatOptions = this.getEnumFieldOptions('esLogstashDateformat', 'logging', 'loggingStore');
     this.set('dateFormatChoices', dateFormatOptions);
   },
+
   status: function() {
-    let k = STATUS.COUNTCONFIGURED;
+    let k = STATUS.STANDARD;
+    const found = this.get('loggingStore')
+          .all('logging')
+          .filterBy('id', this.get('model.id'))
+          .get('firstObject');
+    if (found) {
+      const prefix = found.get('esLogstashPrefix');
+      const format = found.get('esLogstashDateformat');
+      const p = this.get('model.esLogstashPrefix');
+      const f = this.get('model.esLogstashDateformat');
+      if (prefix !== p || format !== f) {
+        k = STATUS.CONFIGURED;
+      }
+      if (!prefix) {
+        k = STATUS.INCOMPLETE;
+      }
+    }
     this.set('statusClass', classForStatus(k));
-    // return this.get('intl').t(`${STATUS_INTL_KEY}.${k}`);
+    return this.get('intl').t(`${STATUS_INTL_KEY}.${k}`);
   }.property('tags.@each.key'),
+
   dateFormatString: function() {
     const fmt = this.get('model.esLogstashDateformat');
     return moment().format(fmt);
   }.property('model.esLogstashDateformat'),
+
   dateFormatTypeLabel: function() {
     const fmt = this.get('model.esLogstashDateformat');
     switch (fmt) {
@@ -32,6 +51,7 @@ export default Ember.Component.extend(getEnumFieldOptions, {
       return null;
     }
   }.property('model.esLogstashDateformat'),
+
   dateFrequenceLabel: function() {
     const fmt = this.get('model.esLogstashDateformat');
     switch (fmt) {
