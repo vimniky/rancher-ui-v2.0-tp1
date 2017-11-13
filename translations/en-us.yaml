@@ -37,6 +37,7 @@ generic:
   hardware: Hardware
   healthy: Healthy
   host: Host
+  port: Port
   id: ID
   image: Image
   internal: Internal
@@ -1168,11 +1169,9 @@ loggingPage:
   loggingClusterLevel: Configure target at the environment level
 
   resultTip: 'The generated Elasticsearch index name will be:'
-  outputHost:
-    label: Host
+  esHost:
     placeholder: e.g. 192.168.33.176
-  outputPort:
-    label: Port
+  esPort:
     placeholder: e.g. 9200
   esAuthUser:
     label: User Name
@@ -1195,7 +1194,13 @@ loggingPage:
     label: Flush interval
     placeholder: e.g. 1
   logstashFormat: Logstash format
-  includeTagKey: Include Tag Key
+  esIncludeTagKey: Include Tag Key
+
+  splunkPort:
+    placeholder: e.g. 9200
+  splunkHost:
+    placeholder: e.g. 192.168.33.176
+
 
 loggingDashboardPage:
   table:

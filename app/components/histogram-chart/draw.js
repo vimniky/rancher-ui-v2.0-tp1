@@ -3,24 +3,43 @@ function dataGen(n) {
   for (; n > 0; n--) {
     let item = {}
     item.count = Math.ceil(Math.random() * 100);
-    item.date = d3.time.hour.offset(new Date(), Math.floor(Math.random() * 24));
+    item.date = d3.time.minute.offset(new Date(), Math.floor(Math.random() * 60));
     out.push(item);
   }
   return out;
 }
 
+const customTimeFormat = d3.time.format.multi([
+  ['.%L', function(d) { return d.getMilliseconds(); }],
+  [':%S', function(d) { return d.getSeconds(); }],
+  ['%I:%M', function(d) { return d.getMinutes(); }],
+  ['%H:%M', function(d) { return  d.getHours(); }],
+  ['%a %d', function(d) { return d.getDay() && d.getDate() != 1; }],
+  ['%b %d', function(d) { return d.getDate() != 1; }],
+  ['%B', function(d) { return d.getMonth(); }],
+  ['%Y', function() { return true; }],
+]);
+
 // todos:
 // [1]. restict pan range
 // [2]. enable zoom out
-export default function(element) {
+export default function(element, options = {}) {
+
+  let {
+    margin = {top: 5, right: 0, bottom: 30, left: 30},
+    width,
+    height,
+    barWidth = 16,
+    barFill = '#A3C928',
+    zoomStart = noop => noop,
+    zoomEnd = noop => noop,
+  } = options
+
   let updating = false;
   const data = dataGen(100).filter((d, i) => i % 2);
   const duration = 400;
-  const barWidth = 15;
-  const barColor = '#A3C928';
-  const margin = {top: 5, right: 0, bottom: 30, left: 40},
-      width = $(element).width() - margin.left - margin.right,
-      height = 150 - margin.top - margin.bottom;
+  width = width || $(element).width() - margin.left - margin.right;
+  height = (height || 150) - margin.top - margin.bottom;
 
   const x = d3.time.scale()
       .domain(d3.extent(data, d => d.date))
@@ -50,6 +69,7 @@ export default function(element) {
     .orient('bottom')
     .ticks(10)
     .tickPadding(10)
+    .tickFormat(customTimeFormat)
     .tickSize(6);
 
   const yAxis = d3.svg.axis()
@@ -60,10 +80,12 @@ export default function(element) {
     .tickPadding(10);
 
   const zoom = d3.behavior.zoom()
-      .x(x)
-      .scaleExtent([1, 10])
-      .size([width, height])
-      .on('zoom', zoomed);
+    .x(x)
+    .scaleExtent([1, 10])
+    .size([width, height])
+    .on('zoomstart', zoomStart)
+    .on('zoomend', zoomEnd)
+    .on('zoom', zoomed);
 
   const svg = d3.select(element).append('svg')
     .attr('width', width + margin.left + margin.right)
@@ -93,7 +115,7 @@ export default function(element) {
     .ease('quadOut')
     .duration(duration)
     .attr(barAttr)
-    .style('fill', barColor);
+    .style('fill', barFill);
 
   svg.append('g')
     .attr('class', 'x axis')
@@ -112,13 +134,17 @@ export default function(element) {
     svg.select('.y.axis').call(yAxis);
     bars.attr(barAttr)
   }
-
+  let timer = null;
   function update(data) {
+    if (timer) {
+      clearInterval(timer);
+    }
     updating = true;
     x.domain(d3.extent(data, d => d.date));
     y.domain([0, d3.max(data, d => d.count)]);
     svg.select('.x.axis').transition().duration(duration).call(xAxis);
     svg.select('.y.axis').transition().duration(duration).call(yAxis);
+
     const bars = svg
       .selectAll('.bars .bar')
       .attr(initialBarAttr)
@@ -129,7 +155,7 @@ export default function(element) {
       .ease('quadOut')
       .duration(duration * 2)
       .attr(barAttr)
-      .each('end', () => updating = false);
+      // .each('end', () => updating = false);
 
     // enter
     bars.enter()
@@ -142,6 +168,10 @@ export default function(element) {
 
     // remove
     bars.exit().remove();
+
+    timer = setTimeout(() => {
+      updating = false;
+    }, duration * 2);
   }
 
   // function clicked() {
@@ -198,4 +228,13 @@ export default function(element) {
   setInterval(() => {
     // update(dataGen(60).filter((d, i) => i % 2));
   }, 5000)
+
+  return {
+    update,
+    x,
+    y,
+    xAxis,
+    yAxis,
+    zoom,
+  }
 }

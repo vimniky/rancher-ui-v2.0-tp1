@@ -4,19 +4,19 @@
       <label class="acc-label" for="">{{t 'generic.host'}}{{field-required}}</label>
       {{input
           type="text"
-          value=model.outputHost
+          value=model.esHost
           classNames="form-control"
-          placeholder=(t 'loggingPage.outputHost.placeholder')
+          placeholder=(t 'loggingPage.esHost.placeholder')
       }}
     </div>
     <div class="col span-6 mt-0 pt-0">
-      <label class="acc-label" for="">{{t 'loggingPage.outputPort.label'}}{{field-required}}</label>
+      <label class="acc-label" for="">{{t 'generic.port'}}{{field-required}}</label>
       {{input-integer
           class="form-control"
           min=1
           max=65535
-          value=model.outputPort
-          placeholder=(t 'loggingPage.outputPort.placeholder')
+          value=model.esPort
+          placeholder=(t 'loggingPage.esPort.placeholder')
       }}
     </div>
   </div>
@@ -80,8 +80,16 @@
     </div>
   </div>
 
-  <div class="col text-right span-4 offset-4" style="padding-top:33px;">
-    {{input type="checkbox" name="logstashFormat" id="logstashFormat" checked=model.esLogstashFormat}}
-    <label for="logstashFormat">{{t 'loggingPage.logstashFormat'}}</label>
+  <div class="col text-right span-8" style="padding-top:33px;">
+    <div style="display:flex; justify-content: flex-end">
+      <div class="mr-30">
+        {{input type="checkbox" name="esIncludeTagKey" id="esIncludeTagKey" checked=model.esIncludeTagKey}}
+        <label for="logstashFormat">{{t 'loggingPage.esIncludeTagKey'}}</label>
+      </div>
+      <div>
+        {{input type="checkbox" name="esLogstashFormat" id="esLogstashFormat" checked=model.esLogstashFormat}}
+        <label for="logstashFormat">{{t 'loggingPage.logstashFormat'}}</label>
+      </div>
+    </div>
   </div>
 </div>

@@ -78,7 +78,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   },
 
   willSave() {
-    this.set('model.outputPort', Number(this.get('model.outputPort')) || 9200);
+    this.set('model.esPort', Number(this.get('model.esPort')) || 9200);
     const ok = this.validateTags();
     if (!ok) {
       return false;
