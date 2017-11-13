@@ -4,7 +4,7 @@
 
 <section class="box mv-20">
   {{switch-button
-      checked=enableTarget
+      checked=model.enable
       onLabel="generic.enable"
       offLabel="generic.disable"
   }}
@@ -32,7 +32,7 @@
 {{/if}}
 
 
-{{#if enableTarget}}
+{{#if model.enable}}
   {{logging/targets-nav}}
   {{#if (eq targetType 'elasticsearch')}}
     {{logging/target-elasticsearch model=model tags=tags}}

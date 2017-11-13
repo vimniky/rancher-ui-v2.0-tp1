@@ -10,7 +10,15 @@ export default Ember.Component.extend({
   init() {
     this._super();
     const client = new $.es.Client({
-      hosts: 'localhost:9200'
+      hosts: 'https://localhost:8000/es'
+    });
+    this.set('client', client);
+    client.search({
+    }).then(function (body) {
+      // var hits = body.hits.hits;
+      // console.log('----------', body)
+    }, function (error) {
+      console.trace(error.message);
     });
   },
 

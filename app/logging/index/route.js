@@ -11,7 +11,7 @@ export default Ember.Route.extend({
     this.set('namespace', ns);
     return Ember.RSVP.hash({
       logging: store.find('logging', null, {forceReload: true}).then(ls => {
-        ls.filterBy('namespace', ns ==='system' ? 'cattle-system' : ns) || null;
+        return ls.filterBy('namespace', ns ==='system' ? 'cattle-system' : ns).get('firstObject') || null;
       }),
       loggingAuth: store.find('loggingAuth', null, {forceReload: true}).then(las => {
         return las.get('firstObject');
@@ -23,7 +23,10 @@ export default Ember.Route.extend({
     const logging = model.logging;
     controller.set('namespace', this.get('namespace'));
     if (logging && logging.get('targetType')) {
-      controller.set('targetType', logging.get('targetType'));
+      const enable = logging.get('enable');
+      if (enable) {
+        controller.set('targetType', logging.get('targetType'));
+      }
     }
   },
   resetController(controller, isExisting) {

@@ -7,19 +7,12 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   intl: Ember.inject.service(),
 
   // input
-  enableTarget: true,
   targetType: '',
   loggingAuth: null,
   tags: null,
 
   errors: [],
   targetChoices: null,
-
-  noneTargetChanged: function() {
-    if (!this.get('enableTarget')) {
-      this.set('targetType', 'none');
-    }
-  }.observes('enableTarget'),
 
   init() {
     this._super(...arguments);
@@ -87,7 +80,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this.get('tags').forEach(tag => {
       tagMap[tag.key] = tag.value;
     });
-    this.set('model.outputRecords', tagMap);
+    this.set('model.outputTags', tagMap);
     return true;
   },
 

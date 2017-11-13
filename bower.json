@@ -16,5 +16,8 @@
     "testem": "*",
     "d3": "3.5.17",
     "jsondiffpatch": "^0.2.4"
+  },
+  "devDependencies": {
+    "elasticsearch": "^13.3.1"
   }
 }

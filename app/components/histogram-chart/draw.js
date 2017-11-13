@@ -130,6 +130,10 @@ export default function(element, options = {}) {
     if (updating) {
       return;
     }
+    if (zoom.scale() === 1) {
+      // disable pan
+      // return;
+    }
     svg.select('.x.axis').call(xAxis);
     svg.select('.y.axis').call(yAxis);
     bars.attr(barAttr)
