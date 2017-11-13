@@ -9,6 +9,7 @@ export default Ember.Component.extend({
     const fmt = this.get('model.esLogstashDateformat');
     return moment().format(fmt);
   }.property('model.esLogstashDateformat'),
+
   dateFormatTypeLabel: function() {
     const fmt = this.get('model.esLogstashDateformat');
     switch (fmt) {
@@ -22,6 +23,7 @@ export default Ember.Component.extend({
       return null;
     }
   }.property('model.esLogstashDateformat'),
+
   dateFrequenceLabel: function() {
     const fmt = this.get('model.esLogstashDateformat');
     switch (fmt) {

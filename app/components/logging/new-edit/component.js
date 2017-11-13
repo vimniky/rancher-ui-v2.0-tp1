@@ -76,7 +76,9 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       return true;
     });
   },
+
   willSave() {
+    this.set('model.outputPort', Number(this.get('model.outputPort')) || 9200);
     const ok = this.validateTags();
     if (!ok) {
       return false;
@@ -88,6 +90,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this.set('model.outputRecords', tagMap);
     return true;
   },
+
   actions: {
     save(cb) {
       const targetType = this.get('targetType');

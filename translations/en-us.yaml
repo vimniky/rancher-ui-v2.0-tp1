@@ -1167,7 +1167,7 @@ loggingPage:
   loggingEnvLevel: Enable configure target at the environment level
   loggingClusterLevel: Configure target at the environment level
 
-  resultTip: 'The generated elasticsearch index name will be:'
+  resultTip: 'The generated Elasticsearch index name will be:'
   outputHost:
     label: Host
     placeholder: e.g. 192.168.33.176
@@ -1176,10 +1176,10 @@ loggingPage:
     placeholder: e.g. 9200
   esAuthUser:
     label: User Name
-    placeholder: Enter your elasticsearch user name
+    placeholder: Enter your Elasticsearch username
   esAuthPassword:
     label: Password
-    placeholder: Enter your elasticsearch user password
+    placeholder: Enter your Elasticsearch password
   outputPrefix:
     label: Prefix
     placeholder: e.g. logstash
