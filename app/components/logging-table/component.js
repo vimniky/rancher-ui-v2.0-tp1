@@ -31,6 +31,6 @@ export default Ember.Component.extend(FilterState, {
   },
   filteredLogs: function() {
     // todo
-    return true;
-  }.property('filtered.[],alertState,targetId'),
+    return this.get('model');
+  }.property('filtered.[]', 'alertState' ,'targetId'),
 });

@@ -8,45 +8,50 @@
 <section>
   <div class="row">
     <div class="col span-5-of-24">
-      <div class="input-group">
-        {{input class="form-control input-sm" type="search"}}
-        <span class="input-group-addon bg-primary icon icon-search"></span>
-      </div>
-
-      <div class="input-group mt-20 mb-40">
-        <span class="input-group-addon pl-0">Display</span>
-        {{new-select class="form-control input-sm"}}
-        <span class="input-group-addon">logs per page</span>
-      </div>
-
       <div class="box">
-        <label class="acc-label mt-0 pt-0 mb-10">Filter Results</label>
-        <div class="input-group">
-          <span class="input-group-addon bg-primary icon icon-search"></span>
-          {{new-select class="form-control input-sm" type="search"}}
-        </div>
-        <div class="input-group mv-20">
-          <span class="input-group-addon bg-primary icon icon-search"></span>
-          {{new-select class="form-control input-sm" type="search"}}
-        </div>
         <div class="input-group">
           <span class="input-group-addon bg-primary icon icon-history"></span>
-          {{new-select class="form-control input-sm" type="search"}}
+          {{new-select
+              class="form-control input-sm"
+              type="search"
+              content=quickTimeRanges
+              prompt="Time Rancge"
+          }}
         </div>
         <div class="input-group mt-20">
           {{new-select class="form-control input-sm"}}
           <span class="input-group-addon">To</span>
           {{new-select class="form-control input-sm"}}
         </div>
+        <div class="input-group mt-20">
+          <span class="input-group-addon bg-primary icon icon-search"></span>
+          {{new-select class="form-control input-sm" type="search"}}
+        </div>
+        <div class="input-group mt-20">
+          <span class="input-group-addon bg-primary icon icon-search"></span>
+          {{new-select class="form-control input-sm" type="search"}}
+        </div>
       </div>
+
+      <!-- <div class="input-group">
+           {{input class="form-control input-sm" type="search"}}
+           <span class="input-group-addon bg-primary icon icon-search"></span>
+           </div>
+         -->
+      <div class="input-group mt-20">
+        <span class="input-group-addon pl-0">Display</span>
+        {{new-select class="form-control input-sm"}}
+        <span class="input-group-addon">logs per page</span>
+      </div>
+
     </div>
 
     <div class="col span-19-of-24">
       <section>
-        {{histogram-chart}}
+        {{histogram-chart tableData=tableData}}
       </section>
       <section class="mt-20">
-        {{logging-table alertState=alertState targetId=null}}
+        {{logging-table model=tableData alertState=alertState targetId=null}}
       </section>
     </div>
 

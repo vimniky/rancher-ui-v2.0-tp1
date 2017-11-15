@@ -3,15 +3,15 @@ function dataGen(n) {
   for (; n > 0; n--) {
     let item = {}
     item.count = Math.ceil(Math.random() * 100);
-    item.date = d3.time.minute.offset(new Date(), Math.floor(Math.random() * 60));
+    item.date = d3.time.minute.offset(new Date(), Math.floor(n * 60));
     out.push(item);
   }
   return out;
 }
 
 const customTimeFormat = d3.time.format.multi([
-  ['.%L', function(d) { return d.getMilliseconds(); }],
-  [':%S', function(d) { return d.getSeconds(); }],
+  // ['%Lms', function(d) { return d.getMilliseconds(); }],
+  ['%Ss', function(d) { return d.getSeconds(); }],
   ['%I:%M', function(d) { return d.getMinutes(); }],
   ['%H:%M', function(d) { return  d.getHours(); }],
   ['%a %d', function(d) { return d.getDay() && d.getDate() != 1; }],
@@ -26,23 +26,25 @@ const customTimeFormat = d3.time.format.multi([
 export default function(element, options = {}) {
 
   let {
-    margin = {top: 5, right: 0, bottom: 30, left: 30},
+    margin = {top: 5, right: 0, bottom: 30, left: 40},
     width,
     height,
     barWidth = 16,
     barFill = '#A3C928',
     zoomStart = noop => noop,
     zoomEnd = noop => noop,
+    data = dataGen(100).filter((d, i) => i % 2),
+    maxBar = 100,
   } = options
 
   let updating = false;
-  const data = dataGen(100).filter((d, i) => i % 2);
   const duration = 400;
+  const currentTimeRange = d3.extent(data, d => new Date(d.date));
   width = width || $(element).width() - margin.left - margin.right;
   height = (height || 150) - margin.top - margin.bottom;
 
   const x = d3.time.scale()
-      .domain(d3.extent(data, d => d.date))
+      .domain(currentTimeRange)
       .range([0, width]);
 
   const y = d3.scale.linear()
@@ -53,14 +55,14 @@ export default function(element, options = {}) {
     class: 'bar',
     width: d => x(d.date) >= 0 ? barWidth : 0,
     height: d => y(0) - y(d.count),
-    x: d => x(d.date)  - 20,
+    x: d => x(d.date),
     y: d => y(d.count),
   }
 
   const barAttr = {
     width: d => x(d.date) >= 0 ? barWidth : 0,
     height: d => y(0) - y(d.count),
-    x: d => x(d.date) ,
+    x: d => x(d.date),
     y: d => y(d.count),
   }
 
@@ -79,9 +81,12 @@ export default function(element, options = {}) {
     .tickSize(6)
     .tickPadding(10);
 
+  const zoomMin = 1;
+  const zoomMax = 10;
+  console.log(zoomMax)
   const zoom = d3.behavior.zoom()
     .x(x)
-    .scaleExtent([1, 10])
+    .scaleExtent([zoomMin, zoomMax])
     .size([width, height])
     .on('zoomstart', zoomStart)
     .on('zoomend', zoomEnd)
@@ -108,7 +113,9 @@ export default function(element, options = {}) {
     .enter()
     .append('rect')
     .attr(initialBarAttr)
-    .style('fill', '#fff');
+    .style('fill', '#fff')
+    .style('strokeWidth', 1)
+    .style('stroke', '#fff');
 
   bars
     .transition()
@@ -126,17 +133,25 @@ export default function(element, options = {}) {
     .attr('class', 'y axis')
     .call(yAxis);
 
+  let previousDomain = currentTimeRange;
   function zoomed() {
     if (updating) {
+      // rollback x.domain
+      x.domain(previousDomain)
       return;
     }
-    if (zoom.scale() === 1) {
-      // disable pan
-      // return;
+    // limit the x pan extent
+    const xmin = currentTimeRange[0];
+    const xmax = currentTimeRange[1];
+    if (x.domain()[0] < xmin) {
+      zoom.translate([zoom.translate()[0] - x(xmin) + x.range()[0], zoom.translate()[1]]);
+    } else if (x.domain()[1] > xmax) {
+      zoom.translate([zoom.translate()[0] - x(xmax) + x.range()[1], zoom.translate()[1]]);
     }
     svg.select('.x.axis').call(xAxis);
     svg.select('.y.axis').call(yAxis);
     bars.attr(barAttr)
+    previousDomain = x.domain();
   }
   let timer = null;
   function update(data) {
