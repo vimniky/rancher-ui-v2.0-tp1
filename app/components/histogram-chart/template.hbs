@@ -8,9 +8,30 @@
        <span class="input-group-addon bg-primary icon icon-search"></span>
        </div> -->
   <!-- <hr class="mb-0 pb-0"/> -->
-  <div class="text-center mt-0">
-    From <span class="text-info">November 13th 2017, 23:11:44.351</span> To  <span class="text-info">November 14th 2017, 17:31:55.212</span> <span class="text-success">34252</span> Hits
+  <div class="row">
+    <div class="col span-1 mt-0 pt-5">
+      <span class="text-success">{{hits}}</span> Hit
+    </div>
+    <div class="col span-6 pt-5 mt-0">
+      <span class="text-info">November 13th 2017, 23:11:44</span> To  <span class="text-info">November 14th 2017, 17:31:55</span>
+    </div>
+
+    <div class="col span-4 mt-0">
+      <div class="input-group" >
+        <span class="input-group-addon">Grouped by</span>
+        {{new-select
+            class="input-sm"
+        }}
+      </div>
+    </div>
   </div>
 </section>
 
-<div class="logging-chart"></div>
+<section class="chart-container">
+  <div class="logging-chart"></div>
+  {{#if updating}}
+    <div class="overlay">
+      <i class="icon icon-spinner icon-spin"></i>
+    </div>
+  {{/if}}
+</section>

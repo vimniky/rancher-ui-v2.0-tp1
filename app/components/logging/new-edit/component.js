@@ -11,7 +11,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   loggingAuth: null,
   tags: null,
 
-  errors: [],
+  errors: null,
   targetChoices: null,
 
   init() {
@@ -29,7 +29,12 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     }
     this.set('targetChoices', targetTypeOptions);
   },
-  namespaceLoggingAuthChanged: function() {
+  persistentDisable: function() {
+    const om = this.get('originalModel');
+    om.set('enable', this.get('model.enable'));
+    om.save();
+  }.observes('model.enable'),
+  persistentNamespaceLoggingAuth: function() {
     // persistent loggingAuth when change
     this.get('loggingAuth').save();
   }.observes('loggingAuth.enableNamespaceLogging'),
@@ -72,6 +77,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   willSave() {
     this.set('model.esPort', Number(this.get('model.esPort')) || 9200);
+    this.set('model.targetType', this.get('targetType'));
     const ok = this.validateTags();
     if (!ok) {
       return false;
@@ -86,12 +92,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   actions: {
     save(cb) {
-      const targetType = this.get('targetType');
-      if (targetType === 'embedded') {
-        getOwner(this).lookup('router:main').transitionTo('logging.dashboard');
-        cb();
-        return;
-      }
       Ember.RSVP.resolve(this.willSave()).then(ok => {
         if (!ok) {
           cb(false);
@@ -111,7 +111,13 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   },
 
   doneSaving(neu, cb) {
-    cb(true);
+    const targetType = this.get('targetType');
+    if (targetType === 'embedded') {
+      getOwner(this).lookup('router:main').transitionTo('logging.dashboard');
+      cb();
+    } else {
+      cb(true);
+    }
     this._super(neu);
   },
 });

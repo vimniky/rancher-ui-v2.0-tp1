@@ -1,37 +1,37 @@
 import Ember from 'ember';
+import _ from './moment-round';
 import draw from './draw';
 
-const timeIntervals = [
-  {unit: 'second', value: 1, id: '1s'},
-  {unit: 'minute', value: 1, id: '1m'},
-  {unit: 'hour', value: 1, id: '1h'},
-  {unit: 'day', value: 1, id: '1d'},
-  {unit: 'week', value: 1, id: '1w'},
-  {unit: 'month', value: 1, id: '1M'},
-  {unit: 'year', value: 1, id: '1y'},
+const intervals = [
+  {unit: 'second', value: 1, id: '1s', durationKey: 'asSeconds'},
+  {unit: 'minute', value: 1, id: '1m', durationKey: 'asMinutes'},
+  {unit: 'hour', value: 1, id: '1h', durationKey: 'asHours'},
+  {unit: 'day', value: 1, id: '1d', durationKey: 'asDays'},
+  {unit: 'week', value: 1, id: '1w', durationKey: 'asWeeks'},
+  {unit: 'month', value: 1, id: '1M', durationKey: 'asMonths'},
+  {unit: 'year', value: 1, id: '1y', durationKey: 'asYears'},
 ];
-
-// const duration = moment.duration(end.diff(startTime));
-// const hours = duration.asHours();
 
 export default Ember.Component.extend({
   classNames: ['histogram-chart'],
   chart: null,
 
-  dateRange: null,
   maxBarNum: 80,
 
+  marginTop: 5,
+  marginRight: 20,
+  marginBottom: 40,
+  marginLeft: 40,
+  width: null,
+  height: 150,
+
+  hits: 0,
   tableData: null,
-  histogramData: null,
+  chartData: null,
+  updating: false,
 
   init() {
     this._super();
-    if (!this.get('dateRange')) {
-      this.set('dateRange', {
-        from: moment(new Date()).subtract(16, 'minutes').toDate().getTime(),
-        to: new Date().getTime(),
-      });
-    }
     const client = new $.es.Client({
       hosts: 'https://localhost:8000/es',
       // httpAuth: 'username:passowrd',
@@ -40,27 +40,25 @@ export default Ember.Component.extend({
       this.set('data', []);
     }
     this.set('client', client);
-    this.search();
   },
 
-  getTimeUnit(diff, unitAry) {
-    const maxBarNum = this.get('maxBarNum');
-    let fact = diff / 1000 / maxBarNum;
-    let unit;
-    unitAry.some(u => {
-      const nextFact = fact / Number(u[0]);
-      if (nextFact < 1) {
-        unit =  u[1];
-        return true;
+  computeDateRange() {
+    const chart = this.get('chart');
+    if (!chart) {
+      return {
+        from: moment(new Date()).subtract(15, 'minutes').valueOf(),
+        to: new Date().getTime(),
       }
-      fact = nextFact;
-      return false;
-    });
-    return unit;
+    }
+    const domain = chart.x.domain();
+    return {
+      from: domain[0].getTime(),
+      to: domain[1].getTime(),
+    }
   },
 
   computeInterval: function() {
-    const defaultInterval = '1m';
+    const defaultInterval = intervals[1];
     if (!this.get('chart')) {
       return defaultInterval;
     }
@@ -69,18 +67,18 @@ export default Ember.Component.extend({
     if (!x) {
       return defaultInterval;
     }
-    const [startTs, endTs] = x.domain();
+    const {from, to} = this.computeDateRange();
     let interval = defaultInterval;
-    timeIntervals.some(t => {
-      const start = moment(startTs.getTime());
+    intervals.some(t => {
       // moment use plur words
       // e.g. start.subtract(1, 'days').
-      const end = moment(endTs.getTime()).subtract(t.value * maxBarNum, t.unit + 's');
+      const start = moment(from);
+      const end = moment(to).subtract(t.value * maxBarNum, t.unit + 's');
       if (end.isAfter(start)) {
         // return false to continue
         return false;
       }
-      interval = t.id;
+      interval = t;
       return true;
     });
     return interval;
@@ -88,6 +86,8 @@ export default Ember.Component.extend({
 
   search() {
     const thiz = this;
+    const {id, unit, value} = this.computeInterval();
+    const {from, to} = this.computeDateRange();
     const options = {
       // index: 'cattle-system-2017.11.13',
       index: '_all',
@@ -98,8 +98,8 @@ export default Ember.Component.extend({
         query: {
           range: {
             '@timestamp': {
-              gte: this.get('dateRange').from,
-              lt: this.get('dateRange').to,
+              from: moment(from).floor(value, unit + 's').valueOf(),
+              to: moment(to).ceil(value, unit + 's').valueOf(),
             },
           }
         },
@@ -107,7 +107,7 @@ export default Ember.Component.extend({
           count: {
             date_histogram: {
               field: '@timestamp',
-              interval: this.computeInterval(),
+              interval: id,
             }
           }
         }
@@ -124,46 +124,73 @@ export default Ember.Component.extend({
           containerName: s.kubernetes.container_name,
         }
       });
-      thiz.set('tableData', tableData)
-      const histogramData = aggregations.count.buckets.map(b => {
+      const chartData = aggregations.count.buckets.map(b => {
         return {
           count: b.doc_count,
           date: b.key,
         }
       });
-      thiz.set('histogramData', histogramData);
+      thiz.set('hits', hits.total);
+      thiz.set('tableData', tableData)
+      thiz.set('chartData', chartData);
+      return {
+        chartData,
+        tableData,
+      };
     }, function (error) {
       console.trace(error.message);
     });
   },
 
-  zoomStart() {
-    return function() {
-    }
-  },
-
+  zoomTimer: null,
   zoomEnd() {
     const thiz = this;
     return function() {
-      // if zoom out or pan, fetch new data & update chart
-      const {zoom: {scale, translate}, x} = thiz.get('chart')
+      const timer = thiz.get('zoomTimer');
+      if (timer) {
+        Ember.run.cancel(timer)
+      }
       // todo
+      const t = Ember.run.later(() => {
+        thiz.set('updating', true);
+        thiz.updateChart();
+      }, 1000);
+      thiz.set('zoomTimer', t);
     }
   },
-
-  updateChart: function() {
-    const data = this.get('histogramData');
-    if (data) {
-      const chart = draw('.histogram-chart .logging-chart', {
-        zoomEnd: this.zoomEnd(),
-        zoomStart: this.zoomStart(),
-        data,
-        maxBarNum: this.get('maxBarNum')
-      });
-      this.set('chart', chart);
-    }
-  }.observes('histogramData'),
 
   didInsertElement() {
+    this.search().then(res => {
+      this.initChart(res.chartData);
+    })
   },
+
+  initChart() {
+    const chart = draw('.histogram-chart .logging-chart', {
+      data: this.get('chartData'),
+      width: this.get('width'),
+      height: this.get('height'),
+      barFill: '#A3C928',
+      marginTop: this.get('marginTop'),
+      marginRight: this.get('marginRight'),
+      marginBottom: this.get('marginBottom'),
+      marginLeft: this.get('marginLeft'),
+      zoomEnd: this.zoomEnd(),
+      maxBarNum: this.get('maxBarNum'),
+      interval: this.computeInterval(),
+    });
+    this.set('chart', chart);
+  },
+
+  updateChart() {
+    const chart = this.get('chart');
+    this.search().then(res => {
+      chart.update({
+        data: res.chartData,
+        interval: this.computeInterval(),
+      });
+      this.set('updating', false);
+    });
+  },
+
 });

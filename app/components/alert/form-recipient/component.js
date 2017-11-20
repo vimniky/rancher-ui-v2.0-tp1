@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const recipientTypes = ['slack', 'email','pagerduty'];
+const recipientTypes = ['slack', 'email','pagerduty', 'webhook'];
 
 export default Ember.Component.extend({
   tagName: 'table',

@@ -33,7 +33,7 @@
 
 
 {{#if model.enable}}
-  {{logging/targets-nav}}
+  {{logging/targets-nav enable=model.enable}}
   {{#if (eq targetType 'elasticsearch')}}
     {{logging/target-elasticsearch model=model tags=tags}}
   {{else if (eq targetType 'embedded')}}
