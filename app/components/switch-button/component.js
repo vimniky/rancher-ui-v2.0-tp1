@@ -7,16 +7,11 @@ export default Ember.Component.extend({
   onLabel: null,
   offLabel: null,
   disabled: false,
-  actions: {
-    switchOn() {
-      if (!this.get('disabled')) {
-        this.set('checked', true);
-      }
-    },
-    switchOff() {
-      if (!this.get('disabled')) {
-        this.set('checked', false);
-      }
-    },
-  },
+  switched: function() {
+    if (this.get('checked') === true) {
+      this.sendAction('switch', true);
+    } else {
+      this.sendAction('switch', false);
+    }
+  }.observes('checked'),
 });

@@ -29,40 +29,22 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     }
     this.set('targetChoices', targetTypeOptions);
   },
-  persistentDisable: function() {
-    const om = this.get('originalModel');
-    om.set('enable', this.get('model.enable'));
-    om.save();
-  }.observes('model.enable'),
+
   persistentNamespaceLoggingAuth: function() {
     // persistent loggingAuth when change
     this.get('loggingAuth').save();
   }.observes('loggingAuth.enableNamespaceLogging'),
+
   isClusterLevel: function() {
-    return this.get('namespace') === 'system';
+    return this.get('namespace') === 'cattle-system';
   }.property('namespace'),
 
   headerLabel: function() {
-    const ns = this.get('namespace');
-    return this.get('intl').t(ns === 'system' ? 'loggingPage.header.cluster' : 'loggingPage.header.env');
-  }.property('namespace'),
+    return this.get('intl').t(this.get('isClusterLevel') ? 'loggingPage.header.cluster' : 'loggingPage.header.env');
+  }.property('isClusterLevel'),
 
   didReceiveAttrs() {
-    const store = this.get('loggingStore');
-    if (this.get('originalModel')) {
-      this.set('model', this.get('originalModel').clone());
-    } else {
-      let namespace = this.get('namespace');
-      namespace = namespace === 'system' ? 'cattle-system' : namespace
-      const newLogging = store.createRecord({
-        type: 'logging',
-        namespace,
-        esLogstashPrefix: namespace,
-        esLogstashFormat: false,
-        targetType: this.get('targetType'),
-      });
-      this.set('model', newLogging);
-    }
+    this.set('originalModel', this.get('model').clone());
   },
 
   validateTags() {
@@ -108,11 +90,18 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
           });
       });
     },
+    switch(enable) {
+      const om = this.get('originalModel');
+      if (!enable) {
+        om.set('enable', enable);
+        om.save();
+      }
+    }
   },
 
   doneSaving(neu, cb) {
     const targetType = this.get('targetType');
-    if (targetType === 'embedded') {
+    if (targetType === 'embedded' && this.get('isClusterLevel')) {
       getOwner(this).lookup('router:main').transitionTo('logging.dashboard');
       cb();
     } else {

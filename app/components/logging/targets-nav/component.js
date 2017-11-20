@@ -25,6 +25,8 @@ export default Ember.Component.extend({
         available: true,
         disabled: false,
       },
-    ];
-  }.property(),
+    ].filter(item => {
+      return this.get('isClusterLevel') || item.type !== 'embedded';
+    });
+  }.property('isClusterLevel'),
 });

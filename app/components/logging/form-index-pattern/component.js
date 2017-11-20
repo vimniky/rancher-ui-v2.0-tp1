@@ -13,23 +13,20 @@ export default Ember.Component.extend(getEnumFieldOptions, {
 
   status: function() {
     let k = STATUS.STANDARD;
-    const found = this.get('loggingStore')
-          .getById('logging', this.get('model.id'))
-    if (found) {
-      const prefix = found.get('esLogstashPrefix');
-      const format = found.get('esLogstashDateformat');
-      const p = this.get('model.esLogstashPrefix');
-      const f = this.get('model.esLogstashDateformat');
-      if (!prefix) {
-        k = STATUS.INCOMPLETE;
-      }
-      if (prefix !== p || format !== f) {
-        k = STATUS.CONFIGURED;
-      }
+    const om = this.get('originalModel');
+    const prefix = om.get('esLogstashPrefix');
+    const format = om.get('esLogstashDateformat');
+    const p = this.get('model.esLogstashPrefix');
+    const f = this.get('model.esLogstashDateformat');
+    if (!prefix) {
+      k = STATUS.INCOMPLETE;
+    }
+    if (prefix !== p || format !== f) {
+      k = STATUS.CONFIGURED;
     }
     this.set('statusClass', classForStatus(k));
     return this.get('intl').t(`${STATUS_INTL_KEY}.${k}`);
-  }.property('model.{esLogstashDateformat,esLogstashPrefix}'),
+  }.property('model.{esLogstashDateformat,esLogstashPrefix}', 'originalModel.{esLogstashDateformat,esLogstashPrefix}'),
 
   dateFormatString: function() {
     const fmt = this.get('model.esLogstashDateformat');

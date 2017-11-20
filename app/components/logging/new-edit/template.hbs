@@ -5,6 +5,7 @@
 <section class="box mv-20">
   {{switch-button
       checked=model.enable
+      switch="switch"
       onLabel="generic.enable"
       offLabel="generic.disable"
   }}
@@ -33,11 +34,13 @@
 
 
 {{#if model.enable}}
-  {{logging/targets-nav enable=model.enable}}
+  {{logging/targets-nav isClusterLevel=isClusterLevel}}
   {{#if (eq targetType 'elasticsearch')}}
-    {{logging/target-elasticsearch model=model tags=tags}}
+    {{logging/target-elasticsearch model=model originalModel=originalModel tags=tags}}
   {{else if (eq targetType 'embedded')}}
-    {{logging/target-embedded model=model}}
+    {{#if isClusterLevel}}
+      {{logging/target-embedded model=model}}
+    {{/if}}
   {{else if (eq targetType 'splunk')}}
     {{logging/target-splunk model=model}}
   {{/if}}
