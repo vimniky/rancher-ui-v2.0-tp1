@@ -48,10 +48,10 @@
 
     <div class="col span-19-of-24">
       <section>
-        {{histogram-chart tableData=tableData}}
+        {{logging-dashboard/logging-chart tableData=tableData}}
       </section>
       <section class="mt-20">
-        {{logging-table model=tableData alertState=alertState targetId=null}}
+        {{logging-dashboard/logging-table model=tableData alertState=alertState targetId=null}}
       </section>
     </div>
 

@@ -12,7 +12,7 @@
   as |sortable kind row dt|
 }}
   {{#if (eq kind "row")}}
-    {{logging-row
+    {{logging-dashboard/logging-row
         model=row
         searchText=searchText
         subMatches=sortable.subMatches

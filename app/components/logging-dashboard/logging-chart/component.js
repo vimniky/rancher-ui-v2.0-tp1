@@ -178,6 +178,7 @@ export default Ember.Component.extend({
       zoomEnd: this.zoomEnd(),
       maxBarCount: this.get('maxBarCount'),
       interval: this.computeInterval(),
+      timeRange: this.computeDateRange(),
     });
     this.set('chart', chart);
   },

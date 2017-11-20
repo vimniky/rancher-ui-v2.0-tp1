@@ -26,14 +26,16 @@ export default function(element, options = {}) {
     zoomEnd = noop => noop,
     data,
     interval,
+    timeRange,
   } = options
 
-  const currentTimeRange = d3.extent(data, d => new Date(d.date));
+  // const currentTimeRange = d3.extent(data, d => new Date(d.date));
   width = width || $(element).width() - marginLeft - marginRight;
   height = (height || 150) - marginTop - marginBottom;
 
+  const timeDomain = [new Date(timeRange.from), new Date(timeRange.to)]
   const x = d3.time.scale()
-      .domain(currentTimeRange)
+      .domain(timeDomain)
       .range([0, width]);
 
   const y = d3.scale.linear()
@@ -63,7 +65,7 @@ export default function(element, options = {}) {
     y: d => y(d.count),
   }
 
-  const zoomMin = 0.1;
+  const zoomMin = 1;
   const zoomMax = 10;
   const zoom = d3.behavior.zoom()
     .x(x)
