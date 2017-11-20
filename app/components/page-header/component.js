@@ -60,6 +60,10 @@ export default Ember.Component.extend(HoverDropdown, {
     this.set('stacks', this.get('store').all('stack'));
     this.set('hosts', this.get('store').all('host'));
     this.set('stackSchema', this.get('store').getById('schema','stack'));
+
+    const loggingAuth = this.get('loggingStore').all('loggingAuth').get('firstObject')
+    this.set('loggingAuth', loggingAuth);
+
     this.updateNavTree();
     Ember.run.scheduleOnce('render', () => {
       //responsive nav 63-87
@@ -120,6 +124,12 @@ export default Ember.Component.extend(HoverDropdown, {
           return fnOrValue(prop, this);
         });
 
+        if (subitem.id === 'tools-logging') {
+          const ns = this.get('projects.current').name.toLowerCase();
+          const isClusterLevel = ns === 'system';
+          return isClusterLevel || this.get('loggingAuth.enableNamespaceLogging');
+        }
+
         return true;
       });
 
@@ -128,7 +138,6 @@ export default Ember.Component.extend(HoverDropdown, {
 
     this.set('navTree', out);
   },
-
   shouldUpdateNavTree: function() {
     Ember.run.scheduleOnce('afterRender', this, 'updateNavTree');
   }.observes(
@@ -138,7 +147,9 @@ export default Ember.Component.extend(HoverDropdown, {
     `prefs.${C.PREFS.ACCESS_WARNING}`,
     'access.enabled',
     'isAdmin',
-    'intl.locale'
+    'intl.locale',
+    'projects.current.name',
+    'loggingAuth.enableNamespaceLogging'
   ),
 
   // Utilities you can use in the condition() function to decide if an item is shown or hidden,
