@@ -64,40 +64,10 @@
       expandAll=al.expandAll
       expandFn=expandFn
   }}
-  {{#accordion-list-item
-      title="Flush interval"
-      detail="How often logs would be flushed from fluentd to elasticearch"
-      status=status
-      statusClass=statusClass
-      expandAll=expandAll
-      expand=(action expandFn)
+  {{logging/form-flush-interval
+      originalFlushInterval=originalModel.outputFlushInterval
+      flushInterval=model.outputFlushInterval
+      expandAll=al.expandAll
+      expandFn=expandFn
   }}
-    <div class="row">
-      <div class="col span-4">
-        <label class="acc-label">{{t 'loggingPage.flushInterval.label'}}</label>
-        <div class="input-group">
-          {{input-integer
-              min=1
-              value=model.outputFlushInterval
-              class="form-control"
-              placeholder=(t 'loggingPage.flushInterval.placeholder')
-              aria-describedby="basic-addon2"
-          }}
-          <span class="input-group-addon bg-default" id="basic-addon2">sec</span>
-        </div>
-      </div>
-      <!-- <div class="col text-right span-8" style="padding-top:33px;">
-          <div style="display:flex; justify-content: flex-end">
-          <div class="mr-30">
-          {{input type="checkbox" name="esIncludeTagKey" id="esIncludeTagKey" checked=model.esIncludeTagKey}}
-          <label for="logstashFormat">{{t 'loggingPage.esIncludeTagKey'}}</label>
-          </div>
-          <div>
-          {{input type="checkbox" name="esLogstashFormat" id="esLogstashFormat" checked=model.esLogstashFormat}}
-          <label for="logstashFormat">{{t 'loggingPage.logstashFormat'}}</label>
-          </div>
-          </div>
-          </div> -->
-    </div>
-  {{/accordion-list-item}}
 {{/accordion-list}}

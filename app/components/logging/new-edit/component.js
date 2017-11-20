@@ -65,6 +65,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   willSave() {
     this.set('model.esPort', Number(this.get('model.esPort')) || 9200);
     this.set('model.splunkPort', Number(this.get('model.esPort')) || 9200);
+    this.set('model.outputFlushInterval', Number(this.get('model.outputFlushInterval')) || 1);
     this.set('model.targetType', this.get('targetType'));
     const ok = this.validateTags();
     if (!ok) {
