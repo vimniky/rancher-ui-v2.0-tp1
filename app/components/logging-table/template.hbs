@@ -8,10 +8,16 @@
   headers=headers
   body=model
   fullRows=true
+  fullColspan=true
   as |sortable kind row dt|
 }}
   {{#if (eq kind "row")}}
-    {{logging-row model=row}}
+    {{logging-row
+        model=row
+        searchText=searchText
+        subMatches=sortable.subMatches
+        fullColspan=sortable.fullColspan
+    }}
   {{else if (eq kind "nomatch")}}
     <tr>
       <td colspan="{{sortable.fullColspan}}" class="text-center text-muted pt-20 pb-20">{{t 'loggingDashboardPage.table.noMatch'}}</td>

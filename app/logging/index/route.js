@@ -8,7 +8,6 @@ export default Ember.Route.extend({
     // system <--> cattle-system
     // k8s' cattle-system namespace is mapped into rancher's system environemnt
     let ns = this.get('projects.current').name.toLowerCase();
-    console.log(ns);
     const isClusterLevel = ns === 'system';
     ns = isClusterLevel ? 'cattle-system' : ns
     this.set('namespace', ns);
@@ -34,6 +33,15 @@ export default Ember.Route.extend({
         return las.get('firstObject');
       }),
     });
+  },
+  redirect(model) {
+    const logging = model.logging;
+    const canRedirectToDashboard = logging.get('enable') && logging.get('id')
+          && logging.get('targetType') === 'embedded' && this.get('isClusterLevel');
+    if (!this.get('preventDirect') && canRedirectToDashboard) {
+      this.transitionTo('logging.dashboard');
+    }
+    this.set('preventDirect', false);
   },
   setupController(controller, model) {
     const logging = model.logging;

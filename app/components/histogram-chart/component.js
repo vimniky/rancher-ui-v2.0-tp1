@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import _ from './moment-round';
+import './moment-round';
 import draw from './draw';
 
 const intervals = [
@@ -16,7 +16,7 @@ export default Ember.Component.extend({
   classNames: ['histogram-chart'],
   chart: null,
 
-  maxBarNum: 80,
+  maxBarCount: 80,
 
   marginTop: 5,
   marginRight: 20,
@@ -46,7 +46,7 @@ export default Ember.Component.extend({
     const chart = this.get('chart');
     if (!chart) {
       return {
-        from: moment(new Date()).subtract(15, 'minutes').valueOf(),
+        from: moment(new Date()).subtract(45, 'minutes').valueOf(),
         to: new Date().getTime(),
       }
     }
@@ -62,7 +62,7 @@ export default Ember.Component.extend({
     if (!this.get('chart')) {
       return defaultInterval;
     }
-    const maxBarNum = this.get('maxBarNum');
+    const maxBarCount = this.get('maxBarCount');
     const {x} = this.get('chart');
     if (!x) {
       return defaultInterval;
@@ -73,7 +73,7 @@ export default Ember.Component.extend({
       // moment use plur words
       // e.g. start.subtract(1, 'days').
       const start = moment(from);
-      const end = moment(to).subtract(t.value * maxBarNum, t.unit + 's');
+      const end = moment(to).subtract(t.value * maxBarCount, t.unit + 's');
       if (end.isAfter(start)) {
         // return false to continue
         return false;
@@ -89,9 +89,9 @@ export default Ember.Component.extend({
     const {id, unit, value} = this.computeInterval();
     const {from, to} = this.computeDateRange();
     const options = {
-      // index: 'cattle-system-2017.11.13',
-      index: '_all',
-      type: 'container_log',
+      // index: 'cattle-system-2017.11.10',
+      index: 'clusterid-cattle-system*',
+      type: '',
       body: {
         from: 0,
         size: 10,
@@ -113,7 +113,7 @@ export default Ember.Component.extend({
         }
       },
     };
-    console.log('options------', options);
+    console.log('_search', options);
     return this.get('client').search(options).then(function (body) {
       const {hits, aggregations} = body;
       const tableData = hits.hits.map(h => {
@@ -176,7 +176,7 @@ export default Ember.Component.extend({
       marginBottom: this.get('marginBottom'),
       marginLeft: this.get('marginLeft'),
       zoomEnd: this.zoomEnd(),
-      maxBarNum: this.get('maxBarNum'),
+      maxBarCount: this.get('maxBarCount'),
       interval: this.computeInterval(),
     });
     this.set('chart', chart);

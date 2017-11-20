@@ -3,10 +3,16 @@ import FilterState from 'ui/mixins/filter-state';
 
 const headers = [
   {
+    name: 'expand',
+    sort: false,
+    searchField: null,
+    width: 30
+  },
+  {
     translationKey: 'loggingDashboardPage.table.timestamp',
     name: 'timestamp',
     sort: ['timestamp'],
-    width: '200'
+    width: '160'
   },
   {
     translationKey: 'loggingDashboardPage.table.log',
@@ -17,7 +23,7 @@ const headers = [
     translationKey: 'loggingDashboardPage.table.containerName',
     name: 'containerName',
     sort: ['containerName'],
-    width: '180'
+    width: '160'
   },
 ];
 

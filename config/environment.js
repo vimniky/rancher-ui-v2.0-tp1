@@ -100,7 +100,7 @@ module.exports = function(environment) {
       // monitoringApiServer: 'http://localhost:8888',
       // loggingApiServer: 'http://localhost:8090',
       monitoringApiServer: 'http://47.52.113.11:31651',
-      esApiServer: 'http://47.52.113.11:30022',
+      esApiServer: 'http://47.52.113.11:30032',
       esEndpoint: '/es',
       monitoringEndpoint: '/v5',
       loggingEndpoint: '/v6',

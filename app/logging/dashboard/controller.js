@@ -49,5 +49,11 @@ export default Ember.Controller.extend({
       ];
       this.set('quickTimeRanges', qt);
     }
+  },
+  actions: {
+    gotoConfigure() {
+      Ember.getOwner(this).lookup('route:logging.index').set('preventDirect', true);
+      this.transitionToRoute('logging');
+    }
   }
 });

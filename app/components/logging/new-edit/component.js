@@ -13,7 +13,12 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   errors: null,
   targetChoices: null,
-
+  canRedirectToDashboard: function() {
+    const om = this.get('originalModel')
+    const can = om.get('enable') && om.get('id')
+          && om.get('targetType') === 'embedded' && this.get('isClusterLevel');
+    return can;
+  }.property('originalModel.{id,targetType,enable}', 'isClusterLevel'),
   init() {
     this._super(...arguments);
     if (!this.get('tags')) {
@@ -59,6 +64,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   willSave() {
     this.set('model.esPort', Number(this.get('model.esPort')) || 9200);
+    this.set('model.splunkPort', Number(this.get('model.esPort')) || 9200);
     this.set('model.targetType', this.get('targetType'));
     const ok = this.validateTags();
     if (!ok) {

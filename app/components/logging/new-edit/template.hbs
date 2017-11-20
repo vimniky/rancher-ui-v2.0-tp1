@@ -1,5 +1,12 @@
-<section class="header has-tabs clearfix">
+<section class="header clearfix">
   <h1 class="pull-left">{{headerLabel}}</h1>
+  {{#if canRedirectToDashboard}}
+    <div class="pull-right">
+      {{#link-to "logging.dashboard"}}
+          <span class="btn btn-sm bg-primary">Dashboard</span>
+      {{/link-to}}
+    </div>
+  {{/if}}
 </section>
 
 <section class="box mv-20">
