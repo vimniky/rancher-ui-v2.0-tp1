@@ -78,7 +78,7 @@ export default Ember.Component.extend(Driver, {
       return regions[environment];
   }),
 
-  evironmentChoiceObserver: Ember.observer('azureConfig.environment', function() {
+  environmentChoiceObserver: Ember.observer('azureConfig.environment', function() {
       let environment = this.get('azureConfig.environment');
       this.set('azureConfig.location', regions[environment][0].name);
   }),

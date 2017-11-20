@@ -56,6 +56,8 @@ export default Ember.Route.extend({
     if (isExisting) {
       controller.set('namespace', null);
       controller.set('model', null);
+      controller.set('model', null);
+      controller.set('targetType', this.get('model.logging.targetType'));
     }
   },
 });
