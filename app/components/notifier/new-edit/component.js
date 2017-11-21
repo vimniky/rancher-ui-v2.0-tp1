@@ -21,13 +21,13 @@ export default Ember.Component.extend(NewOrEdit, {
         available: true,
         disabled: false,
       },
-      {
-        route: 'notifiers.pagerduty',
-        label: '',
-        css: 'pagerduty',
-        available: true,
-        disabled: false,
-      },
+      // {
+      //   route: 'notifiers.pagerduty',
+      //   label: '',
+      //   css: 'pagerduty',
+      //   available: true,
+      //   disabled: false,
+      // },
     ];
   }.property(),
 

@@ -21,8 +21,8 @@
   {{notifier/form-email emailConfig=model.emailConfig}}
 {{else if (eq notifierType 'slack')}}
   {{notifier/form-slack slackApiUrl=model.slackConfig.slackApiUrl}}
-{{else if (eq notifierType 'pagerduty')}}
-  {{notifier/form-pagerduty pagerdutyUrl=model.pagerdutyConfig.pagerdutyUrl}}
+  <!-- {{else if (eq notifierType 'pagerduty')}}
+       {{notifier/form-pagerduty pagerdutyUrl=model.pagerdutyConfig.pagerdutyUrl}} -->
 {{/if}}
 {{top-errors errors=errors}}
 {{save-cancel cancelDisabled=true editing=true save="save"}}
