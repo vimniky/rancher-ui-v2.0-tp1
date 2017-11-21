@@ -14,9 +14,9 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   errors: null,
   targetChoices: null,
   canRedirectToDashboard: function() {
-    const om = this.get('originalModel')
-    const can = om.get('enable') && om.get('id')
-          && om.get('targetType') === 'embedded' && this.get('isClusterLevel');
+    const cl = this.get('currentLogging')
+    const can = cl.get('enable') && cl.get('id')
+          && cl.get('targetType') === 'embedded' && this.get('isClusterLevel');
     return can;
   }.property('originalModel.{id,targetType,enable}', 'isClusterLevel'),
   init() {
@@ -101,12 +101,16 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       const om = this.get('originalModel');
       if (!enable) {
         om.set('enable', enable);
-        om.save();
+        om.save().then(neu => {
+          this.set('currentLogging', neu);
+        });
       }
     }
   },
 
   doneSaving(neu, cb) {
+    // update the currentLogging afer logging has been saved
+    this.set('currentLogging', neu);
     const targetType = this.get('targetType');
     if (targetType === 'embedded' && this.get('isClusterLevel')) {
       getOwner(this).lookup('router:main').transitionTo('logging.dashboard');

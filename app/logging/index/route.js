@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   projects: Ember.inject.service(),
   namespace: null,
+  currentLogging: null,
   model() {
     const store = this.get('loggingStore');
     // system <--> cattle-system
@@ -23,6 +24,8 @@ export default Ember.Route.extend({
             esLogstashPrefix: ns,
             esLogstashFormat: false,
           });
+        } else {
+          this.set('currentLogging', logging.clone());
         }
         if (!logging.get('targetType')) {
           logging.set('targetType', defaultTarget);
@@ -46,6 +49,7 @@ export default Ember.Route.extend({
   setupController(controller, model) {
     const logging = model.logging;
     controller.set('namespace', this.get('namespace'));
+    controller.set('currentLogging', this.get('currentLogging'));
     const enable = logging.get('enable');
     if (enable && !controller.get('targetType')) {
       controller.set('targetType', logging.get('targetType'));

@@ -1160,7 +1160,7 @@ loggingPage:
     env: Configure logging at environment level
     cluster: Configure logging at cluster level
   tips:
-    env:  Namespace logging target will not overwrite cluster logging target.
+    env:  Environment logging target will not overwrite cluster logging target.
     cluster: Admins only. Congfiguration at cluster level is only available to admin level users.
   targetType:
     label: Target

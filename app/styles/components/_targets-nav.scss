@@ -15,6 +15,23 @@
     background-size: 110px 70px;
     background-position: center 30%!important;
   }
+
+}
+.nav-boxes {
+  &.checked-current .current:after {
+    content          : $icon-check;
+    top              : -15px;
+    right            : -15px;
+    font-family      : 'rancher-icons';
+    font-size        : 18px;
+    position         : absolute;
+    background-color : $info;
+    height           : 29px;
+    width            : 29px;
+    line-height      : 30px;
+    border-radius    : 50%;
+    color            : white;
+  }
 }
 
 .notifier-type {
