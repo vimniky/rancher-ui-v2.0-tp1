@@ -1,25 +1,6 @@
 import Ember from 'ember';
 
 const recipientTypes = ['slack', 'email','pagerduty', 'webhook'];
-const nodeRules = [
-  {
-    value: 'NotReady',
-    label: 'Not Ready',
-  },
-  {
-    value: 'DiskPressure',
-    label: 'Disk Pressure'
-  },
-  {
-    value: 'MemoryPressure',
-    label: 'Memory Pressure',
-  },
-  {
-    value: 'OutOfDisk',
-    label: 'Out Of Disk'
-  },
-];
-
 export default Ember.Component.extend({
   tagName: 'table',
   intl: Ember.inject.service(),
@@ -38,7 +19,6 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    this.set('nodeRules', nodeRules);
     const recipients = this.get('monitoringStore').all('recipient');
     const recipientId = this.get('model.recipientId');
     if (recipientId) {

@@ -55,10 +55,8 @@ export default Ember.Component.extend(FilterState, {
       const state = this.get('alertState');
       if (state === 'all') {
         return true;
-      } else if (state === 'active') {
-        return alert.get('state').toLocaleLowerCase() === 'active';
       }
-      return true;
+      return alert.get('state').toLocaleLowerCase() === state;
     });
   }.property('filtered.[],alertState,targetId'),
 });

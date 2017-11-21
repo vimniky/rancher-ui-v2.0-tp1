@@ -46,7 +46,11 @@
         }}
       {{else}}
         {{#if (eq recipientType 'pagerduty')}}
-
+          {{input
+            type="text"
+            placeholder=newRecipientPlaceholder
+            value=toNewRecipient
+          }}
         {{else}}
           {{input
             type="text"
@@ -63,7 +67,7 @@
       <td>
         <div class="input-group" style="width: 100%">
           <span class="input-group-addon pl-0">node is</span>
-          {{new-select content=nodeRules value=model.nodeRule.condition}}
+          {{new-select content=model.nodeRules value=model.nodeRule.condition}}
         </div>
       </td>
     {{else}}

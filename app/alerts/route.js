@@ -10,8 +10,7 @@ export default Ember.Route.extend({
     }
     return ns.toLowerCase();
   }.property('projects.current.name'),
-
-  model: function() {
+  loadResources() {
     let store = this.get('monitoringStore');
     return this.loadSchemas(store).then(() => {
       // load all alert related resources

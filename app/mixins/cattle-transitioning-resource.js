@@ -40,6 +40,8 @@ const defaultStateMap = {
   'unknown':                  {icon: 'icon icon-help',          color: 'text-warning'},
   'updating':                 {icon: 'icon icon-tag',           color: 'text-info'   },
   'waiting':                  {icon: 'icon icon-tag',           color: 'text-info'   },
+  'alerting':                 {icon: 'icon icon-alert',         color: 'text-error'  },
+  'silence':                  {icon: 'icon icon-alert',         color: 'text-warning'},
 };
 
 const stateColorSortMap = {

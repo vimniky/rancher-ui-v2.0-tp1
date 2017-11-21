@@ -16,7 +16,7 @@ export default Ember.Component.extend({
       out = 'Pod is unhealthy';
       break;
     case 'node':
-      out = `Node is ${model.get('nodeRule.condition')}`;
+      out = `Node is ${(model.get('nodeRuleLabel') || '').toLowerCase()}`;
       break;
     default:
       rule = model.get(`${t}Rule.unavailablePercentage`);

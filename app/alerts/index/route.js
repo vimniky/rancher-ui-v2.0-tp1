@@ -1,8 +1,9 @@
 import Ember from 'ember';
+const {getOwner} = Ember;
 
 export default Ember.Route.extend({
 
   model() {
-    return this.modelFor('alerts');
+    return getOwner(this).lookup('route:alerts').loadResources();
   }
 });

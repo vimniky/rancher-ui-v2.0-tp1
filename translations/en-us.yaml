@@ -3821,6 +3821,9 @@ nav:
     addAlert: Add Alert
     all: All
     active: Active
+    alerting: Alerting
+    silence: Silence
+    inActive: InActive
     notifiers: Notifiers
     email: Email
     slack: Slack
@@ -3885,6 +3888,8 @@ action:
   viewGraph: View Graph
   viewInApi: View in API
   viewInstance: View Instance
+  silence: Silence
+  unsilence: Unsilence
 
 ##############################
 # Resource Actions
