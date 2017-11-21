@@ -7,15 +7,20 @@ export default Ember.Component.extend({
   classNames: 'main-row',
   bulkActions: false,
   rules: function() {
-    const ot = this.get('model.targetType');
-    const p = this.get('model.serviceRule.unhealthyPercentage');
+    const t = this.get('model.targetType');
+    const model = this.get('model');
+    let rule
     let out;
-    switch(ot) {
+    switch(t) {
     case 'pod':
       out = 'Pod is unhealthy';
       break;
+    case 'node':
+      out = `Node is ${model.get('nodeRule.condition')}`;
+      break;
     default:
-      out = `When ${p}% are unhealthy`;
+      rule = model.get(`${t}Rule.unavailablePercentage`);
+      out = `When ${rule}% are unhealthy`;
     }
     return out
   }.property('model.serviceRule.unhealthyPercentage,model.targetType'),

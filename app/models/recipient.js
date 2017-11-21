@@ -11,6 +11,8 @@ export default Resource.extend({
       return this.get('pagerdutyRecipient.serviceKey');
     case 'slack':
       return this.get('slackRecipient.channel');
+    case 'webhook':
+      return this.get('webhookRecipient.url');
     default:
       return null
     }
@@ -23,7 +25,9 @@ export default Resource.extend({
       return 'slack';
     } else if (this.get('pagerdutyRecipient.serviceKey')) {
       return 'pagerduty';
-    }
+    } else if (this.get('webhookRecipient.url')) {
+    return 'webhook';
+  }
     return 'slack';
-  }.property('emailRecipient.address', 'slackRecipient.channel', 'pagerdutyRecipient.serviceKey'),
+  }.property('emailRecipient.address', 'slackRecipient.channel', 'pagerdutyRecipient.serviceKey', 'webhookRecipient.url'),
 });

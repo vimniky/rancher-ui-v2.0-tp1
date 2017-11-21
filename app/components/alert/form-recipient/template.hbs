@@ -1,4 +1,3 @@
-----targetType: {{model.targetType}}
 <table class="table fixed no-lines mt-20">
   <thead>
     <tr>
@@ -46,11 +45,15 @@
             value=model.recipientId
         }}
       {{else}}
-        {{input
+        {{#if (eq recipientType 'pagerduty')}}
+
+        {{else}}
+          {{input
             type="text"
             placeholder=newRecipientPlaceholder
             value=toNewRecipient
-        }}
+          }}
+        {{/if}}
       {{/if}}
     </td>
     {{#if (eq model.targetType 'pod')}}

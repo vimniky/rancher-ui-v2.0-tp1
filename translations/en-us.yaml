@@ -2469,14 +2469,19 @@ formRecipient:
       reuse:
         slack: 'Choose a slack channel'
         email: 'Choose an email address'
-        pagerduty: 'Choose a pagerduty service key'
+        pagerduty: 'Choose a pagerduty service name'
+        webhook: 'Choose a webhook url'
       new:
         slack: 'Enter a slack channel'
         email: 'Enter an email address'
         pagerduty: 'Enter a pagerduty service key'
-      email: e.g. rancher@slack.com
-      slack: e.g. slack@slack.com
+        pagerdutyKey: e.g. de3c78dc6b4148a0809882a543
+        pagerdutyName: e.g. ServiceName
+        webhook: 'Enter a webhook url'
+      email: e.g. rancher@gmail.com
+      slack: e.g. "#slack-channel"
       pagerduty: e.g. pagerduty@slack.com
+      webhook: e.g. pagerduty@slack.com
 
 formLogging:
   title: Logging

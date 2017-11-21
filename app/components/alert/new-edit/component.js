@@ -132,9 +132,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       if (!yes) {
         return false;
       }
-      // Transform alert data to match the alert schemea
-      const p = alert.get('serviceRule').unhealthyPercentage;
-      alert.set('serviceRule.unhealthyPercentage', String(p));
       // Validate alert
       const ok = this.validate(alert)
       return ok;
@@ -166,6 +163,9 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       case 'pagerduty':
         out = recipient.pagerdutyRecipient.serviceKey;
         break
+    case 'webhook':
+      out = recipient.webhookRecipient.url;
+      break
       default:
       }
     return out;
@@ -290,6 +290,9 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       },
       slackRecipient: {
         channel: null,
+      },
+      webhookRecipient: {
+        url: null,
       },
     });
     alert.set('newRecipient', newRecipient);
