@@ -99,7 +99,7 @@ export default Ember.Component.extend(NewOrEdit, {
   },
 
   doneSaving(neu, cb) {
-    this.mergeResult();
+    this.get('originalModel').merge(neu);
     cb(true);
     this._super(neu);
   },
