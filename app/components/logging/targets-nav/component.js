@@ -4,13 +4,13 @@ export default Ember.Component.extend({
 
   currentTarget: Ember.computed.reads('currentLogging.targetType'),
 
-  hasCurentTarget: function() {
+  hasCurrentTarget: function() {
     const cl = this.get('currentLogging');
     return cl.get('enable') && cl.get('targetType');
   }.property('currentLogging.{targetType,enable}'),
 
   currentCss(type) {
-    return this.get('hasCurentTarget') && type === this.get('currentTarget') ? ' current' : '';
+    return this.get('hasCurrentTarget') && type === this.get('currentTarget') ? ' current' : '';
   },
 
   targets: function() {

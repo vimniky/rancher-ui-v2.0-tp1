@@ -1,7 +1,7 @@
+{{log model}}
 <div class="row">
   {{#each types as |type idx|}}
     <div class="col span-4">
-      {{log idx}}
       <div class="logging-box {{if (eq idx defaultActiveIdx)  'active' ''}}" {{action 'activate' idx}}>
         <div>
           <h2 class="mt-0" > Small </h2>

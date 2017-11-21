@@ -1,3 +1,4 @@
+----targetType: {{model.targetType}}
 <table class="table fixed no-lines mt-20">
   <thead>
     <tr>
@@ -54,6 +55,14 @@
     </td>
     {{#if (eq model.targetType 'pod')}}
       <td class="pl-30">when pod is unhealthy</td>
+    {{else if (eq model.targetType 'node')}}
+      <td class="text-center">when ></td>
+      <td>
+        <div class="input-group" style="width: 100%">
+          <span class="input-group-addon pl-0">node is</span>
+          {{new-select content=nodeRules value=model.nodeRule.condition}}
+        </div>
+      </td>
     {{else}}
       <td class="text-center">when ></td>
       <td>

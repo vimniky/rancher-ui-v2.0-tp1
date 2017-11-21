@@ -27,19 +27,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     return this.get('mode') === 'standalone';
   }.property('mode'),
   severities: [],
-  targetType: function() {
-    const m = this.get('mode');
-    switch (m) {
-    case 'container':
-      return m;
-    case 'service':
-    case 'global':
-    case 'sidekick':
-      return 'service';
-    default:
-      return null;
-    }
-  }.property('mode'),
   percent: 30,
   creating: function() {
     const originals = this.get('originalModels');
@@ -260,7 +247,18 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
         type: 'alert',
         namespace: this.get('namespace'),
         sendResolved: false,
-        targetType: this.get('targetType'),
+        daemonSetRule: {
+          unavailablePercentage: 0,
+        },
+        deploymentRule: {
+          unavailablePercentage: 0,
+        },
+        nodeRule: {
+          condition: '',
+        },
+        statefulSetRule: {
+          unavailablePercentage: 0,
+        },
         serviceRule: {
           unhealthyPercentage: '30',
         },

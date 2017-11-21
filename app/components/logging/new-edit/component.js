@@ -17,6 +17,9 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   targetChoices: null,
   canRedirectToDashboard: function() {
     const cl = this.get('currentLogging')
+    if (!cl)  {
+      return false;
+    }
     const can = cl.get('enable') && cl.get('id')
           && cl.get('targetType') === 'embedded' && this.get('isClusterLevel');
     return can;
