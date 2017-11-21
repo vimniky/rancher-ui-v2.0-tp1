@@ -2,6 +2,7 @@ import Ember from 'ember';
 const { getOwner } = Ember;
 import NewOrEdit from 'ui/mixins/new-or-edit';
 import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
+import {ip as validateIp} from 'ui/utils/validators';
 
 export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   intl: Ember.inject.service(),
@@ -53,21 +54,59 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   },
 
   validateTags() {
-    return this.get('tags').every(t => {
+    const errors = this.get('errors') || [];
+    this.get('tags').forEach(t => {
       if (!t.key || !t.value) {
-        this.set('errors', ['Tag key or value can\'t be empty.']);
-        return false;
+        errors.pushObject('Tag key or value can\'t be empty.')
       }
-      return true;
     });
+    if (errors.length > 0) {
+      return false;
+    }
+    return true;
   },
 
-  willSave() {
+  dataTypeTransform() {
     this.set('model.esPort', Number(this.get('model.esPort')) || 9200);
     this.set('model.splunkPort', Number(this.get('model.esPort')) || 9200);
     this.set('model.outputFlushInterval', Number(this.get('model.outputFlushInterval')) || 1);
     this.set('model.targetType', this.get('targetType'));
-    const ok = this.validateTags();
+  },
+
+  validate() {
+    const errors = this.get('errors') || [];
+    const model = this.get('model');
+    switch(this.get('targetType')) {
+    case 'elasticsearch':
+      if (!validateIp(model.get('esHost'))) {
+        errors.pushObject('Host is invalid');
+      }
+      if (! '' + model.get('esPort')) {
+        errors.pushObject('Port is invalid');
+      }
+      break;
+    case 'splunk':
+      if (!validateIp(model.get('splunkHost'))) {
+        errors.pushObject('Host is invalid');
+      }
+      if (! '' + model.get('splunkPort')) {
+        errors.pushObject('Port is invalid');
+      }
+      break;
+    case 'embedded':
+    default:
+    }
+    if (errors.length > 0) {
+      return false;
+    }
+    return true;
+  },
+
+  willSave() {
+    let ok
+    this.dataTypeTransform();
+    ok = this.validate();
+    ok = this.validateTags();
     if (!ok) {
       return false;
     }
@@ -97,6 +136,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
           });
       });
     },
+
     switch(enable) {
       const om = this.get('originalModel');
       if (!enable) {

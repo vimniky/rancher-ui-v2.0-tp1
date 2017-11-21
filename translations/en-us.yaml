@@ -1165,7 +1165,7 @@ loggingPage:
   targetType:
     label: Target
     prompt: Choice a Target
-  loggingEnvLevel: Enable configure target at the environment level
+  loggingEnvLevel: Enable log access at the environment level
   loggingClusterLevel: Configure target at the environment level
 
   resultTip: 'The generated Elasticsearch index name will be:'
