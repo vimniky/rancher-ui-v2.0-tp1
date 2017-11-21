@@ -69,6 +69,7 @@ export default Ember.Component.extend({
     const recipient = this.get('model.newRecipient');
     const type = this.get('recipientType');
     const value = this.get('toNewRecipient');
+    recipient.set('recipientType', type);
     switch(type) {
     case 'email':
       recipient.set('emailRecipient.address', value);

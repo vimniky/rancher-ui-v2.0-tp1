@@ -3,9 +3,11 @@ import NewOrEdit from 'ui/mixins/new-or-edit';
 import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
 export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
+  projects: Ember.inject.service(),
   router: Ember.inject.service(),
   intl: Ember.inject.service(),
   alertBus: Ember.inject.service('alert-bus'),
+  namespace: Ember.computed.reads('projects.namespace'),
 
   originalModels: null,
   editing: false,
@@ -256,6 +258,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     addAlert() {
       const alert = this.get('monitoringStore').createRecord({
         type: 'alert',
+        namespace: this.get('namespace'),
         sendResolved: false,
         targetType: this.get('targetType'),
         serviceRule: {
@@ -278,6 +281,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     const newRecipient = this.get('monitoringStore').createRecord({
       type: 'recipient',
       isReuse: true,
+      namespace: this.get('namespace'),
       targetId: alert.get('targetId') || this.get('targetId'),
       recipient: null,
       emailRecipient: {

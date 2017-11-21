@@ -14,6 +14,14 @@ export default Ember.Service.extend({
   current: null,
   all: null,
 
+  isSysmtemNamespace: function() {
+    return this.get('current.name').toLowerCase() === 'system';
+  }.property('current.name'),
+
+  namespace: function() {
+    return this.get('isSysmtemNamespace') ? 'cattle-system' : this.get('current.name').toLowerCase();
+  }.property('current.name'),
+
   currentCluster: Ember.computed.alias('current.cluster'),
 
   active: function() {
