@@ -67,8 +67,8 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   },
 
   dataTypeTransform() {
-    this.set('model.esPort', Number(this.get('model.esPort')) || 9200);
-    this.set('model.splunkPort', Number(this.get('model.esPort')) || 9200);
+    this.set('model.esPort', Number(this.get('model.esPort')));
+    this.set('model.splunkPort', Number(this.get('model.splunkPort')));
     this.set('model.outputFlushInterval', Number(this.get('model.outputFlushInterval')) || 1);
     this.set('model.targetType', this.get('targetType'));
   },
