@@ -35,6 +35,14 @@
     <ul>
       <li>If enabled, an environment owner will be able to see and configure environment level logs.</li>
       <li>Disable configure target at envirnoment level will prevent environment owners and users from seeing and configuring environment level logs.</li>
+      <li>
+        <div> Who will able to see and configure environment logs </div>
+        <ul class="text-success" >
+          <li >cluster manager</li>
+          <li class="{{if loggingAuth.enableNamespaceLogging '' 'text-error'}}" style="text-decoration: {{if loggingAuth.enableNamespaceLogging '' 'line-through'}}">environment managers</li>
+          <li class="{{if loggingAuth.enableNamespaceLogging '' 'text-error'}}" style="text-decoration: {{if loggingAuth.enableNamespaceLogging '' 'line-through'}}">environment users</li>
+        </ul>
+      </li>
     </ul>
   </section>
 {{/if}}
