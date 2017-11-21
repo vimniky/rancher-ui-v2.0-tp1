@@ -1,50 +1,22 @@
 <div class="row">
-  <div class="col span-4">
-    <div class="logging-box active" {{action 'activate' 0}}>
-      <div>
-        <h2 class="mt-0" > Small </h2>
-        <hr/>
-        <ul>
-          <li><i class="icon icon-circle" ></i>1 Node</li>
-          <li><i class="icon icon-circle" ></i>Non persistent storage</li>
-          <li><i class="icon icon-circle" ></i>2G Mem</li>
-        </ul>
-      </div>
-      <div class="pt-20">
-        Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac leo mollis blandit.  Donec neque quam, dignissim in, mollis nec, sagittis eu, wisi.  Phasellus lacus.
-      </div>
-    </div>
-  </div>
-  <div class="col span-4">
-    <div class="logging-box" {{action 'activate' 1}}>
-      <div>
-        <h2 class="mt-0" > Medium </h2>
-        <hr/>
-        <ul>
-          <li><i class="icon icon-circle" ></i>1 Node</li>
-          <li><i class="icon icon-circle" ></i>Non persistent storage</li>
-          <li><i class="icon icon-circle" ></i>2G Mem</li>
-        </ul>
-      </div>
-      <div class="pt-20">
-        Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac leo mollis blandit.  Donec neque quam, dignissim in, mollis nec, sagittis eu, wisi.  Phasellus lacus.
+  {{#each types as |type idx|}}
+    <div class="col span-4">
+      {{log idx}}
+      <div class="logging-box {{if (eq idx defaultActiveIdx)  'active' ''}}" {{action 'activate' idx}}>
+        <div>
+          <h2 class="mt-0" > Small </h2>
+          <hr/>
+          <ul>
+            <li><i class="icon icon-circle" ></i>1 Node</li>
+            <li><i class="icon icon-circle" ></i>{{type.emResReqCPU}} Core</li>
+            <li><i class="icon icon-circle" ></i>{{type.emResReqMemory}}G Mem</li>
+            <li><i class="icon icon-circle" ></i>Non persistent storage</li>
+          </ul>
+        </div>
+        <div class="pt-20">
+          With resource requests of {{type.emResReqCPU}} CPU is guaranteed {{type.emResReqCPU}} CPU, equivalent to the expression {{type.emResReqCPU}}000m. {{type.emResReqMemory}}G Memory means request for {{type.emResReqMemory}}G memory. If the scheduler cannot find any node where a requested computing resource can fit, the Elasticsearch instance remains unscheduled until a place can be found.
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col span-4">
-    <div class="logging-box" {{action 'activate' 2}}>
-      <div>
-        <h2 class="mt-0" > Large </h2>
-        <hr/>
-        <ul>
-          <li><i class="icon icon-circle" ></i>1 Node</li>
-          <li><i class="icon icon-circle" ></i>Non persistent storage</li>
-          <li><i class="icon icon-circle" ></i>2G Mem</li>
-        </ul>
-      </div>
-      <div class="pt-20">
-        Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac leo mollis blandit.  Donec neque quam, dignissim in, mollis nec, sagittis eu, wisi.  Phasellus lacus.
-      </div>
-    </div>
-  </div>
+  {{/each}}
 </div>

@@ -13,6 +13,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   tags: null,
 
   errors: null,
+  clone: null,
   targetChoices: null,
   canRedirectToDashboard: function() {
     const cl = this.get('currentLogging')
@@ -51,6 +52,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   didReceiveAttrs() {
     this.set('originalModel', this.get('model').clone());
+    this.set('clone', this.get('model').clone());
   },
 
   validateTags() {
