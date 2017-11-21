@@ -99,6 +99,7 @@ export default Ember.Component.extend(NewOrEdit, {
   },
 
   doneSaving(neu, cb) {
+    this.mergeResult();
     cb(true);
     this._super(neu);
   },
@@ -118,7 +119,11 @@ export default Ember.Component.extend(NewOrEdit, {
             this.set('errors', [err]);
           });
       }).catch(err => {
-        this.set('errors', ['Invalid WebHook URL']);
+        if (this.get('notifierType') === 'slack') {
+          this.set('errors', ['Invalid WebHook URL']);
+        } else {
+          this.set('errors', ['SMTP configuration validation fialed']);
+        }
         cb();
       });
 

@@ -57,6 +57,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       'deployment',
       'pod',
       'daemonset',
+      'statefulset',
     ].map(store.all.bind(store)).reduce((sum, resources) => sum.pushObjects(resources.get('content')), []);
 
     this.set('objectChoices', out);
