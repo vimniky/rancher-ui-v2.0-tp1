@@ -1128,27 +1128,18 @@ notifiersPage:
     header: Notifier Config
   email:
     form:
-      from:
-        label: From
-        placeholder: e.g. rancherenv@rancher.com
       host:
         label: Host
-        placeholder: e.g. rancher@mail.com
+        placeholder: e.g. smtp.gmail.com
       port:
         label: Port
-        placeholder: e.g. 25
+        placeholder: e.g. 465
       userName:
         label: Username
-        placeholder: Enter Username
+        placeholder: e.g. user@gmail.com
       password:
         label: Password
         placeholder: Enter Password
-      secret:
-        label: Secret
-        placeholder: Enter Secret
-      identity:
-        label: Identity
-        placeholder: Enter Identity
   slack:
     webhookUrl:
       label: WebHook URL

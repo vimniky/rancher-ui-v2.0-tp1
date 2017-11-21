@@ -2,7 +2,7 @@
   <div class="pull-left"><h1>{{t 'notifiersPage.index.header'}}</h1></div>
 </section>
 
-<div class="row nav nav-boxes checked-active mv-30">
+<div class="row nav nav-boxes mv-30">
   {{#each targets as |target|}}
     {{#if target.available}}
       {{#link-to target.route
@@ -22,5 +22,7 @@
 {{else}}
   {{notifier/form-slack slackApiUrl=model.slackConfig.slackApiUrl}}
 {{/if}}
+
 {{top-errors errors=errors}}
+
 {{save-cancel cancelDisabled=true editing=true save="save"}}
