@@ -2,7 +2,7 @@ import Ember from 'ember';
 const { getOwner } = Ember;
 import NewOrEdit from 'ui/mixins/new-or-edit';
 import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
-import {ip as validateIp} from 'ui/utils/validators';
+// import {ip as validateIp} from 'ui/utils/validators';
 
 export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   intl: Ember.inject.service(),
@@ -78,25 +78,31 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     const model = this.get('model');
     switch(this.get('targetType')) {
     case 'elasticsearch':
-      if (!validateIp(model.get('esHost'))) {
-        errors.pushObject('Host is invalid');
+      if (!model.get('esHost')) {
+        errors.pushObject('Host can\'t be empty');
       }
-      if (! '' + model.get('esPort')) {
-        errors.pushObject('Port is invalid');
+      if (!String(model.get('esPort'))) {
+        errors.pushObject('Port can\'t be empty');
       }
       break;
     case 'splunk':
-      if (!validateIp(model.get('splunkHost'))) {
-        errors.pushObject('Host is invalid');
+      console.log(this.get('model'))
+      console.log(this.get('targetType'))
+      if (!model.get('splunkHost')) {
+        errors.pushObject('Host can\'t be empty');
       }
-      if (! '' + model.get('splunkPort')) {
-        errors.pushObject('Port is invalid');
+      if (!String(model.get('splunkPort'))) {
+        errors.pushObject('Port can\'t be empty');
+      }
+      if (! String(model.get('splunkToken'))) {
+        errors.pushObject('Token can\'t be empty');
       }
       break;
     case 'embedded':
     default:
     }
     if (errors.length > 0) {
+      this.set('errors', errors);
       return false;
     }
     return true;
@@ -104,6 +110,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
 
   willSave() {
     let ok
+    this.set('errors', null);
     this.dataTypeTransform();
     ok = this.validate();
     ok = this.validateTags();
