@@ -1131,9 +1131,12 @@ notifiersPage:
       from:
         label: From
         placeholder: e.g. rancherenv@rancher.com
-      server:
-        label: Server
+      host:
+        label: Host
         placeholder: e.g. rancher@mail.com
+      port:
+        label: Port
+        placeholder: e.g. 25
       userName:
         label: Username
         placeholder: Enter Username

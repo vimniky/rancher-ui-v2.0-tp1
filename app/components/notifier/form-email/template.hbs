@@ -1,7 +1,12 @@
+{{emailConfig.smtpSmartHost}}
 <div class="row">
-  <div class="col span-8 pt-0 mt-0">
-    <label class="acc-label">{{t 'notifiersPage.email.form.from.label'}}{{field-required}}</label>
-    {{input class="form-control input" type="text" value=emailConfig.smtpFrom placeholder=(t 'notifiersPage.email.form.from.placeholder')}}
+  <div class="col span-6">
+    <label class="acc-label">{{t 'notifiersPage.email.form.host.label'}}{{field-required}}</label>
+    {{input class="form-control input" type="text" value=host placeholder=(t 'notifiersPage.email.form.host.placeholder')}}
+  </div>
+  <div class="col span-6">
+    <label class="acc-label">{{t 'notifiersPage.email.form.port.label'}}{{field-required}}</label>
+    {{input class="form-control input" type="text" value=port placeholder=(t 'notifiersPage.email.form.port.placeholder')}}
   </div>
 </div>
 
@@ -13,23 +18,5 @@
   <div class="col span-6">
     <label class="acc-label">{{t 'notifiersPage.email.form.password.label'}}{{field-required}}</label>
     {{input class="form-control input" type="password" value=emailConfig.smtpAuthPassword placeholder=(t 'notifiersPage.email.form.password.placeholder')}}
-  </div>
-</div>
-
-<div class="row">
-  <div class="col span-6">
-    <label class="acc-label">{{t 'notifiersPage.email.form.secret.label'}}{{field-required}}</label>
-    {{input class="form-control input" type="text" value=emailConfig.smtpAuthSecret placeholder=(t 'notifiersPage.email.form.secret.placeholder')}}
-  </div>
-  <div class="col span-6">
-    <label class="acc-label">{{t 'notifiersPage.email.form.identity.label'}}{{field-required}}</label>
-    {{input class="form-control input" type="text" value=emailConfig.smtpAuthIdentity placeholder=(t 'notifiersPage.email.form.identity.placeholder')}}
-  </div>
-</div>
-
-<div class="row">
-  <div class="col span-6">
-    <label class="acc-label">{{t 'notifiersPage.email.form.server.label'}}{{field-required}}</label>
-    {{input class="form-control input" type="text" value=emailConfig.smtpSmartHost placeholder=(t 'notifiersPage.email.form.server.placeholder')}}
   </div>
 </div>

@@ -124,10 +124,13 @@ export default Ember.Component.extend(HoverDropdown, {
           return fnOrValue(prop, this);
         });
 
+        const ns = this.get('projects.current').name.toLowerCase();
+        const isClusterLevel = ns === 'system';
         if (subitem.id === 'tools-logging') {
-          const ns = this.get('projects.current').name.toLowerCase();
-          const isClusterLevel = ns === 'system';
           return isClusterLevel || this.get('loggingAuth.enableNamespaceLogging');
+        }
+        if (subitem.id === 'tools-notifiers') {
+          return isClusterLevel;
         }
 
         return true;
