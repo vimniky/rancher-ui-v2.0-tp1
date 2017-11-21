@@ -141,8 +141,10 @@ export default function(element, options = {}) {
     const start = moment(domain[0]);
     const end = moment(domain[1]);
     const duration = moment.duration(end.diff(start));
-    const count = duration[interval.durationKey]();
-    return Math.floor(width / count);
+    const value = interval.get('values').objectAt(interval.get('valueIdx'));
+    const count = duration[interval.get('durationKey')]();
+    console.log(value, count, interval)
+    return Math.floor(width / count / value);
   }
 
   function update({data, interval}) {

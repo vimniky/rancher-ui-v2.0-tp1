@@ -1,7 +1,6 @@
 <!-- <button data-zoom="+1">Zoom In</button>
      <button data-zoom="-1">Zoom Out</button>
      <button id="reset">Reset</button> -->
-
 <section class="mb-10">
   <!-- <div class="input-group">
        {{input class="form-control input-sm" type="search"}}
@@ -9,10 +8,8 @@
        </div> -->
   <!-- <hr class="mb-0 pb-0"/> -->
   <div class="row">
-    <div class="col span-1 mt-0 pt-5">
-      <span class="text-success">{{hits}}</span> Hit
-    </div>
-    <div class="col span-6 pt-5 mt-0">
+    <div class="col span-7 pt-5 mt-0">
+      <span class="text-success">{{hits}}</span> Hits
       <span class="text-info">November 13th 2017, 23:11:44</span> To  <span class="text-info">November 14th 2017, 17:31:55</span>
     </div>
 
@@ -20,7 +17,10 @@
       <div class="input-group" >
         <span class="input-group-addon">Time bucket</span>
         {{new-select
-          class="input-sm"
+            value=interval
+            class="input-sm text-capitalize"
+            content=intervals
+            optionValuePath="abbr"
         }}
       </div>
     </div>
