@@ -26,9 +26,15 @@ const headers = [
     width: '200'
   },
   {
-    translationKey: 'alertsPage.index.table.timestamp',
-    name: 'timestamp',
-    sort: ['timestamp'],
+    translationKey: 'alertsPage.index.table.startsAt',
+    name: 'Starts At',
+    sort: ['startsAt'],
+    width: '150'
+  },
+  {
+    translationKey: 'alertsPage.index.table.endsAt',
+    name: 'Ends At',
+    sort: ['endsAt'],
     width: '150'
   },
 ];

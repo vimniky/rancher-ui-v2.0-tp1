@@ -6,6 +6,20 @@ export default Ember.Component.extend({
   tagName: 'TR',
   classNames: 'main-row',
   bulkActions: false,
+  startsAt: function() {
+    const state = this.get('model.state');
+    if (state === 'active' || state === 'inactive') {
+      return 'None';
+    }
+    return moment(this.get('model.startsAt')).fromNow();
+  }.property('model.startsAt'),
+  endsAt: function() {
+    const state = this.get('model.state');
+    if (state === 'active' || state === 'inactive') {
+      return 'None';
+    }
+    return moment(this.get('model.endsAt')).fromNow();
+  }.property('model.endsAt'),
   rules: function() {
     const t = this.get('model.targetType');
     const model = this.get('model');

@@ -41,7 +41,7 @@ const defaultStateMap = {
   'updating':                 {icon: 'icon icon-tag',           color: 'text-info'   },
   'waiting':                  {icon: 'icon icon-tag',           color: 'text-info'   },
   'alerting':                 {icon: 'icon icon-alert',         color: 'text-error'  },
-  'silence':                  {icon: 'icon icon-alert',         color: 'text-warning'},
+  'silenced':                  {icon: 'icon icon-alert',         color: 'text-warning'},
 };
 
 const stateColorSortMap = {

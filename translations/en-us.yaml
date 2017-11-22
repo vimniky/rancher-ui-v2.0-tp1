@@ -1116,7 +1116,8 @@ alertsPage:
       description: Description
       rules: Rules
       endpoint: Endpoint
-      timestamp: Timestamp
+      startsAt: Starts At
+      endsAt: Ends At
       noData: There are no alerts yet
       noMatch: No alerts match the current search.
   new:
@@ -3822,8 +3823,8 @@ nav:
     all: All
     active: Active
     alerting: Alerting
-    silence: Silence
-    inActive: InActive
+    silenced: Silenced
+    inactive: Inactive
     notifiers: Notifiers
     email: Email
     slack: Slack

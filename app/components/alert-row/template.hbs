@@ -27,8 +27,13 @@
     </div>
   {{/if}}
 </td>
-<td data-title="{{dt.timestamp}}" class="force-wrap">
-  {{model.timestamp}}
+
+<td data-title="{{dt.startAt}}" class="force-wrap">
+  <span class="{{if (eq startsAt 'None') 'text-muted' ''}}"> {{startsAt}} </span>
+</td>
+
+<td data-title="{{dt.endsAt}}" class="force-wrap">
+  <span class="{{if (eq startsAt 'None') 'text-muted' ''}}"> {{endsAt}} </span>
 </td>
 <td data-title="{{t 'generic.actions'}}" class="actions">
   {{action-menu model=model}}

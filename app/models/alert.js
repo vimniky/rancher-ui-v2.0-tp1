@@ -1,6 +1,13 @@
 import Ember from 'ember';
 import Resource from 'ember-api-store/models/resource';
 
+const defaultStateMap = {
+  'alerting':                 {icon: 'icon icon-alert',         color: 'text-error'  },
+  'silenced':                  {icon: 'icon icon-alert',         color: 'text-warning'},
+  'inactive':                 {icon: 'icon icon-circle',        color: 'text-muted'  },
+  'active':                   {icon: 'icon icon-circle-o',      color: 'text-success'},
+};
+
 var Alert = Resource.extend({
   type: 'alert',
   router: Ember.inject.service(),
@@ -59,10 +66,10 @@ var Alert = Resource.extend({
       this.get('router').transitionTo('alerts.new', { queryParams: { alertId: this.get('id'), upgrade: true }});
     },
     silence() {
-      console.log('silence');
+      return this.doAction('silence');
     },
     unsilence() {
-      console.log('unsilence');
+      return this.doAction('unsilence');
     },
     promptDelete: function() {
       this.get('modalService').toggleModal('confirm-delete', {resources: [this]});
@@ -76,31 +83,31 @@ var Alert = Resource.extend({
   }.property('recipientId'),
 
   // Overriding the stateColor method, cause alert is diffrent for displaying state colors.
-  // stateColor: function() {
-  //   if ( this.get('isError') ) {
-  //     return 'text-error';
-  //   }
-  //   var map = this.constructor.stateMap;
-  //   var key = (this.get('relevantState')||'').toLowerCase();
-  //   if ( map && map[key] && map[key].color !== undefined )
-  //   {
-  //     if ( typeof map[key].color === 'function' )
-  //     {
-  //       return map[key].color(this);
-  //     }
-  //     else
-  //     {
-  //       return map[key].color;
-  //     }
-  //   }
+  stateColor: function() {
+    if ( this.get('isError') ) {
+      return 'text-error';
+    }
+    var map = this.constructor.stateMap;
+    var key = (this.get('relevantState')||'').toLowerCase();
+    if ( map && map[key] && map[key].color !== undefined )
+    {
+      if ( typeof map[key].color === 'function' )
+      {
+        return map[key].color(this);
+      }
+      else
+      {
+        return map[key].color;
+      }
+    }
 
-  //   if ( defaultStateMap[key] && defaultStateMap[key].color )
-  //   {
-  //     return defaultStateMap[key].color;
-  //   }
+    if (defaultStateMap[key] && defaultStateMap[key].color)
+    {
+      return defaultStateMap[key].color;
+    }
 
-  //   return this.constructor.defaultStateColor;
-  // }.property('relevantState','isError'),
+    return this.constructor.defaultStateColor;
+  }.property('relevantState','isError'),
 
   availableActions: function() {
     let l = this.get('links');
@@ -109,7 +116,7 @@ var Alert = Resource.extend({
     const canActivate = state === 'inactive' && al.activate;
     const canDeactivate = state === 'active' && al.deactivate;
     const canSilence = state === 'alerting' && al.silence;
-    const canUnsilence = state === 'silence' && al.unsilence;
+    const canUnsilence = state === 'silenced' && al.unsilence;
     const canDelete = state === 'inactive' && !!l.remove;
 
 
@@ -119,8 +126,6 @@ var Alert = Resource.extend({
       { label: 'action.activate',     icon: 'icon icon-trash',        action: 'activate', enabled: canActivate },
       { divider: true },
       { label: 'action.deactivate',     icon: 'icon icon-trash',        action: 'deactivate', enabled: canDeactivate },
-      { divider: true },
-      { label: 'action.unsilence',     icon: 'icon icon-trash',        action: 'unsilence', enabled: canUnsilence },
       { divider: true },
       { label: 'action.silence',     icon: 'icon icon-trash',        action: 'silence', enabled: canSilence },
       { divider: true },
