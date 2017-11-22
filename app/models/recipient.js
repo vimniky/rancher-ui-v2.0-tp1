@@ -1,6 +1,7 @@
 import Resource from 'ember-api-store/models/resource';
+import AlertMixin from 'ui/mixins/alert';
 
-export default Resource.extend({
+export default Resource.extend(AlertMixin, {
   type: 'recipient',
 
   recipientValue: function() {
@@ -42,18 +43,7 @@ export default Resource.extend({
   },
 
   recipientLabel: function() {
-    switch(this.get('recipientType')) {
-    case 'email':
-      return 'address';
-    case 'pagerduty':
-      return 'serviceKey';
-    case 'slack':
-      return 'channel';
-    case 'webhook':
-      return 'url';
-    default:
-      return 'recipient';
-    }
+    return this.getRecipientLabel(this.get('recipientType'));
   }.property('recipientType'),
 
   recipientPlaceholder: function() {
@@ -65,7 +55,7 @@ export default Resource.extend({
     case 'slack':
       return 'e.g. #test';
     case 'webhook':
-      return 'Enter a webhook';
+      return 'Enter a webhook URL';
     default:
       return 'Enter a recipient';
     }

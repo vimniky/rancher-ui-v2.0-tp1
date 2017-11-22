@@ -1,7 +1,8 @@
 import Ember from 'ember';
+import AlertMixin from 'ui/mixins/alert';
 
 const recipientTypes = ['slack', 'email','pagerduty', 'webhook'];
-export default Ember.Component.extend({
+export default Ember.Component.extend(AlertMixin, {
   intl: Ember.inject.service(),
   modalService: Ember.inject.service('modal'),
   projects: Ember.inject.service(),
@@ -49,6 +50,10 @@ export default Ember.Component.extend({
       this.set('model.recipientId', null);
     }
   }.observes('recipientType'),
+
+  recipientLabel: function() {
+    return this.getRecipientLabel(this.get('recipientType'));
+  }.property('recipientType'),
 
   recipientPrompt: function() {
     const type = this.get('recipientType');
