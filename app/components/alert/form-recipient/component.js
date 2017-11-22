@@ -12,9 +12,10 @@ export default Ember.Component.extend(AlertMixin, {
   model: null,
   newRecipient: null,
   recipientType: 'slack',
-  recipientTypes: recipientTypes.map(v => ({label: v, value: v})),
+  recipientTypes: null,
 
   latestSelectionMap: null,
+  notifier: null,
 
   init() {
     this._super(...arguments);
@@ -28,6 +29,19 @@ export default Ember.Component.extend(AlertMixin, {
       }
     }
     this.setLatestSelectionMap();
+    const notifier = this.get('monitoringStore').all('notifier').get('firstObject');
+
+    // filter out recipientType if the corresponding notifier are not configured.
+    const rts = recipientTypes.filter(v => {
+      if (v === 'email') {
+        return notifier.get('emailConfigured');
+      } else if (v === 'slack') {
+        return notifier.get('slackConfigured');
+      }
+      return true;
+    }).map(v => ({label: v, value: v}));
+
+    this.set('recipientTypes', rts);
     this.set('recipients', recipients);
   },
 
