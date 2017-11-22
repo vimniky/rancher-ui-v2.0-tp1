@@ -16,7 +16,7 @@ export default Ember.Route.extend({
   },
   setupController(controller, model) {
     if (model.alert) {
-      controller.set('models', [model.alert]);
+      controller.set('model', model.alert);
     }
   },
   resetController: function (controller, isExisting/*, transition*/) {
@@ -25,7 +25,6 @@ export default Ember.Route.extend({
         alertId: null,
         upgrade: null,
         model: null,
-        models: null,
       })
     }
   }

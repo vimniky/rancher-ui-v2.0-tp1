@@ -9,6 +9,11 @@ export default Ember.Component.extend({
   },
 
 
+  showSearch: function() {
+    const ts = this.get('targets');
+    return ts && ts.length > 10;
+  }.property('targets.length'),
+
   targets: function() {
     const ms =  this.get('monitoringStore');
     return ms.all(this.get('targetType'));

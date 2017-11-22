@@ -6,12 +6,9 @@ export default Ember.Component.extend({
 
   // input
   model: null,
-  recipients: null,
-  toNewRecipient: null,
 
   recipientTypes: recipientTypes.map(v => ({label: v, value: v})),
-  isReuse: Ember.computed.alias('model.newRecipient.isReuse'),
-  recipientType: null,
+  recipientType: 'slack',
 
   latestSelectionMap: null,
 
@@ -30,7 +27,7 @@ export default Ember.Component.extend({
     this.set('recipients', recipients);
   },
 
-  setLatestSelectionMap() {
+  setLatestSelectionMap: function() {
     const recipientId = this.get('model.recipientId');
     const lsm = this.get('latestSelectionMap');
     if (!lsm) {
@@ -39,16 +36,7 @@ export default Ember.Component.extend({
     if (recipientId) {
       this.set(`latestSelectionMap.${this.get('recipientType')}`, recipientId);
     }
-  },
-
-  recipientChanged: function() {
-    // When reuse a exiting recipient, automatically detect and set recipientType when recipientId changed
-    const recipientId = this.get('model.recipientId');
-    const isReuse = this.get('isReuse');
-    if (recipientId && isReuse) {
-      this.setLatestSelectionMap();
-    }
-  }.observes('model.recipientId,isReuse'),
+  }.observes('model.recipientId'),
 
   recipientTypeChanged: function() {
     const cached = this.get(`latestSelectionMap.${this.get('recipientType')}`);
@@ -58,38 +46,48 @@ export default Ember.Component.extend({
       this.set('model.recipientId', null);
     }
   }.observes('recipientType'),
+
   recipientPrompt: function() {
-    const type = this.get('recipientType') || 'slack';
+    const type = this.get('recipientType');
     return this.get('intl').t(`formRecipient.recipient.placeholder.reuse.${type}`);
   }.property('recipientType'),
+
   newRecipientPlaceholder: function() {
     const type = this.get('recipientType');
     return this.get('intl').t(`formRecipient.recipient.placeholder.new.${type}`);
   }.property('recipientType'),
-  toNewRecipientChanged: function() {
-    const recipient = this.get('model.newRecipient');
-    const type = this.get('recipientType');
-    const value = this.get('toNewRecipient');
-    recipient.set('recipientType', type);
-    switch(type) {
-    case 'email':
-      recipient.set('emailRecipient.address', value);
-      break
-    case 'slack':
-      recipient.set('slackRecipient.channel', value);
-      break
-    case 'pagerduty':
-      recipient.set('pagerdutyRecipient.serviceKey', value);
-      break
-    case 'webhook':
-      recipient.set('webhookRecipient.url', value);
-      break
-    default:
-    }
-  }.observes('toNewRecipient,recipientType'),
+
+  // recipientChanged: function() {
+  //   const id = this.get('model.recipientId');
+  //   const recipient = this.get('monitoringStore').getById('recipient', id);
+  //   const type = this.get('recipientType');
+  //   const value = this.get('toNewRecipient');
+  //   recipient.set('recipientType', type);
+  //   switch(type) {
+  //   case 'email':
+  //     recipient.set('emailRecipient.address', value);
+  //     break
+  //   case 'slack':
+  //     recipient.set('slackRecipient.channel', value);
+  //     break
+  //   case 'pagerduty':
+  //     recipient.set('pagerdutyRecipient.serviceKey', value);
+  //     break
+  //   case 'webhook':
+  //     recipient.set('webhookRecipient.url', value);
+  //     break
+  //   default:
+  //   }
+  // }.observes('model.recipientId'),
+
+  showSearch: function() {
+    const r = this.get('recipients');
+    return r && r.length > 10;
+  }.property('recipients.length'),
+
   filteredRecipients: function() {
     const recipientType = this.get('recipientType');
-    let recipients = this.get('recipients');
+    const recipients = this.get('recipients');
     return recipients.filter(v => {
       if (!recipientType) {
         return true;
@@ -101,10 +99,5 @@ export default Ember.Component.extend({
         value: v.id,
       }
     });
-  }.property('recipients','recipients.length','recipientType'),
-
-  actions: {
-    createRecipient() {
-    }
-  }
+  }.property('recipients.[]', 'recipientType'),
 });

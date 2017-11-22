@@ -1,13 +1,11 @@
 <section class="header clearfix">
-  <div class="pull-left"><h1>{{if upgrade (t 'alertsPage.new.editHeader') (t 'alertsPage.new.addHeader')}}</h1></div>
+  <div class="pull-left"><h1>{{if isCreate (t 'alertsPage.new.addHeader') (t 'alertsPage.new.editHeader')}}</h1></div>
 </section>
 
 <section class="clearfix">
 {{alert/new-edit
-    mode="standalone"
     targetId=null
-    originalModels=models
-    isUpgrade=upgrade
-    editing=editing
+    originalModel=model
+    isCreate=isCreate
 }}
 </section>

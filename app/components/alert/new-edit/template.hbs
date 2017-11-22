@@ -1,57 +1,40 @@
-{{#if alerts}}
-  {{#each alerts as |alert idx|}}
-    <div class="row">
-      <div class="col span-6 pt-0 mt-0">
-        <div><label class="acc-label">Description{{field-required}}</label></div>
-        {{input
-          class="form-control"
-          value=alert.description
-          placeholder=(t 'formNewEditAlert.description.placeholder')
-        }}
+<div class="row">
+  <div class="col span-6 pt-0 mt-0">
+    <div><label class="acc-label">Description{{field-required}}</label></div>
+    {{input
+      class="form-control"
+      value=model.description
+      placeholder=(t 'formNewEditAlert.description.placeholder')
+    }}
+  </div>
+  <div class="col span-6 pt-0 mt-0">
+    {{alert/form-severity model=model}}
+  </div>
+</div>
+
+{{alert/form-recipient model=model}}
+{{alert/form-rules model=model}}
+
+<div class="mt-30 clearfix">
+  {{#unless advancedShown}}
+      <div class="pull-right text-small">
+        <a role="button" class="btn bg-transparent p-0" {{action "showAdvanced"}}>Show advanced options</a>
       </div>
-      <div class="col span-6 pt-0 mt-0">
-        {{alert/form-severity model=alert}}
-      </div>
-    </div>
+  {{/unless}}
+  {{#if advancedShown}}
+    {{alert/advanced-options
+        classNames="accordion-wrapper"
+        expandAll=al.expandAll
+        expandFn=expandFn
+        model=model.advancedOptions
+    }}
+  {{/if}}
+</div>
 
-    {{alert/form-recipient model=alert recipients=recipients}}
-    {{alert/form-rules model=alert}}
+<div class="mt-20">
+  {{top-errors errors=errors}}
+</div>
 
-    <div class="mt-30 clearfix">
-      {{#unless advancedShown}}
-          <div class="pull-right text-small">
-            <a role="button" class="btn bg-transparent p-0" {{action "showAdvanced"}}>Show advanced options</a>
-          </div>
-      {{/unless}}
-      {{#if advancedShown}}
-        {{alert/advanced-options
-            classNames="accordion-wrapper"
-            expandAll=al.expandAll
-            expandFn=expandFn
-            model=alert.advancedOptions
-        }}
-      {{/if}}
-    </div>
-  {{/each}}
-{{/if}}
-
-{{#if allowAddMulti}}
-  <div class="clearfix mt-30">
-    <button class="btn bg-link icon-btn pull-right" {{action "addAlert"}}>
-      <span class="darken"><i class="icon icon-plus text-small"/></span>
-      <span>{{t 'formNewEditAlert.addAlert'}}</span>
-    </button>
-  </div>
-{{/if}}
-
-{{#if (and isStandalone errors)}}
-  <div class="mt-20">
-    {{top-errors errors=errors}}
-  </div>
-{{/if}}
-
-{{#if isStandalone}}
-  <div class="mv-20">
-    {{save-cancel createLabel=(if creating 'generic.save' 'generic.create') save="save" cancel="cancel"}}
-  </div>
-{{/if}}
+<div class="mv-20">
+  {{save-cancel createLabel=(if creating 'generic.save' 'generic.create') save="save" cancel="cancel"}}
+</div>
