@@ -3,12 +3,15 @@ import Ember from 'ember';
 const recipientTypes = ['slack', 'email','pagerduty', 'webhook'];
 export default Ember.Component.extend({
   intl: Ember.inject.service(),
+  modalService: Ember.inject.service('modal'),
+  projects: Ember.inject.service(),
+  namespace: Ember.computed.reads('projects.namespace'),
 
   // input
   model: null,
-
-  recipientTypes: recipientTypes.map(v => ({label: v, value: v})),
+  newRecipient: null,
   recipientType: 'slack',
+  recipientTypes: recipientTypes.map(v => ({label: v, value: v})),
 
   latestSelectionMap: null,
 
@@ -57,28 +60,52 @@ export default Ember.Component.extend({
     return this.get('intl').t(`formRecipient.recipient.placeholder.new.${type}`);
   }.property('recipientType'),
 
-  // recipientChanged: function() {
-  //   const id = this.get('model.recipientId');
-  //   const recipient = this.get('monitoringStore').getById('recipient', id);
-  //   const type = this.get('recipientType');
-  //   const value = this.get('toNewRecipient');
-  //   recipient.set('recipientType', type);
-  //   switch(type) {
-  //   case 'email':
-  //     recipient.set('emailRecipient.address', value);
-  //     break
-  //   case 'slack':
-  //     recipient.set('slackRecipient.channel', value);
-  //     break
-  //   case 'pagerduty':
-  //     recipient.set('pagerdutyRecipient.serviceKey', value);
-  //     break
-  //   case 'webhook':
-  //     recipient.set('webhookRecipient.url', value);
-  //     break
-  //   default:
-  //   }
-  // }.observes('model.recipientId'),
+  actions: {
+    showRecipientModal() {
+      const model = this.createRecipient();
+      console.log(model)
+      this.get('modalService').toggleModal('modal-alert-recipient', {
+        closeWithOutsideClick: false,
+        recipientTypes: this.get('recipientTypes'),
+        model,
+      });
+    },
+  },
+
+  newRecipientChanged: function() {
+    const r = this.get('newRecipient');
+    const type = r.get('recipientType');
+    const id = r.get('id');
+    console.log('changed type, id', type, id)
+    if (type) {
+      this.set('recipientType', type);
+    }
+    if (id) {
+      this.set('model.recipientId', id);
+    }
+  }.observes('newRecipient.{recipientType,id}'),
+
+  createRecipient() {
+    const newRecipient = this.get('monitoringStore').createRecord({
+      type: 'recipient',
+      recipientType: this.get('recipientType'),
+      namespace: this.get('namespace'),
+      emailRecipient: {
+        address: null,
+      },
+      pagerdutyRecipient: {
+        serviceKey: null,
+      },
+      slackRecipient: {
+        channel: null,
+      },
+      webhookRecipient: {
+        url: null,
+      },
+    });
+    this.set('newRecipient', newRecipient);
+    return newRecipient;
+  },
 
   showSearch: function() {
     const r = this.get('recipients');

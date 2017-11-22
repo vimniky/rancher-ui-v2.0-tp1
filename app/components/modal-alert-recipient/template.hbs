@@ -1,0 +1,27 @@
+<section class="container-header-text">
+  <h3 class="text-center">Create a <span class="text-capitalize">{{model.recipientType}}</span> recipient</h3>
+  <hr/>
+</section>
+<section class="row">
+  <div class="col span-6">
+    <div class="acc-label">Notifier</div>
+    {{new-select
+      classNames="text-capitalize form-control"
+      content=recipientTypes
+      value=model.recipientType
+    }}
+  </div>
+
+  <div class="col span-6">
+    <div class="acc-label">Recipient</div>
+    {{input classNames="form-control" value=value}}
+  </div>
+</section>
+
+<div class="mt-20">
+  {{top-errors errors=errors}}
+</div>
+
+<div class="footer-actions">
+  {{save-cancel createLabel='generic.create' save="save" cancel="cancel"}}
+</div>
