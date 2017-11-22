@@ -246,6 +246,7 @@ export default Ember.Component.extend(NewOrEdit, {
     addAlert() {
       const alert = this.get('monitoringStore').createRecord({
         type: 'alert',
+        targetType: 'node',
         namespace: this.get('namespace'),
         sendResolved: false,
         daemonSetRule: {

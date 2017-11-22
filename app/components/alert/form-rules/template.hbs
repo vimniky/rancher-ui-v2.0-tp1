@@ -1,17 +1,23 @@
 <section class="row">
-  <div class="col span-6 mr-0">
-    <div><label class="acc-label pl-50">Target{{field-required}}</label></div>
+  <div class="col span-4">
+    <div><label class="acc-label pl-50">Target Type</label></div>
     <div class="input-group">
       <div class="input-group-addon pl-0">When</div>
-      {{alert/form-target model=model}}
+      {{new-select class="form-control text-capitalize" content=targetTypes value=model.targetType}}
     </div>
   </div>
+
+  <div class="col span-4 mr-0">
+    <div><label class="acc-label">Target{{field-required}}</label></div>
+    {{alert/form-target targetType=model.targetType model=model}}
+  </div>
+
   {{#if (eq model.targetType 'pod')}}
-    <div class="col span-6">
+    <div class="col span-4">
       <div style="padding: 34px 0 0 15px">is unhealthy</div>
     </div>
   {{else if (eq model.targetType 'node')}}
-    <div class="col span-6 pl-0">
+    <div class="col span-4 pl-0">
       <div class="acc-label" style="padding-left: 34px">Node condition</div>
       <div class="input-group">
         <span class="input-group-addon">is</span>
@@ -19,7 +25,7 @@
       </div>
     </div>
   {{else}}
-    <div class="col span-6 ml-0" style="padding-top:32px">
+    <div class="col span-4 ml-0" style="padding-top:32px">
       <div class="input-group p-0">
         <span class="input-group-addon">are</span>
         {{input-slider

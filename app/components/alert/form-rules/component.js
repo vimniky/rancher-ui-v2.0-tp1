@@ -1,10 +1,19 @@
 import Ember from 'ember';
 
+const TARGET_TYPES = [
+  {value: 'node', label: 'node'},
+  {value: 'deployment', label: 'deployment'},
+  {value: 'statefulset', label: 'statefulset'},
+  {value: 'daemonset', label: 'daemonset'},
+  {value: 'pod', label: 'pod'},
+];
+
 export default Ember.Component.extend({
   percent: 30,
 
   init() {
     this._super();
+    this.set('targetTypes', TARGET_TYPES);
     this.setInitialUnavailablePercentage();
   },
 
