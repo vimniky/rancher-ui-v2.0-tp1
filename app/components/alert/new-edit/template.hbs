@@ -70,6 +70,48 @@
       </div>
       {{alert/form-recipient percent=unavailablePercentage model=alert recipients=recipients}}
     </div>
+
+    <div class="mt-30 clearfix">
+      <div class="pull-right text-small">
+        <a role="button" class="btn bg-transparent p-0" {{action "showAdvanced"}}>Show advanced options</a>
+      </div>
+    </div>
+
+    {{#if advancedShown}}
+      <div class="row box">
+        <div class="col span-6 pt-0 mt-0">
+          <label class="acc-label">Initial Wait</label>
+          <div style="display: flex">
+            <div style="flex-grow: 1">
+              {{input-integer
+                min=1
+                value=alert.advancedOptions.initialWait
+                class="form-control"
+                placeholder=(t 'loggingPage.flushInterval.placeholder')
+                aria-describedby="basic-addon2"
+              }}
+            </div>
+            <div>{{new-select class="pr-40 bg-primary" content=timeUnits value=flushInterval}}</div>
+          </div>
+        </div>
+
+        <div class="col span-6 pt-0 mt-0">
+          <label class="acc-label">Repeat Interval</label>
+          <div style="display: flex">
+            <div style="flex-grow: 1">
+              {{input-integer
+                min=1
+                value=alert.advancedOptions.repeatInterval
+                class="form-control"
+                placeholder=(t 'loggingPage.flushInterval.placeholder')
+                aria-describedby="basic-addon2"
+              }}
+            </div>
+            <div>{{new-select class="bg-primary pr-40" content=timeUnits value=flushInterval}}</div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
   {{/each}}
 {{/if}}
 
@@ -80,15 +122,6 @@
       <span>{{t 'formNewEditAlert.addAlert'}}</span>
     </button>
   </div>
-{{/if}}
-
-<div class="mt-30 clearfix">
-  <div class="pull-right text-small">
-    <a role="button" class="btn bg-transparent p-0" {{action "showAdvanced"}}>Show advanced options</a>
-  </div>
-</div>
-
-{{#if advancedShown}}
 {{/if}}
 
 {{#if (and isStandalone errors)}}

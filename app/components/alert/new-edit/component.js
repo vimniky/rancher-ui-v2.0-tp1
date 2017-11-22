@@ -2,6 +2,22 @@ import Ember from 'ember';
 import NewOrEdit from 'ui/mixins/new-or-edit';
 import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
+const timeUnits = [
+  {
+    value: 'second',
+    label: 'Second',
+  },
+  {
+    value: 'minute',
+    label: 'Minute',
+  },
+  {
+    value: 'hour',
+    label: 'Hour',
+  },
+];
+
+
 export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   projects: Ember.inject.service(),
   router: Ember.inject.service(),
@@ -13,6 +29,7 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   editing: false,
   errors: null,
   alerts: [],
+  timeUnits: timeUnits,
   hasAlerts: false,
   alertsChanged: function() {
     const alerts = this.get('alerts');
@@ -262,6 +279,10 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
         },
         statefulSetRule: {
           unavailablePercentage: 0,
+        },
+        advancedOptions: {
+          "initialWait": 3,
+          "repeatInterval": 3,
         },
         serviceRule: {
           unhealthyPercentage: '30',
