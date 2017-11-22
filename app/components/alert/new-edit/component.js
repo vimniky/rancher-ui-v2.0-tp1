@@ -9,7 +9,6 @@ export default Ember.Component.extend(NewOrEdit, {
 
   originalModel: null,
   advancedShown: false,
-  editing: false,
   errors: null,
 
   init() {

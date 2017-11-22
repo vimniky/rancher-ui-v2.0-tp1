@@ -1,8 +1,18 @@
-{{searchable-select
-    content=targets
-    optionValuePath="id"
-    optionLabelPath="id"
-    prompt="Choose a Target"
-    value=model.targetId
-    showSearch=showSearch
-}}
+{{#if disabled}}
+  {{new-select
+      content=targets
+      optionValuePath="id"
+      optionLabelPath="id"
+      value=model.targetId
+      disabled=true
+  }}
+{{else}}
+  {{searchable-select
+      content=targets
+      optionValuePath="id"
+      optionLabelPath="id"
+      prompt="Choose a Target"
+      value=model.targetId
+      showSearch=showSearch
+  }}
+{{/if}}

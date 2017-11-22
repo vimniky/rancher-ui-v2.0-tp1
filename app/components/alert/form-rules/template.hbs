@@ -3,13 +3,13 @@
     <div><label class="acc-label pl-50">Target Type</label></div>
     <div class="input-group">
       <div class="input-group-addon pl-0">When</div>
-      {{new-select class="form-control text-capitalize" content=targetTypes value=model.targetType}}
+      {{new-select disabled=(not isCreate) class="form-control text-capitalize" content=targetTypes value=model.targetType}}
     </div>
   </div>
 
   <div class="col span-4 mr-0">
     <div><label class="acc-label">Target{{field-required}}</label></div>
-    {{alert/form-target targetType=model.targetType model=model}}
+    {{alert/form-target disabled=(not isCreate) targetType=model.targetType model=model}}
   </div>
 
   {{#if (eq model.targetType 'pod')}}
