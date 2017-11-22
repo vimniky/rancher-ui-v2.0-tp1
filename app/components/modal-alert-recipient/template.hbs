@@ -3,7 +3,7 @@
   <hr/>
 </section>
 <section class="row">
-  <div class="col span-6">
+  <div class="col span-{{if isPagerduty '4' '6'}}">
     <div class="acc-label">Notifier</div>
     {{new-select
       classNames="text-capitalize form-control"
@@ -11,10 +11,15 @@
       value=model.recipientType
     }}
   </div>
-
-  <div class="col span-6">
-    <div class="acc-label">Recipient</div>
-    {{input classNames="form-control" value=value}}
+  {{#if isPagerduty}}
+    <div class="col span-4">
+      <div class="acc-label text-capitalize">Service Name</div>
+      {{input classNames="form-control" value=model.pagerdutyRecipient.serviceName placeholder="Enter a service naem"}}
+    </div>
+  {{/if}}
+  <div class="col span-{{if isPagerduty '4' '6'}}">
+    <div class="acc-label text-capitalize">{{model.recipientLabel}}</div>
+    {{input classNames="form-control" value=value placeholder=model.recipientPlaceholder}}
   </div>
 </section>
 
