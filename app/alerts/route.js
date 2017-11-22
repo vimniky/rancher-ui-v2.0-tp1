@@ -18,10 +18,10 @@ export default Ember.Route.extend({
       const hash = {
         alerts: store.find('alert', null, {forceReload: true, filter}),
         recipients: store.find('recipient', null, {forceReload: true, filter}),
-        notifiers: store.find('notifier', null, {forceReload: true, filter}),
+        notifiers: store.find('notifier', null, {forceReload: true}),
         pods: store.find('pod', null, {forceReload: true, filter}),
         deployments: store.find('deployment', null, {forceReload: true, filter}),
-        nodes: store.find('node', null, {forceReload: true, filter}),
+        nodes: store.find('node', null, {forceReload: true}),
         daemonsets: store.find('daemonset', null, {forceReload: true, filter}),
         statefulset: store.find('statefulset', null, {forceReload: true, filter}),
       };

@@ -16,6 +16,11 @@ var Alert = Resource.extend({
       this.get('store')._remove('alert', res);
     });
   },
+
+  displayName: function() {
+    return this.get('description') || this.get('id');
+  }.property('description','id'),
+
   nodeRules: function() {
     return  [
       {
