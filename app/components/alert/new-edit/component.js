@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import NewOrEdit from 'ui/mixins/new-or-edit';
-import getEnumFieldOptions from 'ui/mixins/get-enum-field-options';
 
-export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
+export default Ember.Component.extend(NewOrEdit, {
   projects: Ember.inject.service(),
   router: Ember.inject.service(),
   intl: Ember.inject.service(),
@@ -26,7 +25,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
   isStandalone: function() {
     return this.get('mode') === 'standalone';
   }.property('mode'),
-  severities: [],
   percent: 30,
   creating: function() {
     const originals = this.get('originalModels');
@@ -39,7 +37,6 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this._super(...arguments);
     const store = this.get('monitoringStore');
     this.set('alerts', []);
-    this.set('severities',  this.getEnumFieldOptions('severity', 'alert', 'monitoringStore'));
     this.set('recipients', store.all('recipient'));
     const out = [
       'node',

@@ -2,7 +2,6 @@ import Ember from 'ember';
 
 const recipientTypes = ['slack', 'email','pagerduty', 'webhook'];
 export default Ember.Component.extend({
-  tagName: 'table',
   intl: Ember.inject.service(),
 
   // input
@@ -10,8 +9,7 @@ export default Ember.Component.extend({
   recipients: null,
   toNewRecipient: null,
 
-  recipientTypes: recipientTypes.map(value => ({label: value.capitalize(), value})),
-  percent: 30,
+  recipientTypes: recipientTypes.map(v => ({label: v, value: v})),
   isReuse: Ember.computed.alias('model.newRecipient.isReuse'),
   recipientType: null,
 
@@ -29,56 +27,7 @@ export default Ember.Component.extend({
       }
     }
     this.setLatestSelectionMap();
-    this.setInitialUnavailablePercentage();
     this.set('recipients', recipients);
-  },
-
-  setInitialUnavailablePercentage() {
-    const p = this.getUnavailablePercentage();
-    if (this.get('model.id') && p) {
-      this.set('percent', p);
-    }
-  },
-
-  targetTypeChanged: function() {
-    const p = this.get('percent');
-    this.setUnavailablePercentage(p);
-  }.observes('model.targetType', 'percent'),
-
-  setUnavailablePercentage(p) {
-    const model = this.get('model');
-    const t = this.get('model.targetType')
-    switch(t) {
-    case 'deployment':
-      model.set('deploymentRule.unavailablePercentage', p);
-      break;
-    case 'statefulset':
-      model.set('statefulSetRule.unavailablePercentage', p);
-      break;
-    case 'daemonset':
-      model.set('daemonSetRule.unavailablePercentage', p);
-      break
-    default:
-    }
-  },
-
-  getUnavailablePercentage() {
-    const model = this.get('model');
-    const t = this.get('model.targetType')
-    let p
-    switch(t) {
-    case 'deployment':
-      p = model.get('deploymentRule.unavailablePercentage');
-      break;
-    case 'statefulset':
-      p = model.get('statefulSetRule.unavailablePercentage');
-      break;
-    case 'daemonset':
-      p = model.get('daemonSetRule.unavailablePercentage');
-      break
-    default:
-    }
-    return p;
   },
 
   setLatestSelectionMap() {
@@ -91,6 +40,7 @@ export default Ember.Component.extend({
       this.set(`latestSelectionMap.${this.get('recipientType')}`, recipientId);
     }
   },
+
   recipientChanged: function() {
     // When reuse a exiting recipient, automatically detect and set recipientType when recipientId changed
     const recipientId = this.get('model.recipientId');
@@ -99,6 +49,7 @@ export default Ember.Component.extend({
       this.setLatestSelectionMap();
     }
   }.observes('model.recipientId,isReuse'),
+
   recipientTypeChanged: function() {
     const cached = this.get(`latestSelectionMap.${this.get('recipientType')}`);
     if (cached) {
@@ -151,9 +102,9 @@ export default Ember.Component.extend({
       }
     });
   }.property('recipients','recipients.length','recipientType'),
+
   actions: {
-    toggle() {
-      this.set('isReuse', !this.get('isReuse'));
+    createRecipient() {
     }
   }
 });

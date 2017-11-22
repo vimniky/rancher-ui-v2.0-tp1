@@ -1,93 +1,33 @@
-<table class="table fixed no-lines mt-20">
-  <thead>
-    <tr>
-      <th width="3">&nbsp;</th>
-      <th class="acc-label" width="9">Notifier</th>
-      <th width="3">&nbsp;</th>
-      <th class="acc-label clearfix" width="14">
-        <div class="pull-left">
-          {{#if isReuse}}
-            {{t 'formRecipient.label.reuse'}}
-          {{else}}
-            {{t 'formRecipient.label.create'}}
-          {{/if}}
-          {{field-required}}
-        </div>
-        <div class="pull-right">
-          <a role="button" class="btn bg-transparent p-0" {{action "toggle"}}>
-            {{t (if isReuse 'formRecipient.toggle.create' 'formRecipient.toggle.reuse')}}
-          </a>
-        </div>
-      </th>
+<div class="col span-6 mr-0">
+  <div class="acc-label" style="padding-left: 60px">Notifier</div>
+  <div class="input-group">
+    <span class="input-group-addon pl-0">Send a</span>
+    {{new-select
+      classNames="text-capitalize form-control"
+      content=recipientTypes
+      value=recipientType
+    }}
+  </div>
+</div>
 
-      {{#if (eq model.targetType 'pod')}}
-        <th width="19">&nbsp;</th>
-      {{else}}
-        <th width="5">&nbsp;</th>
-        <th width="14">&nbsp;</th>
-      {{/if}}
-    </tr>
-  </thead>
-  <tbody>
-    <td>Send a </td>
-    <td>
-      {{new-select
-          content=recipientTypes
-          value=recipientType
-      }}
-    </td>
-    <td class="text-center">to</td>
-    <td>
-      {{#if isReuse}}
-        {{searchable-select
-            content=filteredRecipients
-            prompt=recipientPrompt
-            value=model.recipientId
-        }}
-      {{else}}
-        {{#if (eq recipientType 'pagerduty')}}
-          {{input
-            type="text"
-            placeholder=newRecipientPlaceholder
-            value=toNewRecipient
-          }}
-        {{else}}
-          {{input
-            type="text"
-            placeholder=newRecipientPlaceholder
-            value=toNewRecipient
-          }}
-        {{/if}}
-      {{/if}}
-    </td>
-    {{#if (eq model.targetType 'pod')}}
-      <td class="pl-30">when pod is unhealthy</td>
-    {{else if (eq model.targetType 'node')}}
-      <td class="text-center">when ></td>
-      <td>
-        <div class="input-group" style="width: 100%">
-          <span class="input-group-addon pl-0">node is</span>
-          {{new-select content=model.nodeRules value=model.nodeRule.condition}}
-        </div>
-      </td>
-    {{else}}
-      <td class="text-center">when ></td>
-      <td>
-        <div class="row">
-          <div class="col span-14-of-24" style="position: relative;">
-            {{input-slider
-                value=percent
-                valueMin=0
-                valueMax=100
-                step=1
-            }}
-            <div class="text-center" style="position: absolute;width: 100%;">
-              {{if percent percent 0}}%
-            </div>
-          </div>
-          <div class="col offset-1-of-24 span-9-of-24"> are unhealthy </div>
-        </div>
-      </td>
-    {{/if}}
-  </tbody>
-</table>
+<div class="col span-6 ml-0">
+  <div class="acc-label clearfix" style="padding-left: 40px">
+    <div class="pull-left">
+        {{t 'formRecipient.label.reuse'}}
+      {{field-required}}
+    </div>
+    <div class="pull-right">
+      <a role="button" class="btn bg-transparent p-0" {{action "createRecipient"}}>
+        {{t 'formRecipient.toggle.create'}}
+      </a>
+    </div>
+  </div>
+  <div class="input-group">
+    <span class="input-group-addon">To</span>
+    {{searchable-select
+        content=filteredRecipients
+        prompt=recipientPrompt
+        value=model.recipientId
+    }}
+  </div>
+</div>

@@ -1,75 +1,21 @@
 {{#if alerts}}
   {{#each alerts as |alert idx|}}
-    {{#if isStandalone}}
-      {{#if (and (gt idx 0) (not-eq idx (sub alerts.length - 1)))}}
-        <hr class="mt-40 mb-20"/>
-      {{/if}}
-    {{/if}}
-    <div class="{{if (not isStandalone) 'box mt-20 pt-20'}}" style="position: relative;" >
-      {{#if (or (not isStandalone) (gt alerts.length 1))}}
-        <button
-          class="btn bg-transparent text-small mh-0 p-0"
-          style="position: absolute; {{if isStandalone "right: 0;top:-10px" "right:20px;top: 15px;"}}"
-          {{action "removeAlert" alert}}
-        >
-          {{t 'formNewEditAlert.removeButtonLabel'}}
-        </button>
-      {{/if}}
-      <div class="row">
-        <div class="col span-4">
-          <div><label class="acc-label">Description{{field-required}}</label></div>
-          {{input
-            class="form-control"
-            value=alert.description
-            placeholder=(t 'formNewEditAlert.description.placeholder')
-          }}
-        </div>
-        <div class="col span-4">
-          <div><label class="acc-label">Target{{field-required}}</label></div>
-          <!-- When creating new container/service,
-                targetId is will be the new created container/service id
-                and will be populated automatically.
-                So users don't need to fill in the targetId.
-              -->
-          {{#if isStandalone}}
-            {{searchable-select
-                content=objectChoices
-                optionGroupPath="type"
-                optionValuePath="id"
-                optionLabelPath="displayName"
-                prompt="Choose a Target"
-                group=alert.targetType
-                value=alert.targetId
-            }}
-          {{else}}
-            {{#if targetId}}
-              {{searchable-select
-                  value=targetId
-                  content=objectChoices
-                  optionGroupPath="type"
-                  optionValuePath="id"
-                  optionLabelPath="displayName"
-                  prompt="Choose a Object"
-                  group=alert.targetType
-              }}
-            {{else}}
-              {{input type=text disabled=true placeholder="Object will be automatically filled in"}}
-            {{/if}}
-          {{/if}}
-        </div>
-        <div class="col span-4">
-          <div><label class="acc-label">{{t 'formNewEditAlert.severity'}}</label></div>
-          {{#input-or-display editing value="Severity"}}
-            {{new-select
-                classNames="form-control"
-                content=severities
-                value=alert.severity
-            }}
-          {{/input-or-display}}
-        </div>
+    <div class="row">
+      <div class="col span-6 pt-0 mt-0">
+        <div><label class="acc-label">Description{{field-required}}</label></div>
+        {{input
+          class="form-control"
+          value=alert.description
+          placeholder=(t 'formNewEditAlert.description.placeholder')
+        }}
       </div>
-      {{alert/form-recipient percent=unavailablePercentage model=alert recipients=recipients}}
+      <div class="col span-6 pt-0 mt-0">
+        {{alert/form-severity model=alert}}
+      </div>
     </div>
+
+    {{alert/form-recipient model=alert recipients=recipients}}
+    {{alert/form-rules model=alert}}
 
     <div class="mt-30 clearfix">
       {{#unless advancedShown}}

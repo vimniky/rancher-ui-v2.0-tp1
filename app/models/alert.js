@@ -11,14 +11,11 @@ const defaultStateMap = {
 var Alert = Resource.extend({
   type: 'alert',
   router: Ember.inject.service(),
-  // Todo: why I need to do this? the resouce should be deleted(remove from the store) anyway after
-  // resource.delete() called.
-  // If resouces have a cb method on it, cb will be called when user `confirm deletion`.
-  // cb() {
-  //   this.delete().then(() => {
-  //     this.get('store')._remove('alert', this);
-  //   });
-  // },
+  cb() {
+    this.delete().then((res) => {
+      this.get('store')._remove('alert', res);
+    });
+  },
   nodeRules: function() {
     return  [
       {
@@ -70,9 +67,6 @@ var Alert = Resource.extend({
     },
     unsilence() {
       return this.doAction('unsilence');
-    },
-    promptDelete: function() {
-      this.get('modalService').toggleModal('confirm-delete', {resources: [this]});
     },
   },
   recipient: function() {
