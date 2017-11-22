@@ -82,6 +82,15 @@
   </div>
 {{/if}}
 
+<div class="mt-30 clearfix">
+  <div class="pull-right text-small">
+    <a role="button" class="btn bg-transparent p-0" {{action "showAdvanced"}}>Show advanced options</a>
+  </div>
+</div>
+
+{{#if advancedShown}}
+{{/if}}
+
 {{#if (and isStandalone errors)}}
   <div class="mt-20">
     {{top-errors errors=errors}}

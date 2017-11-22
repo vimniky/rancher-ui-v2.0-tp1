@@ -231,7 +231,11 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
       cb();
     });
   },
+  advancedShown: false,
   actions: {
+    showAdvanced() {
+      this.set('advancedShown', true);
+    },
     save(cb) {
       const ok = this.willSave(cb);
       // Has any error?
