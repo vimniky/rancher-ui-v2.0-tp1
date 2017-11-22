@@ -14,11 +14,11 @@ var Alert = Resource.extend({
   // Todo: why I need to do this? the resouce should be deleted(remove from the store) anyway after
   // resource.delete() called.
   // If resouces have a cb method on it, cb will be called when user `confirm deletion`.
-  cb() {
-    this.delete().then(() => {
-      this.get('store')._remove('alert', this);
-    });
-  },
+  // cb() {
+  //   this.delete().then(() => {
+  //     this.get('store')._remove('alert', this);
+  //   });
+  // },
   nodeRules: function() {
     return  [
       {
