@@ -51,7 +51,7 @@ export default Resource.extend(AlertMixin, {
     case 'email':
       return 'e.g. example@mail.com';
     case 'pagerduty':
-      return 'Enter your service key';
+      return 'Enter a service key';
     case 'slack':
       return 'e.g. #test';
     case 'webhook':
