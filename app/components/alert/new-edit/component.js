@@ -63,7 +63,7 @@ export default Ember.Component.extend(NewOrEdit, {
   addAlert() {
     const alert = this.get('monitoringStore').createRecord({
       type: 'alert',
-      targetType: 'node',
+      targetType: localStorage.getItem('targetType') || 'node',
       targetId: null,
       namespace: this.get('namespace'),
       sendResolved: false,

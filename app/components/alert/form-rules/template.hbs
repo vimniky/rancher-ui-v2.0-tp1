@@ -3,7 +3,7 @@
     <div><label class="acc-label pl-50">Target Type</label></div>
     <div class="input-group">
       <div class="input-group-addon pl-0">When</div>
-      {{new-select disabled=(not isCreate) class="form-control text-capitalize" content=targetTypes value=model.targetType}}
+      {{new-select disabled=(not isCreate) class="form-control text-capitalize" content=model.targetTypes value=model.targetType}}
     </div>
   </div>
 
@@ -18,7 +18,7 @@
     </div>
   {{else if (eq model.targetType 'node')}}
     <div class="col span-4 pl-0">
-      <div class="acc-label" style="padding-left: 34px">Node condition</div>
+      <div class="acc-label" style="padding-left: 34px">Node Condition</div>
       <div class="input-group">
         <span class="input-group-addon">is</span>
         {{new-select content=model.nodeRules value=model.nodeRule.condition}}
@@ -29,12 +29,12 @@
       <div class="input-group p-0">
         <span class="input-group-addon">are</span>
         {{input-slider
-            value=percent
+            value=model.percent
             valueMin=0
             valueMax=100
             step=1
         }}
-        <span class="input-group-addon">{{if percent percent 0}}%  unavailable</span>
+        <span class="input-group-addon">{{model.percent}}%  unavailable</span>
       </div>
     </div>
   {{/if}}

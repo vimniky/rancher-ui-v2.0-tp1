@@ -1,6 +1,14 @@
 import Ember from 'ember';
 import Resource from 'ember-api-store/models/resource';
 
+const TARGET_TYPES = [
+  {value: 'node', label: 'node'},
+  {value: 'deployment', label: 'deployment'},
+  {value: 'statefulset', label: 'statefulset'},
+  {value: 'daemonset', label: 'daemonset'},
+  {value: 'pod', label: 'pod'},
+];
+
 const defaultStateMap = {
   'alerting':                 {icon: 'icon icon-alert',         color: 'text-error'  },
   'silenced':                  {icon: 'icon icon-alert',         color: 'text-warning'},
@@ -10,16 +18,92 @@ const defaultStateMap = {
 
 var Alert = Resource.extend({
   type: 'alert',
+
+  percent: 30,
   router: Ember.inject.service(),
+
   cb() {
     this.delete().then((res) => {
       this.get('store')._remove('alert', res);
     });
   },
 
+  init() {
+    this._super();
+    this.setInitialUnavailablePercentage();
+    this.setLatestSelectionMap();
+    this.set('targetTypes', TARGET_TYPES);
+  },
+
+  latestSelectionMap: null,
+  setLatestSelectionMap: function() {
+    const targetId = this.get('targetId');
+    const lsm = this.get('latestSelectionMap');
+    if (!lsm) {
+      this.set('latestSelectionMap', Ember.Object.create());
+    }
+    if (targetId) {
+      this.set(`latestSelectionMap.${this.get('targetType')}`, targetId);
+    }
+  }.observes('targetId'),
+
+  targetTypeChanged: function() {
+    const p = this.get('percent');
+    this.setUnavailablePercentage(p);
+
+    // automatically select the last use target
+    const cached = this.get(`latestSelectionMap.${this.get('targetType')}`);
+    if (cached) {
+      this.set('targetId', cached);
+    } else {
+      this.set('targetId', null);
+    }
+    localStorage.setItem('targetType', this.get('targetType'));
+  }.observes('targetType', 'percent'),
+
+  setInitialUnavailablePercentage() {
+    const p = this.getUnavailablePercentage();
+    if (this.get('id') && p) {
+      this.set('percent', p);
+    }
+  },
   displayName: function() {
     return this.get('description') || this.get('id');
   }.property('description','id'),
+
+  setUnavailablePercentage(p) {
+    const t = this.get('targetType')
+    switch(t) {
+    case 'deployment':
+      this.set('deploymentRule.unavailablePercentage', p);
+      break;
+    case 'statefulset':
+      this.set('statefulSetRule.unavailablePercentage', p);
+      break;
+    case 'daemonset':
+      this.set('daemonSetRule.unavailablePercentage', p);
+      break
+    default:
+    }
+  },
+
+  getUnavailablePercentage() {
+    const t = this.get('targetType')
+    let p
+    switch(t) {
+    case 'deployment':
+      p = this.get('deploymentRule.unavailablePercentage');
+      break;
+    case 'statefulset':
+      p = this.get('statefulSetRule.unavailablePercentage');
+      break;
+    case 'daemonset':
+      p = this.get('daemonSetRule.unavailablePercentage');
+      break
+    default:
+    }
+    return p;
+  },
 
   nodeRules: function() {
     return  [

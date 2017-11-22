@@ -11,7 +11,7 @@ export default Ember.Component.extend(AlertMixin, {
   // input
   model: null,
   newRecipient: null,
-  recipientType: 'slack',
+  recipientType: localStorage.getItem('recipientType') || 'slack',
   recipientTypes: null,
 
   latestSelectionMap: null,
@@ -63,6 +63,7 @@ export default Ember.Component.extend(AlertMixin, {
     } else {
       this.set('model.recipientId', null);
     }
+    localStorage.setItem('recipientType', this.get('recipientType'));
   }.observes('recipientType'),
 
   recipientLabel: function() {
