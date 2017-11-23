@@ -37,12 +37,16 @@ export default Ember.Route.extend({
       }),
     });
   },
-  redirect(model) {
+  doRedirect(model, controller) {
     const logging = model.logging;
-    const canRedirectToDashboard = logging.get('enable') && logging.get('id')
-          && logging.get('targetType') === 'embedded' && this.get('isClusterLevel');
+    const canRedirectToDashboard =
+          logging.get('enable')
+          && controller && controller.get('targetType') === 'embedded'
+          && logging.get('id')
+          && logging.get('targetType') === 'embedded'
+          && this.get('isClusterLevel');
     if (!this.get('preventDirect') && canRedirectToDashboard) {
-      // this.transitionTo('logging.dashboard');
+      this.transitionTo('logging.dashboard');
     }
     this.set('preventDirect', false);
   },
@@ -54,6 +58,7 @@ export default Ember.Route.extend({
     if (enable && !controller.get('targetType')) {
       controller.set('targetType', logging.get('targetType'));
     }
+    this.doRedirect(model, controller);
     this._super(controller, model);
   },
   resetController(controller, isExisting) {
