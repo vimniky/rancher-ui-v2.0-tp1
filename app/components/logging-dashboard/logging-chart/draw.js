@@ -143,7 +143,6 @@ export default function(element, options = {}) {
     const duration = moment.duration(end.diff(start));
     const value = interval.get('values').objectAt(interval.get('valueIdx'));
     const count = duration[interval.get('durationKey')]();
-    console.log(value, count, interval)
     return Math.floor(width / count / value);
   }
 

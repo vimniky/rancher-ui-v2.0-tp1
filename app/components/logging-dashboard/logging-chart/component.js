@@ -4,7 +4,8 @@ import draw from './draw';
 // import draw from './histogram';
 
 const intervals = [
-  {unit: 'second', label: 'second', values: [1, 5, 15], valueIdx: 0, abbr: 's', durationKey: 'asSeconds'},
+  // {unit: 'second', label: 'second', values: [1, 5, 15], valueIdx: 0, abbr: 's', durationKey: 'asSeconds'},
+  // {unit: 'minute', label: 'minute', values: [1, 5, 15], valueIdx: 0, abbr: 'm', durationKey: 'asMinutes'},
   {unit: 'minute', label: 'minute', values: [1, 5, 15], valueIdx: 0, abbr: 'm', durationKey: 'asMinutes'},
   {unit: 'hour', label: 'hourly', values: [1, 3, 6], valueIdx: 0, abbr: 'h', durationKey: 'asHours'},
   {unit: 'day', label: 'daily', values: [1, 3, 7], valueIdx: 0, abbr: 'd', durationKey: 'asDays'},
@@ -62,13 +63,19 @@ export default Ember.Component.extend({
   roundedDateRange() {
     const interval = this.computeInterval();
     const range = this.computeDateRange();
-    return {
+    const out = {
       from: moment(range.from).round(1, interval.unit + 's'),
       to: moment(range.to).round(1, interval.unit + 's'),
     }
+    console.log('-------interval', interval)
+    this.set('displayDateRange', {
+      from: out.from.format('YYYY-MM-DD hh:mm:ss'),
+      to: out.to.format('YYYY-MM-DD hh:mm:ss'),
+    });
+    return out;
   },
   computeInterval: function() {
-    const defaultInterval = intervals[1];
+    const defaultInterval = intervals[0];
     if (!this.get('chart')) {
       return defaultInterval;
     }
