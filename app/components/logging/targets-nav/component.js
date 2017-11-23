@@ -37,6 +37,13 @@ export default Ember.Component.extend({
         available: true,
         disabled: false,
       },
+      {
+        label: '',
+        type: 'kafka',
+        css: 'kafka' +  this.currentCss('kafka'),
+        available: true,
+        disabled: false,
+      },
     ].filter(item => {
       return this.get('isClusterLevel') || item.type !== 'embedded';
     });

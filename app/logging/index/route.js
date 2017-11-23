@@ -2,15 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   projects: Ember.inject.service(),
-  namespace: null,
+  namespace: Ember.computed.reads('projects.namespace'),
   currentLogging: null,
   model() {
     const store = this.get('loggingStore');
-    // system <--> cattle-system
-    // k8s' cattle-system namespace is mapped into rancher's system environemnt
-    let ns = this.get('projects.current').name.toLowerCase();
-    const isClusterLevel = ns === 'system';
-    ns = isClusterLevel ? 'cattle-system' : ns
+    let ns = this.get('namespace');
+    const isClusterLevel = ns === 'cattle-system';
     this.set('namespace', ns);
     this.set('isClusterLevel', isClusterLevel);
     return Ember.RSVP.hash({
@@ -32,8 +29,8 @@ export default Ember.Route.extend({
         }
         return logging;
       }),
-      loggingAuth: store.find('loggingAuth', null, {forceReload: true}).then(las => {
-        return las.get('firstObject');
+      loggingAuth: store.find('loggingAuth', null, {forceReload: true}).then(ary => {
+        return ary.get('firstObject');
       }),
     });
   },
@@ -41,11 +38,12 @@ export default Ember.Route.extend({
     const logging = model.logging;
     const canRedirectToDashboard =
           logging.get('enable')
+          && !this.get('preventDirect')
           && controller && controller.get('targetType') === 'embedded'
           && logging.get('id')
           && logging.get('targetType') === 'embedded'
           && this.get('isClusterLevel');
-    if (!this.get('preventDirect') && canRedirectToDashboard) {
+    if (canRedirectToDashboard) {
       this.transitionTo('logging.dashboard');
     }
     this.set('preventDirect', false);

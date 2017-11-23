@@ -15,7 +15,10 @@
     background-size: 110px 70px;
     background-position: center 30%!important;
   }
-
+  &.kafka {
+    background-image: url('images/providers/kafka.svg');
+    background-size: 120px 80px;
+  }
 }
 .nav-boxes {
   &.checked-current .current:after {
@@ -31,24 +34,5 @@
     line-height      : 30px;
     border-radius    : 50%;
     color            : white;
-  }
-}
-
-.notifier-type {
-  &.slack {
-    background-image: url('images/providers/slack.svg');
-    background-size: 60px 60px;
-    background-position: center 30%!important;
-  }
-
-  &.email {
-    background-image: url('images/providers/email.svg');
-    background-size: 90px 90px;
-    background-position: center 30%!important;
-  }
-
-  &.pagerduty {
-    background-image: url('images/providers/pagerduty.svg');
-    background-size: 140px 80px;
   }
 }
