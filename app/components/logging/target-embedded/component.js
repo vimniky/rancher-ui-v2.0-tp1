@@ -4,14 +4,17 @@ const types = [
   {
     emResReqCPU: '1',
     emResReqMemory: '2',
+    type: 'Small',
   },
   {
     emResReqCPU: '2',
     emResReqMemory: '4',
+    type: 'Medium',
   },
   {
     emResReqCPU: '3',
     emResReqMemory: '6',
+    type: 'Large',
   },
 ];
 

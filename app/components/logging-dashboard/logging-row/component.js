@@ -4,8 +4,6 @@ export default Ember.Component.extend({
   intl: Ember.inject.service(),
   model: null,
   tagName: '',
-  // tagName: 'TR',
-  // classNames: 'main-row',
   bulkActions: false,
   fromNow: function() {
     return moment(this.get('model.timestamp')).fromNow();
@@ -30,10 +28,12 @@ export default Ember.Component.extend({
     }
     return out
   }.property('model.serviceRule.unhealthyPercentage,model.targetType'),
-  expanded: false,
+
+  expanded: Ember.computed.reads('model.expanded'),
+
   actions: {
     toggle() {
-      this.toggleProperty('expanded', true);
+      this.toggleProperty('expanded');
     }
   }
 });

@@ -16,17 +16,17 @@ export default Ember.Component.extend({
   targets: function() {
     return [
       {
-        type: 'elasticsearch',
-        label: 'Elasticsearch',
-        css: 'elasticsearch' +  this.currentCss('elasticsearch'),
-        available: true,
-        disabled: false,
-      },
-      {
         type: 'embedded',
         label: 'Embedded',
         css: 'embedded' +  this.currentCss('embedded'),
         classNames: '',
+        available: true,
+        disabled: false,
+      },
+      {
+        type: 'elasticsearch',
+        label: 'Elasticsearch',
+        css: 'elasticsearch' +  this.currentCss('elasticsearch'),
         available: true,
         disabled: false,
       },

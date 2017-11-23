@@ -50,7 +50,7 @@ export default Ember.Component.extend({
     const chart = this.get('chart');
     if (!chart) {
       return {
-        from: moment(new Date()).subtract(45, 'minutes').valueOf(),
+        from: moment(new Date()).subtract(1, 'minutes').valueOf(),
         to: new Date().getTime(),
       }
     }

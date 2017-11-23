@@ -9,8 +9,7 @@
     <i
       role="button"
       {{action "toggle"}}
-      class="icon icon-play eased text-small text-muted
-      {{if expanded 'icon-rotate-90'}}"
+      class="icon icon-play eased text-small text-muted {{if expanded 'icon-rotate-90'}}"
     >
       <span class="visually-hidden">open accordion</span>
     </i>
@@ -27,7 +26,7 @@
   </td>
 </tr>
 
-<tr class="sub-row text-muted {{unless expanded 'hide'}}">
+<tr class="sub-row {{unless expanded 'hide'}}">
   <td colspan="2">{{timestamp}} </td>
   <td colspan="{{fullColspan}}">{{_log}}</td>
   <td>{{! container name}}</td>
