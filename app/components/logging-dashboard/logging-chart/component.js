@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import './moment-round';
 import draw from './draw';
+// import draw from './histogram';
 
 const intervals = [
   {unit: 'second', label: 'second', values: [1, 5, 15], valueIdx: 0, abbr: 's', durationKey: 'asSeconds'},
@@ -62,8 +63,8 @@ export default Ember.Component.extend({
     const interval = this.computeInterval();
     const range = this.computeDateRange();
     return {
-      from: moment(range.from).round(1, interval.unit + 's').valueOf(),
-      to: moment(range.to).round(1, interval.unit + 's').valueOf(),
+      from: moment(range.from).round(1, interval.unit + 's'),
+      to: moment(range.to).round(1, interval.unit + 's'),
     }
   },
   computeInterval: function() {
@@ -207,6 +208,7 @@ export default Ember.Component.extend({
       chart.update({
         data: res.chartData,
         interval: this.computeInterval(),
+        timeRange: this.roundedDateRange(),
       });
       this.set('updating', false);
     });

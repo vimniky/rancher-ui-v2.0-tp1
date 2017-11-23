@@ -55,6 +55,7 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
       let tasks = {
         userSchemas:                                    this.toCb('loadUserSchemas'),
+        monitoringSchames:                              this.toCb('loadMonitoringSchemas'),
         loggingSchemas:                                 this.toCb('loadLoggingSchemas'),
         clusters:                                       this.toCb('loadClusters'),
         projects:                                       this.toCb('loadProjects'),
@@ -74,7 +75,7 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
         certificate:        ['projectSchemas',          this.cbFind('certificate')],
         secret:             ['projectSchemas',          this.toCb('loadSecrets')],
         identities:         ['userSchemas', this.cbFind('identity', 'userStore')],
-        loggingAuths:       ['loggingSchemas',          this.cbFind('loggingAuth', 'loggingStore')],
+        loggingAuths:       ['loggingSchemas',         this.cbFind('loggingAuth', 'loggingStore')],
       };
 
       async.auto(tasks, xhrConcur, function(err, res) {
@@ -198,6 +199,12 @@ export default Ember.Route.extend(Subscribe, PromiseToCb, {
     let userStore = this.get('userStore');
     return userStore.rawRequest({url:'schema', dataType: 'json'}).then((xhr) => {
       userStore._bulkAdd('schema', xhr.body.data);
+    });
+  },
+  loadMonitoringSchemas() {
+    const ms = this.get('monitoringStore');
+    return ms.rawRequest({url:'/v5/schemas', dataType: 'json'}).then((xhr) => {
+      ms._bulkAdd('schema', xhr.body.data);
     });
   },
   loadLoggingSchemas() {

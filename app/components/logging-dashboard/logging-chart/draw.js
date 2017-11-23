@@ -33,7 +33,7 @@ export default function(element, options = {}) {
   width = width || $(element).width() - marginLeft - marginRight;
   height = (height || 150) - marginTop - marginBottom;
 
-  const timeDomain = [new Date(timeRange.from), new Date(timeRange.to)]
+  const timeDomain = [timeRange.from.toDate(), timeRange.to.toDate()]
   const x = d3.time.scale()
       .domain(timeDomain)
       .range([0, width]);
@@ -147,11 +147,11 @@ export default function(element, options = {}) {
     return Math.floor(width / count / value);
   }
 
-  function update({data, interval}) {
+  function update({data, interval, timeRange}) {
     // updata bar attr
     barAttr.width = d => x(d.date) >= 0 ? computeBarWidth(interval) : 0
-
-    x.domain(d3.extent(data, d => d.date));
+    const _timeDomain = [timeRange.from.toDate(), timeRange.to.toDate()]
+    x.domain(_timeDomain);
     y.domain([0, d3.max(data, d => d.count)]);
     svg.select('.x.axis').call(xAxis);
     svg.select('.y.axis').call(yAxis);

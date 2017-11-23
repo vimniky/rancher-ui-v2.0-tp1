@@ -50,13 +50,6 @@
 </section>
 
 {{#accordion-list as | al expandFn | }}
-  {{logging/form-output-tags
-      classNames="accordion-wrapper"
-      tags=tags
-      initialTags=model.outputTags
-      expandAll=al.expandAll
-      expandFn=expandFn
-  }}
   {{logging/form-index-pattern
       classNames="accordion-wrapper"
       model=model

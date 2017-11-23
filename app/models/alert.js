@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Resource from 'ember-api-store/models/resource';
+const {getOwner} = Ember;
 
 const TARGET_TYPES = [
   {value: 'node', label: 'node'},
@@ -24,7 +25,8 @@ var Alert = Resource.extend({
 
   cb() {
     this.delete().then((res) => {
-      this.get('store')._remove('alert', res);
+      const c = getOwner(this).lookup('controller:alerts.index');
+      c.get('model').removeObject(this);
     });
   },
 

@@ -6,6 +6,7 @@ export default Ember.Component.extend({
   tagName: 'TR',
   classNames: 'main-row',
   bulkActions: false,
+
   startsAt: function() {
     const state = this.get('model.state');
     if (state === 'active' || state === 'inactive') {

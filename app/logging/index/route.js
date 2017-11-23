@@ -42,7 +42,7 @@ export default Ember.Route.extend({
     const canRedirectToDashboard = logging.get('enable') && logging.get('id')
           && logging.get('targetType') === 'embedded' && this.get('isClusterLevel');
     if (!this.get('preventDirect') && canRedirectToDashboard) {
-      this.transitionTo('logging.dashboard');
+      // this.transitionTo('logging.dashboard');
     }
     this.set('preventDirect', false);
   },
