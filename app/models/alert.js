@@ -178,11 +178,11 @@ var Alert = Resource.extend({
     return out || id;
   }.property('targetType,targetId'),
   actions: {
-    deactivate() {
-      return this.doAction('deactivate');
+    disable() {
+      return this.doAction('disable');
     },
-    activate() {
-      return this.doAction('activate');
+    enable() {
+      return this.doAction('enable');
     },
     edit: function() {
       this.get('router').transitionTo('alerts.new', { queryParams: { alertId: this.get('id'), upgrade: true }});
@@ -233,7 +233,7 @@ var Alert = Resource.extend({
     const al = this.get('actionLinks');
     const state = this.get('state');
     const canEnable = state === 'disabled' && al.enable;
-    const canDisable = state === 'enabled' && al.deactivate;
+    const canDisable = state === 'enabled' && al.disable;
     const canSilence = state === 'alerting' && al.silence;
     const canUnsilence = state === 'suppressed' && al.unsilence;
     const canDelete = state === 'disabled' && !!l.remove;
@@ -242,9 +242,9 @@ var Alert = Resource.extend({
     return [
       { label: 'action.edit',       icon: 'icon icon-edit',         action: 'edit',         enabled: !!l.update },
       { divider: true },
-      { label: 'action.enable',     icon: 'icon icon-trash',        action: 'activate', enabled: canEnable },
+      { label: 'action.enable',     icon: 'icon icon-trash',        action: 'enable', enabled: canEnable },
       { divider: true },
-      { label: 'action.disable',     icon: 'icon icon-trash',        action: 'deactivate', enabled: canDisable },
+      { label: 'action.disable',     icon: 'icon icon-trash',        action: 'disable', enabled: canDisable },
       { divider: true },
       { label: 'action.silence',     icon: 'icon icon-trash',        action: 'silence', enabled: canSilence },
       { divider: true },

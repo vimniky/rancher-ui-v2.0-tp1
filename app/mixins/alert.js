@@ -14,7 +14,7 @@ export default Ember.Mixin.create({
       return 'Slack Channel';
     case 'webhook':
       return  {
-        url: 'Webhook URL',
+        url: 'Webhook',
         name: 'Webhook Name',
       }
     default:

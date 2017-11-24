@@ -2471,7 +2471,7 @@ formRecipient:
         slack: 'Choose a slack channel'
         email: 'Choose an email address'
         pagerduty: 'Choose a pagerduty service name'
-        webhook: 'Choose a webhook URL'
+        webhook: 'Choose a webhook'
       new:
         slack: 'Enter a slack channel'
         email: 'Enter an email address'
