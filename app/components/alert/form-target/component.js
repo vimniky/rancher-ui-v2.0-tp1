@@ -11,7 +11,7 @@ export default Ember.Component.extend({
 
   showSearch: function() {
     const ts = this.get('targets');
-    return ts && ts.length > 10;
+    return ts && ts.get('length') > 10;
   }.property('targets.length'),
 
   targets: function() {

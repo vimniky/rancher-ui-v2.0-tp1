@@ -21,6 +21,12 @@ export default Ember.Component.extend({
   timeUnit: null,
   interval: null,
 
+  init() {
+    this._super();
+    if (typeof this.get('value') !== 'string') {
+      this.set('value', '');
+    }
+  },
   addPlurSuffix(n) {
     return TIME_UNITS.map(item => {
       if (Number(n) === 1) {

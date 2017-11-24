@@ -2,14 +2,6 @@ import Ember from 'ember';
 import Resource from 'ember-api-store/models/resource';
 const {getOwner} = Ember;
 
-const TARGET_TYPES = [
-  {value: 'node', label: 'node'},
-  {value: 'deployment', label: 'deployment'},
-  {value: 'statefulset', label: 'statefulset'},
-  {value: 'daemonset', label: 'daemonset'},
-  {value: 'pod', label: 'pod'},
-];
-
 const defaultStateMap = {
   'active':                   {icon: 'icon icon-alert',         color: 'text-error'  },
   'suppressed':               {icon: 'icon icon-alert',         color: 'text-warning'},
@@ -41,6 +33,9 @@ var Alert = Resource.extend({
     case 'node':
       out = `Node is ${(this.get('nodeRuleLabel') || '').toLowerCase()}`;
       break;
+    case 'metric':
+      out = `${this.get('metricRule.expr')}`;
+      break;
     default:
       rule = this.get(`${t}Rule.unavailablePercentage`);
       out = `When ${rule}% are unhealthy`;
@@ -68,9 +63,15 @@ var Alert = Resource.extend({
     this._super();
     this.setInitialUnavailablePercentage();
     this.setLatestSelectionMap();
-    this.set('targetTypes', TARGET_TYPES);
   },
-
+  targetTypes: function() {
+    const targetTypes = this
+          .get('store')
+          .getById('schema', 'alert')
+          .optionsFor('targetType')
+          .map(v => ({value: v, label: v}));
+    return targetTypes
+  }.property(),
   latestSelectionMap: null,
   setLatestSelectionMap: function() {
     const targetId = this.get('targetId');

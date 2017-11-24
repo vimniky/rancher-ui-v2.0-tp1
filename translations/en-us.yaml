@@ -3824,6 +3824,7 @@ nav:
     active: Active
     suppressed: Suppressed
     inactive: Inactive
+    disabled: Disabled
     notifiers: Notifiers
     email: Email
     slack: Slack

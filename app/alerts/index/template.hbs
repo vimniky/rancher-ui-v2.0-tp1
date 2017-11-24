@@ -5,9 +5,11 @@
       {{#link-to (query-params alertState="all")  classNames="btn btn-sm bg-default m-0"}}{{t 'nav.tools.all'}}{{/link-to}}
       {{#link-to (query-params alertState="active") classNames="btn btn-sm bg-default m-0"}}{{t 'nav.tools.active'}}{{/link-to}}
       {{#link-to (query-params alertState="suppressed") classNames="btn btn-sm bg-default m-0"}}{{t 'nav.tools.suppressed'}}{{/link-to}}
+      {{#link-to (query-params alertState="disabled") classNames="btn btn-sm bg-default m-0"}}{{t 'nav.tools.disabled'}}{{/link-to}}
     </div>
     <button {{action 'showConfigureModal'}} class="btn btn-sm bg-default">Alert Configuration</button>
     {{#link-to "alerts.new" classNames="btn btn-sm bg-primary"}}{{t 'nav.tools.addAlert'}}{{/link-to}}
+
   </div>
 </section>
 

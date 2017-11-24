@@ -1,5 +1,5 @@
 <section class="row">
-  <div class="col span-4">
+  <div class="col span-4 mr-10">
     <div><label class="acc-label pl-50">Target Type</label></div>
     <div class="input-group">
       <div class="input-group-addon pl-0">When</div>
@@ -7,10 +7,12 @@
     </div>
   </div>
 
-  <div class="col span-4 mr-0">
-    <div><label class="acc-label">Target{{field-required}}</label></div>
-    {{alert/form-target disabled=(not isCreate) targetType=model.targetType model=model}}
-  </div>
+  {{#unless (eq model.targetType 'metric')}}
+    <div class="col span-4 mr-0">
+      <div><label class="acc-label">Target{{field-required}}</label></div>
+      {{alert/form-target disabled=(not isCreate) targetType=model.targetType model=model}}
+    </div>
+  {{/unless}}
 
   {{#if (eq model.targetType 'pod')}}
     <div class="col span-4">
@@ -23,6 +25,23 @@
         <span class="input-group-addon">is</span>
         {{new-select content=model.nodeRules value=model.nodeRule.condition}}
       </div>
+    </div>
+  {{else if (eq model.targetType 'metric')}}
+    <div class="col span-5 mr-10">
+      <div class="acc-label" style="padding-left: 34px">Rule{{field-required}}</div>
+      <div class="input-group">
+        <span class="input-group-addon pl-0 ml-0">is</span>
+        {{input
+            class="form-control"
+            value=model.metricRule.expr
+            placeholder='e.g. go_goroutine[job="Prom"] > 1'
+        }}
+        <span class="input-group-addon pr-0">for</span>
+      </div>
+    </div>
+    <div class="col span-3">
+      <div class="acc-label">Duration{{field-required}}</div>
+      {{alert/form-interval value=model.metricRule.holdDuration}}
     </div>
   {{else}}
     <div class="col span-4 ml-0" style="padding-top:32px">
