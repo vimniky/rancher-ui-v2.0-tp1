@@ -12,7 +12,7 @@ const headers = [
     translationKey: 'loggingDashboardPage.table.timestamp',
     name: 'timestamp',
     sort: ['timestamp'],
-    width: '160'
+    width: '180'
   },
   {
     translationKey: 'loggingDashboardPage.table.log',
@@ -23,7 +23,7 @@ const headers = [
     translationKey: 'loggingDashboardPage.table.containerName',
     name: 'containerName',
     sort: ['containerName'],
-    width: '160'
+    width: '140'
   },
 ];
 

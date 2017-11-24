@@ -29,7 +29,11 @@ export default Ember.Component.extend({
     return out
   }.property('model.serviceRule.unhealthyPercentage,model.targetType'),
 
-  expanded: Ember.computed.reads('model.expanded'),
+  expanded: false,
+
+  tdPadding: function() {
+    return this.get('expanded') ? 'pv-20' : '';
+  }.property('expanded'),
 
   actions: {
     toggle() {

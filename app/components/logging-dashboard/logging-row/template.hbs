@@ -5,7 +5,7 @@
     </td>
   {{/if}}
 
-  <td>
+  <td class="{{tdPadding}}">
     <i
       role="button"
       {{action "toggle"}}
@@ -15,25 +15,14 @@
     </i>
   </td>
 
-  <td data-title="{{dt.timestamp}}" >
-    {{fromNow}}
+  <td class="{{tdPadding}}" data-title="{{dt.timestamp}}" >
+    {{if expanded timestamp fromNow}}
   </td>
-  <td data-title="{{dt.log}}" class="clip pr-40">
+
+  <td class="{{tdPadding}}" data-title="{{dt.log}}" class="{{if expanded '' 'clip'}} pr-40">
     {{_log}}
   </td>
-  <td data-title="{{dt.containerName}}" class="clip">
+  <td class="{{tdPadding}}" data-title="{{dt.containerName}}" class="clip">
     {{model.containerName}}
   </td>
 </tr>
-
-<tr class="sub-row {{unless expanded 'hide'}}">
-  <td colspan="2">{{timestamp}} </td>
-  <td colspan="{{fullColspan}}">{{_log}}</td>
-  <td>{{! container name}}</td>
-</tr>
-
-{{#if expanded}}
-  <tr class="separator-row">
-    <td colspan="{{fullColspan}}"></td>
-  </tr>
-{{/if}}
