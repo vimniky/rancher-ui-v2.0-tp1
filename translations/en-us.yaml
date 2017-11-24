@@ -3822,8 +3822,7 @@ nav:
     addAlert: Add Alert
     all: All
     active: Active
-    alerting: Alerting
-    silenced: Silenced
+    suppressed: Suppressed
     inactive: Inactive
     notifiers: Notifiers
     email: Email

@@ -2,6 +2,6 @@ import Ember from 'ember'
 
 export default Ember.Route.extend({
   model() {
-    return this.modelFor('notifiers').get('firstObject');
+    return this.modelFor('notifiers');
   }
 });

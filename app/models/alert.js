@@ -11,10 +11,10 @@ const TARGET_TYPES = [
 ];
 
 const defaultStateMap = {
-  'alerting':                 {icon: 'icon icon-alert',         color: 'text-error'  },
-  'suppressed':                  {icon: 'icon icon-alert',         color: 'text-warning'},
+  'active':                   {icon: 'icon icon-alert',         color: 'text-error'  },
+  'suppressed':               {icon: 'icon icon-alert',         color: 'text-warning'},
   'disabled':                 {icon: 'icon icon-circle',        color: 'text-muted'  },
-  'enabled':                   {icon: 'icon icon-circle-o',      color: 'text-success'},
+  'enabled':                  {icon: 'icon icon-circle-o',      color: 'text-success'},
 };
 
 var Alert = Resource.extend({
@@ -234,7 +234,7 @@ var Alert = Resource.extend({
     const state = this.get('state');
     const canEnable = state === 'disabled' && al.enable;
     const canDisable = state === 'enabled' && al.disable;
-    const canSilence = state === 'alerting' && al.silence;
+    const canSilence = state === 'active' && al.silence;
     const canUnsilence = state === 'suppressed' && al.unsilence;
     const canDelete = state === 'disabled' && !!l.remove;
 

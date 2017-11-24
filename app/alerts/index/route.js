@@ -5,7 +5,21 @@ export default Ember.Route.extend({
 
   model() {
     return getOwner(this).lookup('route:alerts').loadResources().then(hash => {
-      return hash.alerts;
+      let notifier = hash.notifiers.get('firstObject');
+      if (!notifier) {
+        notifier = this.get('monitoringStore').createRecord({
+          type: 'notifier',
+          emailConfig: {
+          },
+          slackConfig: {
+          },
+          resolveTimeout: '',
+        });
+      }
+      return {
+        notifier,
+        alerts: hash.alerts,
+      };
     });
   }
 });

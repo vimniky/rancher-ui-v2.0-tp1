@@ -2,35 +2,13 @@
 <div class="row box">
   <div class="col span-5 pt-0 mt-0">
     <label class="acc-label">Initial Wait</label>
-    <div style="display: flex">
-      <div style="flex-grow: 1">
-        {{input-integer
-          min=1
-          value=initialWait
-          class="form-control"
-          placeholder=(t 'loggingPage.flushInterval.placeholder')
-          aria-describedby="basic-addon2"
-        }}
-      </div>
-      <div>{{new-select class="pr-40 bg-primary" content=initialWaitTimeUnits value=initialWaitTimeUnit}}</div>
-    </div>
+    {{alert/form-interval value=model.initialWait}}
     <p class="text-info text-small"> How long to initially wait to send a notification when an alert is triggered </p>
   </div>
 
   <div class="col span-5 offset-1 pt-0 mt-0">
     <label class="acc-label">Repeat Interval</label>
-    <div style="display: flex">
-      <div style="flex-grow: 1">
-        {{input-integer
-          min=1
-          value=repeatInterval
-          class="form-control"
-          placeholder=(t 'loggingPage.flushInterval.placeholder')
-          aria-describedby="basic-addon2"
-        }}
-      </div>
-      <div>{{new-select class="bg-primary pr-40" content=repeatIntervalTimeUnits value=repeatIntervalTimeUnit}}</div>
-    </div>
+    {{alert/form-interval value=model.repeatInterval}}
     <p class="text-info text-small">How long to wait before sending a notification again if it has already been sent successfully for an alert</p>
   </div>
 </div>

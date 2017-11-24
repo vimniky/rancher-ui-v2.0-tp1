@@ -1,0 +1,15 @@
+<section class="container-header-text">
+  <h3 class="text-center">Alert Configuration</h3>
+  <hr/>
+</section>
+
+<section>
+  <label class="acc-label">Resolve Timeout</label>
+  {{alert/form-interval value=model.resolveTimeout}}
+  <p class="text-info text-small">ResolveTimeout is the time after which an alert is declared resolved if it has not been updated.
+  </p>
+</section>
+
+<div class="footer-actions">
+  {{save-cancel createLabel='generic.save' save="save" cancel="cancel"}}
+</div>

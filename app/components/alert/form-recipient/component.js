@@ -84,7 +84,6 @@ export default Ember.Component.extend(AlertMixin, {
   actions: {
     showRecipientModal() {
       const model = this.createRecipient();
-      console.log(model)
       this.get('modalService').toggleModal('modal-alert-recipient', {
         closeWithOutsideClick: false,
         recipientTypes: this.get('recipientTypes'),

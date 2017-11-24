@@ -21,6 +21,22 @@ export default Ember.Route.extend({
     }
   },
   model() {
-    return this.get('monitoringStore').find('notifier', null, {filter: {namespace: this.get('namespace')}});
+    // There are only one notifier
+    return this.get('monitoringStore')
+      .find('notifier', null, {filter: {namespace: this.get('namespace')}})
+      .then(notifiers => {
+        let notifier = notifiers.get('firstObject');
+        if (!notifier) {
+          notifier = this.get('monitoringStore').createRecord({
+            type: 'notifier',
+            emailConfig: {
+            },
+            slackConfig: {
+            },
+            resolveTimeout: '',
+          });
+        }
+        return notifier;
+    });
   }
 });
