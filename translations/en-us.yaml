@@ -1192,7 +1192,7 @@ loggingPage:
   esIncludeTagKey: Include Tag Key
 
   splunkPort:
-    placeholder: e.g. 9200
+    placeholder: e.g. 8088
   splunkHost:
     placeholder: e.g. 192.168.33.176
 

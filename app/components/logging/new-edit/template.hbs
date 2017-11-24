@@ -71,6 +71,8 @@
     {{/if}}
   {{else if (eq targetType 'splunk')}}
     {{logging/target-splunk model=model}}
+  {{else if (eq targetType 'kafka')}}
+    {{logging/target-kafka model=model}}
   {{/if}}
 
   {{top-errors errors=errors}}

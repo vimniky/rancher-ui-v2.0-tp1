@@ -1,0 +1,67 @@
+{{#if (eq buttonPosition 'top-left')}}
+  <button class="btn bg-link icon-btn" {{action "addItem"}}>
+    <span class="darken"><i class="icon icon-plus text-small"/></span>
+    <span>{{addButtonLabel}}</span>
+  </button>
+{{/if}}
+
+{{#if items.length}}
+  <table class="table fixed no-lines mt-20">
+    <tr class="hidden-xs hidden-sm">
+      <th>{{if localizedKeyLabel (t keyLabel) keyLabel}}{{field-required}}</th>
+      <th width="30">&nbsp;</th>
+      <th>{{if localizedKeyLabel (t valueLabel) valueLabel}}{{field-required}}</th>
+      <th width="40">&nbsp;</th>
+    </tr>
+    {{#each items as |item|}}
+      <tr>
+        <td data-title="key">
+          {{input-paste
+              pasted="pastedItems"
+              class="form-control input-sm key"
+              type="text"
+              value=item.key
+              placeholder="formOutputTags.key.placeholder"
+          }}
+        </td>
+
+        <td class="text-center">
+          <p class="input-sm">{{t 'formOutputTags.separator'}}</p>
+        </td>
+
+        <td data-title="item">
+          {{input
+              class="form-control input-sm"
+              type="text"
+              value=item.value
+              placeholder=(t 'formOutputTags.value.placeholder')
+          }}
+        </td>
+        <td class="text-right">
+          <button
+            disabled={{disableDelete}}
+            class="btn bg-primary btn-sm"
+            {{action "removeItem" item}}
+          >
+            <i class="icon icon-minus"/>
+            <span class="sr-only">
+              {{t 'generic.remove'}}
+            </span>
+          </button>
+        </td>
+      </tr>
+    {{/each}}
+  </table>
+  <div class="protip pt-10">
+    {{t 'formOutputTags.protip'}}
+  </div>
+{{/if}}
+
+{{#if  (eq buttonPosition 'bottom-right')}}
+<div class="clearfix">
+  <button class="btn bg-link icon-btn pull-right" {{action "addItem"}}>
+    <span class="darken"><i class="icon icon-plus text-small"/></span>
+    <span>{{addButtonLabel}}</span>
+  </button>
+</div>
+{{/if}}
