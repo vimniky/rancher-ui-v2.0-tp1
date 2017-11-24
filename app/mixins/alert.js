@@ -6,11 +6,17 @@ export default Ember.Mixin.create({
     case 'email':
       return 'Email Address';
     case 'pagerduty':
-      return 'Pagerduty Service Name';
+      return {
+        serviceKey: 'Pagerduty Service Key',
+        serviceName: 'Pagerduty Service Name',
+      }
     case 'slack':
       return 'Slack Channel';
     case 'webhook':
-      return 'Webhook URL';
+      return  {
+        url: 'Webhook URL',
+        name: 'Webhook Name',
+      }
     default:
       return 'Recipient';
     }

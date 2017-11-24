@@ -67,17 +67,18 @@ export default Ember.Component.extend(AlertMixin, {
   }.observes('recipientType'),
 
   recipientLabel: function() {
+    if (this.get('recipientType') === 'webhook') {
+      return this.getRecipientLabel(this.get('recipientType')).url;
+    }
+    if (this.get('recipientType') === 'pagerduty') {
+      return this.getRecipientLabel(this.get('recipientType')).serviceName;
+    }
     return this.getRecipientLabel(this.get('recipientType'));
   }.property('recipientType'),
 
   recipientPrompt: function() {
     const type = this.get('recipientType');
     return this.get('intl').t(`formRecipient.recipient.placeholder.reuse.${type}`);
-  }.property('recipientType'),
-
-  newRecipientPlaceholder: function() {
-    const type = this.get('recipientType');
-    return this.get('intl').t(`formRecipient.recipient.placeholder.new.${type}`);
   }.property('recipientType'),
 
   actions: {
@@ -115,12 +116,14 @@ export default Ember.Component.extend(AlertMixin, {
       },
       pagerdutyRecipient: {
         serviceKey: null,
+        serviceName: null,
       },
       slackRecipient: {
         channel: null,
       },
       webhookRecipient: {
         url: null,
+        name: null,
       },
     });
     this.set('newRecipient', newRecipient);

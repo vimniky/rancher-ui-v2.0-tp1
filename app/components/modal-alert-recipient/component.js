@@ -7,16 +7,7 @@ export default Ember.Component.extend(ModalBase, {
   recipientTypes: Ember.computed.reads('modalService.modalOpts.recipientTypes'),
   model: Ember.computed.reads('modalService.modalOpts.model'),
 
-  value: null,
   errors: null,
-
-  isPagerduty: function() {
-    return this.get('model.recipientType') === 'pagerduty';
-  }.property('model.recipientType'),
-
-  setRecipientValue: function() {
-    this.get('model').setRecipientValue(this.get('value'));
-  }.observes('value'),
 
   validate() {
     const errors = this.get('model').validationErrors();
