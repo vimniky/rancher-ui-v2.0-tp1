@@ -12,9 +12,9 @@ const TARGET_TYPES = [
 
 const defaultStateMap = {
   'alerting':                 {icon: 'icon icon-alert',         color: 'text-error'  },
-  'silenced':                  {icon: 'icon icon-alert',         color: 'text-warning'},
-  'inactive':                 {icon: 'icon icon-circle',        color: 'text-muted'  },
-  'active':                   {icon: 'icon icon-circle-o',      color: 'text-success'},
+  'suppressed':                  {icon: 'icon icon-alert',         color: 'text-warning'},
+  'disabled':                 {icon: 'icon icon-circle',        color: 'text-muted'  },
+  'enabled':                   {icon: 'icon icon-circle-o',      color: 'text-success'},
 };
 
 var Alert = Resource.extend({
@@ -29,6 +29,40 @@ var Alert = Resource.extend({
       c.get('model').removeObject(this);
     });
   },
+
+  rules: function() {
+    const t = this.get('targetType');
+    let rule
+    let out;
+    switch(t) {
+    case 'pod':
+      out = 'Pod is unhealthy';
+      break;
+    case 'node':
+      out = `Node is ${(this.get('nodeRuleLabel') || '').toLowerCase()}`;
+      break;
+    default:
+      rule = this.get(`${t}Rule.unavailablePercentage`);
+      out = `When ${rule}% are unhealthy`;
+    }
+    return out
+  }.property('serviceRule.unhealthyPercentage,targetType'),
+
+  _startsAt: function() {
+    const state = this.get('state');
+    if (state === 'enabled' || state === 'disabled') {
+      return 'None';
+    }
+    return moment(this.get('startsAt')).fromNow();
+  }.property('startsAt'),
+
+  _endsAt: function() {
+    const state = this.get('state');
+    if (state === 'enabled' || state === 'disabled') {
+      return 'None';
+    }
+    return moment(this.get('endsAt')).fromNow();
+  }.property('endsAt'),
 
   init() {
     this._super();
@@ -198,19 +232,19 @@ var Alert = Resource.extend({
     let l = this.get('links');
     const al = this.get('actionLinks');
     const state = this.get('state');
-    const canActivate = state === 'inactive' && al.activate;
-    const canDeactivate = state === 'active' && al.deactivate;
+    const canEnable = state === 'disabled' && al.enable;
+    const canDisable = state === 'enabled' && al.deactivate;
     const canSilence = state === 'alerting' && al.silence;
-    const canUnsilence = state === 'silenced' && al.unsilence;
-    const canDelete = state === 'inactive' && !!l.remove;
+    const canUnsilence = state === 'suppressed' && al.unsilence;
+    const canDelete = state === 'disabled' && !!l.remove;
 
 
     return [
       { label: 'action.edit',       icon: 'icon icon-edit',         action: 'edit',         enabled: !!l.update },
       { divider: true },
-      { label: 'action.activate',     icon: 'icon icon-trash',        action: 'activate', enabled: canActivate },
+      { label: 'action.enable',     icon: 'icon icon-trash',        action: 'activate', enabled: canEnable },
       { divider: true },
-      { label: 'action.deactivate',     icon: 'icon icon-trash',        action: 'deactivate', enabled: canDeactivate },
+      { label: 'action.disable',     icon: 'icon icon-trash',        action: 'deactivate', enabled: canDisable },
       { divider: true },
       { label: 'action.silence',     icon: 'icon icon-trash',        action: 'silence', enabled: canSilence },
       { divider: true },

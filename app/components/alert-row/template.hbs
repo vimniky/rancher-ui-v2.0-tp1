@@ -11,7 +11,7 @@
 </td>
 <td data-title="{{dt.rules}}" class="clip">
   <div class="text-small">{{model.targetType}}/{{model.objectName}}</div>
-  <div class="text-small text-muted">{{rules}}</div>
+  <div class="text-small text-muted">{{model.rules}}</div>
 </td>
 <td data-title="{{dt.endpoint}}" >
   {{#if model.recipient}}
@@ -29,11 +29,11 @@
 </td>
 
 <td data-title="{{dt.startAt}}" class="force-wrap">
-  <span class="{{if (eq startsAt 'None') 'text-muted' ''}}"> {{startsAt}} </span>
+  <span class="{{if (eq model._startsAt 'None') 'text-muted' ''}}"> {{model._startsAt}} </span>
 </td>
 
 <td data-title="{{dt.endsAt}}" class="force-wrap">
-  <span class="{{if (eq startsAt 'None') 'text-muted' ''}}"> {{endsAt}} </span>
+  <span class="{{if (eq model._endsAt 'None') 'text-muted' ''}}"> {{model._endsAt}} </span>
 </td>
 <td data-title="{{t 'generic.actions'}}" class="actions">
   {{action-menu model=model}}

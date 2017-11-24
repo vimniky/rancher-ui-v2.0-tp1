@@ -3891,6 +3891,8 @@ action:
   viewInstance: View Instance
   silence: Silence
   unsilence: Unsilence
+  disable: Disable
+  enable: Enable
 
 ##############################
 # Resource Actions
