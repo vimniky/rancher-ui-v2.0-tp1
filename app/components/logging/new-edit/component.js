@@ -79,6 +79,8 @@ export default Ember.Component.extend(NewOrEdit, getEnumFieldOptions, {
     this.set('model.splunkPort', Number(this.get('model.splunkPort')));
     this.set('model.outputFlushInterval', Number(this.get('model.outputFlushInterval')) || 1);
     this.set('model.targetType', this.get('targetType'));
+    this.set('model.kafkaMaxSendRetries', Number(this.get('model.kafkaMaxSendRetries')));
+    // this.set('model.kafkaMaxSendRetries', Number(this.get('model.kafkaMaxSendRetries')));
   },
 
   validate() {

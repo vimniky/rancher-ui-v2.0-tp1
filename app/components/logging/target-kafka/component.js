@@ -25,15 +25,15 @@ export default Ember.Component.extend({
     this.set('outputDataTypes', outputDataTypes);
   },
 
-  hostPortStrChanged: function() {
-    const str = this.get('hostPortStr');
-    const t = this.get('kafkaBrokerType');
-    if (t === 'broker') {
-      this.set('model.kafkaBrokers', str);
-    } else if (t === 'zookeeper') {
-      this.set('kafkaZookeeper', str);
-    }
-  }.observes('hostPortStrChanged'),
+  // hostPortStrChanged: function() {
+  //   const str = this.get('hostPortStr');
+  //   const t = this.get('kafkaBrokerType');
+  //   if (t === 'broker') {
+  //     this.set('model.kafkaBrokers', str);
+  //   } else if (t === 'zookeeper') {
+  //     this.set('kafkaZookeeper', str);
+  //   }
+  // }.observes('hostPortStrChanged'),
 
   addButtonLabel: function() {
     const t =  this.get('model.kafkaBrokerType');
