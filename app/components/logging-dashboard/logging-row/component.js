@@ -29,10 +29,10 @@ export default Ember.Component.extend({
     return out
   }.property('model.serviceRule.unhealthyPercentage,model.targetType'),
 
-  expanded: false,
+  expanded: true,
 
   tdPadding: function() {
-    return this.get('expanded') ? 'pv-20' : '';
+    return 'pv-10';
   }.property('expanded'),
 
   actions: {
