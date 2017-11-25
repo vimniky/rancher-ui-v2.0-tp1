@@ -7,6 +7,12 @@ export default Ember.Component.extend({
 
   maxBuckets: 150,
 
+  // pagination
+  pageSize: 50,
+  from: 0,
+  to: 1,
+
+  buckets: null,
   intervalId: 'm',
   marginTop: 5,
   marginRight: 20,
@@ -19,16 +25,10 @@ export default Ember.Component.extend({
   barStrokeWidth: 1,
   hits: 0,
   logs: null,
-  chartData: null,
-
   updating: false,
 
   init() {
     this._super();
-    this.set('pagination', Ember.Object.create({
-      size: 50,
-      current: 1,
-    }));
     const client = new $.es.Client({
       hosts: 'https://localhost:8000/es',
       // httpAuth: 'username:passowrd',
@@ -66,7 +66,7 @@ export default Ember.Component.extend({
   },
   computedInterval: function() {
     const intervals = this.get('intervals');
-    const defaultInterval = intervals.get('firstObject');
+    const defaultInterval = intervals.objectAt(1);
     if (!this.get('chart')) {
       return defaultInterval;
     }
@@ -120,13 +120,13 @@ export default Ember.Component.extend({
         }
       }
     };
-    const size = this.get('pagination.size') * this.get('pagination.current');
+    const size = this.get('pageSize') * this.get('to');
     const options = {
       // index: 'cattle-system-2017.11.10',
       index: 'clusterid-cattle-system*',
       type: '',
       body: {
-        from: 0,
+        from: this.get('from'),
         size,
         query,
         aggs,
@@ -145,18 +145,18 @@ export default Ember.Component.extend({
       });
       thiz.set('hits', hits.total);
       thiz.set('logs', logs)
-      let chartData = [];
+      let buckets = [];
       if (!notAggs) {
-        chartData = aggregations.count.buckets.map(b => {
+        buckets = aggregations.count.buckets.map(b => {
           return {
             count: b.doc_count,
             date: b.key,
           }
         });
-        thiz.set('chartData', chartData);
+        thiz.set('buckets', buckets);
       }
       return {
-        chartData,
+        buckets,
         logs,
       };
     }, function (error) {
@@ -183,13 +183,13 @@ export default Ember.Component.extend({
 
   didInsertElement() {
     this.search().then(res => {
-      this.initChart(res.chartData);
+      this.initChart(res.buckets);
     })
   },
 
   initChart() {
     const chart = draw('.logging-dashboard .logging-chart', {
-      data: this.get('chartData'),
+      data: this.get('buckets'),
       width: this.get('width'),
       height: this.get('height'),
       barFill: this.get('barFill'),
@@ -211,7 +211,7 @@ export default Ember.Component.extend({
     const chart = this.get('chart');
     this.search().then(res => {
       chart.update({
-        data: res.chartData,
+        data: res.buckets,
         interval: this.computedInterval(),
         timeRange: this.computedDateRange(),
       });
@@ -225,7 +225,7 @@ export default Ember.Component.extend({
       if (this.get('loader')) {
         return this.get('loader');
       }
-      this.incrementProperty('pagination.current');
+      this.incrementProperty('to');
       const loader =  this.search(true).then(res => {
         this.set('loader', null);
       });

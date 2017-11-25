@@ -3,12 +3,6 @@ import FilterState from 'ui/mixins/filter-state';
 
 const headers = [
   {
-    name: 'expand',
-    sort: false,
-    searchField: null,
-    width: 30
-  },
-  {
     translationKey: 'loggingDashboardPage.table.timestamp',
     name: 'timestamp',
     sort: ['timestamp'],
