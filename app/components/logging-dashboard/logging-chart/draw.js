@@ -25,6 +25,7 @@ export default function(element, options = {}) {
     zoomStart = noop => noop,
     zoomEnd = noop => noop,
     data,
+    barStroke,
     interval,
     timeRange,
   } = options
@@ -65,8 +66,11 @@ export default function(element, options = {}) {
       const h =  y(0) - y(d.count)
       return h;
     },
+    stroke: barStroke,
+    'stroke-width': 1,
     x: d => x(d.date),
     y: d => y(d.count),
+    fill: barFill,
   }
 
   const zoomMin = -Infinity;
@@ -78,7 +82,6 @@ export default function(element, options = {}) {
     .on('zoomstart', zoomStart)
     .on('zoomend', zoomEnd)
     .on('zoom', zoomed);
-
   const svg = d3.select(element).append('svg')
     .attr('width', width + marginLeft + marginRight)
     .attr('height', height + marginTop + marginBottom)
@@ -100,19 +103,13 @@ export default function(element, options = {}) {
     .attr('height', height + marginTop + marginBottom)
     .selectAll('.bar')
     .attr(barAttr)
-    .style('fill', barFill)
     .data(data);
 
   // enter
   bars
     .enter()
     .append('rect')
-    .attr(barAttr)
-    .style({
-      fill: barFill,
-      stroke: '#fff',
-      strokeWidth: 1,
-    });
+    .attr(barAttr);
   // exit
 
   bars.exit().remove();
@@ -127,13 +124,7 @@ export default function(element, options = {}) {
     .call(yAxis);
 
   function zoomed() {
-    // limit the x pan extent
-    // if (x.domain()[0] < xmin) {
-    //   zoom.translate([zoom.translate()[0] - x(xmin) + x.range()[0], zoom.translate()[1]]);
-    // } else if (x.domain()[1] > xmax) {
-    //   zoom.translate([zoom.translate()[0] - x(xmax) + x.range()[1], zoom.translate()[1]]);
-    // }
-    bars.attr(barAttr)
+    svg.selectAll('.bars .bar').attr(barAttr);
     svg.select('.x.axis').call(xAxis);
     svg.select('.y.axis').call(yAxis);
   }
@@ -145,7 +136,6 @@ export default function(element, options = {}) {
     const unit = interval.get('values').objectAt(interval.get('valueIdx'));
     const value = end.diff(start, interval.get('unit') + 's');
     const count = Math.ceil(value / unit);
-    console.log(interval, value, count);
     return Math.floor(width / count);
   }
 
@@ -165,14 +155,14 @@ export default function(element, options = {}) {
           .data(data)
           .attr(barAttr);
 
+    // remove
+    bars.exit().remove();
+
     // enter
     bars.enter()
       .append('rect')
-      .attr(barAttr)
-      .style('fill', barFill);
+      .attr(barAttr);
 
-    // remove
-    bars.exit().remove();
   }
 
   // function clicked() {

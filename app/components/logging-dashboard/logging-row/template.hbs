@@ -5,24 +5,16 @@
     </td>
   {{/if}}
 
-  <td class="{{tdPadding}}">
-    <i
-      role="button"
-      {{action "toggle"}}
-      class="icon icon-play eased text-small text-muted {{if expanded 'icon-rotate-90'}}"
-    >
-      <span class="visually-hidden">open accordion</span>
-    </i>
-  </td>
-
+  <td></td>
   <td class="{{tdPadding}}" data-title="{{dt.timestamp}}" >
-    {{if expanded timestamp fromNow}}
+    {{timestamp}}
+    <div class="text-muted pt-5">{{fromNow}}</div>
   </td>
 
-  <td class="{{tdPadding}}" data-title="{{dt.log}}" class="{{if expanded '' 'clip'}} pr-40">
+  <td class="{{tdPadding}}" data-title="{{dt.log}}" class="pr-40">
     {{_log}}
   </td>
-  <td class="{{tdPadding}}" data-title="{{dt.containerName}}" class="clip">
+  <td class="{{tdPadding}}" data-title="{{dt.containerName}}">
     {{model.containerName}}
   </td>
 </tr>

@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col span-5-of-24">
+    {{logging-dashboard/logging-sidebar
+        intervals=intervals
+        interval=interval
+    }}
+  </div>
+  <div class="col span-19-of-24">
+    <section>
+      {{logging-dashboard/logging-chart
+          logs=logs
+          interval=interval
+          intervals=intervals
+      }}
+    </section>
+    <section class="mt-20">
+      {{logging-dashboard/logging-table
+          model=logs
+          alertState=alertState
+      }}
+    </section>
+  </div>
+</div>

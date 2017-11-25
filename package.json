@@ -57,6 +57,7 @@
     "ember-resolver": "^2.0.3",
     "ember-rl-dropdown": "^0.10.1",
     "ember-route-action-helper": "^2.0.0",
+    "ember-simple-infinite-scroller": "1.0.10",
     "ember-source": "~2.12.0",
     "ember-truth-helpers": "1.3.0",
     "ember-wormhole": "0.5.1",

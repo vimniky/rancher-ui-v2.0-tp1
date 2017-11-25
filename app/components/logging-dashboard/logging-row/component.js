@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   intl: Ember.inject.service(),
+
   model: null,
   tagName: '',
   bulkActions: false,
@@ -15,25 +16,7 @@ export default Ember.Component.extend({
     // return this.get('model.log').replace(/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\d{3}/, '');
     return this.get('model.log');
   }.property('model.log'),
-  rules: function() {
-    const ot = this.get('model.targetType');
-    const p = this.get('model.serviceRule.unhealthyPercentage');
-    let out;
-    switch(ot) {
-    case 'pod':
-      out = 'Pod is unhealthy';
-      break;
-    default:
-      out = `When ${p}% are unhealthy`;
-    }
-    return out
-  }.property('model.serviceRule.unhealthyPercentage,model.targetType'),
-
-  expanded: true,
-
-  tdPadding: function() {
-    return 'pv-10';
-  }.property('expanded'),
+  tdPadding: 'pv-10',
 
   actions: {
     toggle() {

@@ -1,0 +1,22 @@
+<div class="box">
+
+  <div class="input-group">
+    <span class="input-group-addon bg-primary icon icon-history"></span>
+    {{new-select
+        class="form-control input-sm"
+        type="search"
+        content=quickTimeRanges
+        prompt="Time Rancge"
+    }}
+  </div>
+
+  <div class="mv-20">
+    <div class="acc-label pt-0 mt-0">Interval</div>
+    {{new-select
+        value=intervalId
+        class="input-sm text-capitalize"
+        content=intervals
+        optionValuePath="id"
+    }}
+  </div>
+</div>

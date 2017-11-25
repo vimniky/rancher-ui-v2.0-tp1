@@ -1,22 +1,11 @@
 import Ember from 'ember';
 import draw from './draw';
 
-const intervals = [
-  // {unit: 'second', label: 'second', values: [1, 5, 15], valueIdx: 0, id: 's', durationKey: 'asSeconds'},
-  // {unit: 'minute', label: 'minute', values: [1, 5, 15], valueIdx: 0, id: 'm', durationKey: 'asMinutes'},
-  {unit: 'minute', label: 'minute', values: [1, 3, 5, 10, 15, 30], valueIdx: 0, id: 'm'},
-  {unit: 'hour', label: 'hourly', values: [1, 3, 5, 10], valueIdx: 0, id: 'h'},
-  {unit: 'day', label: 'daily', values: [1, 3, 7, 14], valueIdx: 0, id: 'd'},
-  {unit: 'week', label: 'weekly', values: [1, 3, 5, 10], valueIdx: 0, id: 'w'},
-  {unit: 'month', label: 'monthly', values: [1, 3, 5], valueIdx: 0, id: 'M'},
-  {unit: 'year', label: 'yearly', values: [1, 3, 5], valueIdx: 0, id: 'y'},
-].map(item => Ember.Object.create(item));
-
 export default Ember.Component.extend({
-  classNames: ['histogram-chart'],
+  classNames: ['logging-dashboard'],
   chart: null,
 
-  maxBuckets: 80,
+  maxBuckets: 150,
 
   intervalId: 'm',
   marginTop: 5,
@@ -25,14 +14,21 @@ export default Ember.Component.extend({
   marginLeft: 40,
   width: null,
   height: 150,
-
+  barStroke: '#0075A8',
+  barFill: '#A3C928',
+  barStrokeWidth: 1,
   hits: 0,
-  tableData: null,
+  logs: null,
   chartData: null,
+
   updating: false,
 
   init() {
     this._super();
+    this.set('pagination', Ember.Object.create({
+      size: 50,
+      current: 1,
+    }));
     const client = new $.es.Client({
       hosts: 'https://localhost:8000/es',
       // httpAuth: 'username:passowrd',
@@ -40,12 +36,13 @@ export default Ember.Component.extend({
     if (!this.get('data')) {
       this.set('data', []);
     }
-    this.set('intervals', intervals);
     this.set('client', client);
   },
+
   getInterValById(id) {
     return this.get('intervals').filterBy('id', id).get('firstObject');
   },
+
   computedDateRange() {
     const chart = this.get('chart');
     let out
@@ -68,7 +65,8 @@ export default Ember.Component.extend({
     return out;
   },
   computedInterval: function() {
-    const defaultInterval = intervals[0];
+    const intervals = this.get('intervals');
+    const defaultInterval = intervals.get('firstObject');
     if (!this.get('chart')) {
       return defaultInterval;
     }
@@ -92,7 +90,6 @@ export default Ember.Component.extend({
       interval = t;
       if (shouldStop) {
         // return true to stop
-        console.log('used-----------', t.unit + t.get('values').objectAt(t.get('valueIdx')));
         return true;
       } else {
         // return true to continue
@@ -102,40 +99,43 @@ export default Ember.Component.extend({
     return interval;
   },
 
-  search() {
+  search(notAggs = false) {
     const thiz = this;
     const {id, unit, values, valueIdx} = this.computedInterval();
     const value = values.objectAt(valueIdx);
+    const query = {
+      range: {
+        // '@timestamp': {
+        //   from: moment(from).floor(value, unit + 's').valueOf(),
+        //   to: moment(to).ceil(value, unit + 's').valueOf(),
+        // },
+        '@timestamp': this.computedDateRange(),
+      }
+    };
+    const aggs = notAggs ? {} : {
+      count: {
+        date_histogram: {
+          field: '@timestamp',
+          interval: `${value}${id}`,
+        }
+      }
+    };
+    const size = this.get('pagination.size') * this.get('pagination.current');
     const options = {
       // index: 'cattle-system-2017.11.10',
       index: 'clusterid-cattle-system*',
       type: '',
       body: {
         from: 0,
-        size: 10,
-        query: {
-          range: {
-            // '@timestamp': {
-            //   from: moment(from).floor(value, unit + 's').valueOf(),
-            //   to: moment(to).ceil(value, unit + 's').valueOf(),
-            // },
-            '@timestamp': this.computedDateRange(),
-          }
-        },
-        aggs: {
-          count: {
-            date_histogram: {
-              field: '@timestamp',
-              interval: `${value}${id}`,
-            }
-          }
-        }
-      },
+        size,
+        query,
+        aggs,
+      }
     };
     console.log('_search', options);
     return this.get('client').search(options).then(function (body) {
       const {hits, aggregations} = body;
-      const tableData = hits.hits.map(h => {
+      const logs = hits.hits.map(h => {
         const s = h._source;
         return {
           log: s.log,
@@ -143,18 +143,21 @@ export default Ember.Component.extend({
           containerName: s.kubernetes.container_name,
         }
       });
-      const chartData = aggregations.count.buckets.map(b => {
-        return {
-          count: b.doc_count,
-          date: b.key,
-        }
-      });
       thiz.set('hits', hits.total);
-      thiz.set('tableData', tableData)
-      thiz.set('chartData', chartData);
+      thiz.set('logs', logs)
+      let chartData = [];
+      if (!notAggs) {
+        chartData = aggregations.count.buckets.map(b => {
+          return {
+            count: b.doc_count,
+            date: b.key,
+          }
+        });
+        thiz.set('chartData', chartData);
+      }
       return {
         chartData,
-        tableData,
+        logs,
       };
     }, function (error) {
       console.trace(error.message);
@@ -185,15 +188,17 @@ export default Ember.Component.extend({
   },
 
   initChart() {
-    const chart = draw('.histogram-chart .logging-chart', {
+    const chart = draw('.logging-dashboard .logging-chart', {
       data: this.get('chartData'),
       width: this.get('width'),
       height: this.get('height'),
-      barFill: '#A3C928',
+      barFill: this.get('barFill'),
+      barStrokeWidth: this.get('barStrokeWidth'),
       marginTop: this.get('marginTop'),
       marginRight: this.get('marginRight'),
       marginBottom: this.get('marginBottom'),
       marginLeft: this.get('marginLeft'),
+      barStroke: this.get('barStroke'),
       zoomEnd: this.zoomEnd(),
       maxBuckets: this.get('maxBuckets'),
       interval: this.computedInterval(),
@@ -214,4 +219,18 @@ export default Ember.Component.extend({
     });
   },
 
+  loader: null,
+  actions: {
+    loadMore() {
+      if (this.get('loader')) {
+        return this.get('loader');
+      }
+      this.incrementProperty('pagination.current');
+      const loader =  this.search(true).then(res => {
+        this.set('loader', null);
+      });
+      this.set('loader', loader);
+      return loader;
+    }
+  }
 });
