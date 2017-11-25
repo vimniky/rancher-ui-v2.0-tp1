@@ -102,7 +102,6 @@ export default Ember.Component.extend({
       }
     });
 
-    console.log('***********interval', interval.get('unit'), interval.get('valueIdx'), interval)
     this.set('interval', interval);
     return interval;
   },
@@ -124,7 +123,6 @@ export default Ember.Component.extend({
     } else {
       this.set('intervalScaleTips', null);
     }
-    console.log('changed------------', this.get('intervalScaleTips'))
   }.observes('interval.{id,valueIdx}'),
 
   search(notAggs = false) {

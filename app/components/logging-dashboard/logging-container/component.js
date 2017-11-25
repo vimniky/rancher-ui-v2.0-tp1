@@ -90,10 +90,14 @@ export default Ember.Component.extend({
   logs: null,
 
   intervals: null,
-  intervalId: 's',
+  intervalId: localStorage.getItem('intervalId') || 's',
   quickTime: null,
   quickTimeIdx: "1",
   intervalScaleTips: null,
+
+  setLastIntervalId: function() {
+    localStorage.setItem('intervalId', this.get('intervalId'));
+  }.observes('intervalId'),
 
   quickTime: function() {
     return this.get('quickTimes').objectAt(this.get('quickTimeIdx'));

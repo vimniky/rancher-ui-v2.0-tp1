@@ -17,7 +17,20 @@
         optionValuePath="id"
     }}
     {{#if shortTips}}
-      <p class="text-info pt-0 mt-5 text-small">{{shortTips}}</p>
+      {{#tooltip-element
+           type="tooltip-basic"
+           model=verboseTips
+           tagName="span"
+           inlineBlock=true
+           tooltipTemplate='tooltip-scale-info'
+           aria-describedby="tooltip-base"
+           tooltipFor="tooltipLink"
+      }}
+          <i class="icon text-info icon-help"></i>
+        {{/tooltip-element}}
+      <span class="pt-0 mt-5 text-small">
+        {{shortTips}}
+      </span>
     {{/if}}
   </div>
 </div>
