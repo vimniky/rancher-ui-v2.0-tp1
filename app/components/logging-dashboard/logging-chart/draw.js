@@ -33,8 +33,9 @@ export default function(element, options = {}) {
   width = width || $(element).width() - marginLeft - marginRight;
   height = (height || 150) - marginTop - marginBottom;
 
-  const timeDomain = [timeRange.from.toDate(), timeRange.to.toDate()]
+  const timeDomain = [new Date(timeRange.from), new Date(timeRange.to)]
   const x = d3.time.scale()
+        .nice()
       .domain(timeDomain)
       .range([0, width]);
 
@@ -60,13 +61,16 @@ export default function(element, options = {}) {
   const barAttr = {
     class: 'bar',
     width: d => x(d.date) >= 0 ? computeBarWidth(interval) : 0,
-    height: d => y(0) - y(d.count),
+    height: d => {
+      const h =  y(0) - y(d.count)
+      return h;
+    },
     x: d => x(d.date),
     y: d => y(d.count),
   }
 
-  const zoomMin = 1;
-  const zoomMax = 10;
+  const zoomMin = -Infinity;
+  const zoomMax = 100;
   const zoom = d3.behavior.zoom()
     .x(x)
     .scaleExtent([zoomMin, zoomMax])
@@ -115,7 +119,7 @@ export default function(element, options = {}) {
 
   svg.append('g')
     .attr('class', 'x axis')
-    .attr('transform', 'translate(0,' + height + ')')
+    .attr('transform', `translate(0,${height})`)
     .call(xAxis);
 
   svg.append('g')
@@ -124,43 +128,42 @@ export default function(element, options = {}) {
 
   function zoomed() {
     // limit the x pan extent
-    // const xmin = currentTimeRange[0];
-    // const xmax = currentTimeRange[1];
     // if (x.domain()[0] < xmin) {
     //   zoom.translate([zoom.translate()[0] - x(xmin) + x.range()[0], zoom.translate()[1]]);
     // } else if (x.domain()[1] > xmax) {
     //   zoom.translate([zoom.translate()[0] - x(xmax) + x.range()[1], zoom.translate()[1]]);
     // }
+    bars.attr(barAttr)
     svg.select('.x.axis').call(xAxis);
     svg.select('.y.axis').call(yAxis);
-    // bars.attr(barAttr)
   }
 
   function computeBarWidth(interval) {
     const domain = x.domain();
     const start = moment(domain[0]);
     const end = moment(domain[1]);
-    const duration = moment.duration(end.diff(start));
-    const value = interval.get('values').objectAt(interval.get('valueIdx'));
-    const count = duration[interval.get('durationKey')]();
-    return Math.floor(width / count / value);
+    const unit = interval.get('values').objectAt(interval.get('valueIdx'));
+    const value = end.diff(start, interval.get('unit') + 's');
+    const count = Math.ceil(value / unit);
+    console.log(interval, value, count);
+    return Math.floor(width / count);
   }
 
   function update({data, interval, timeRange}) {
     // updata bar attr
+    const timeDomain = [new Date(timeRange.from), new Date(timeRange.to)]
+    x.domain(timeDomain);
     barAttr.width = d => x(d.date) >= 0 ? computeBarWidth(interval) : 0
-    const _timeDomain = [timeRange.from.toDate(), timeRange.to.toDate()]
-    x.domain(_timeDomain);
-    y.domain([0, d3.max(data, d => d.count)]);
+    const maxCout = d3.max(data, d => d.count);
+    y.domain([0, maxCout]);
     svg.select('.x.axis').call(xAxis);
     svg.select('.y.axis').call(yAxis);
 
     const bars = svg
-      .select('.bars')
-      .selectAll('.bar')
-      .attr(barAttr)
-      .style('fill', barFill)
-      .data(data);
+          .select('.bars')
+          .selectAll('.bar')
+          .data(data)
+          .attr(barAttr);
 
     // enter
     bars.enter()

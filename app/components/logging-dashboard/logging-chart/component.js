@@ -1,26 +1,24 @@
 import Ember from 'ember';
-import './moment-round';
 import draw from './draw';
-// import draw from './histogram';
 
 const intervals = [
-  // {unit: 'second', label: 'second', values: [1, 5, 15], valueIdx: 0, abbr: 's', durationKey: 'asSeconds'},
-  // {unit: 'minute', label: 'minute', values: [1, 5, 15], valueIdx: 0, abbr: 'm', durationKey: 'asMinutes'},
-  {unit: 'minute', label: 'minute', values: [1, 5, 15], valueIdx: 0, abbr: 'm', durationKey: 'asMinutes'},
-  {unit: 'hour', label: 'hourly', values: [1, 3, 6], valueIdx: 0, abbr: 'h', durationKey: 'asHours'},
-  {unit: 'day', label: 'daily', values: [1, 3, 7], valueIdx: 0, abbr: 'd', durationKey: 'asDays'},
-  {unit: 'week', label: 'weekly', values: [1, 3, 10], valueIdx: 0, abbr: 'w', durationKey: 'asWeeks'},
-  {unit: 'month', label: 'monthly', values: [1, 3, 5], valueIdx: 0, abbr: 'M', durationKey: 'asMonths'},
-  {unit: 'year', label: 'yearly', values: [1, 3, 5], valueIdx: 0, abbr: 'y', durationKey: 'asYears'},
+  // {unit: 'second', label: 'second', values: [1, 5, 15], valueIdx: 0, id: 's', durationKey: 'asSeconds'},
+  // {unit: 'minute', label: 'minute', values: [1, 5, 15], valueIdx: 0, id: 'm', durationKey: 'asMinutes'},
+  {unit: 'minute', label: 'minute', values: [1, 3, 5, 10, 15, 30], valueIdx: 0, id: 'm'},
+  {unit: 'hour', label: 'hourly', values: [1, 3, 5, 10], valueIdx: 0, id: 'h'},
+  {unit: 'day', label: 'daily', values: [1, 3, 7, 14], valueIdx: 0, id: 'd'},
+  {unit: 'week', label: 'weekly', values: [1, 3, 5, 10], valueIdx: 0, id: 'w'},
+  {unit: 'month', label: 'monthly', values: [1, 3, 5], valueIdx: 0, id: 'M'},
+  {unit: 'year', label: 'yearly', values: [1, 3, 5], valueIdx: 0, id: 'y'},
 ].map(item => Ember.Object.create(item));
 
 export default Ember.Component.extend({
   classNames: ['histogram-chart'],
   chart: null,
 
-  maxBarCount: 80,
+  maxBuckets: 80,
 
-  interval: '1m',
+  intervalId: 'm',
   marginTop: 5,
   marginRight: 20,
   marginBottom: 40,
@@ -45,53 +43,45 @@ export default Ember.Component.extend({
     this.set('intervals', intervals);
     this.set('client', client);
   },
-
-  computeDateRange() {
+  getInterValById(id) {
+    return this.get('intervals').filterBy('id', id).get('firstObject');
+  },
+  computedDateRange() {
     const chart = this.get('chart');
+    let out
     if (!chart) {
-      return {
-        from: moment(new Date()).subtract(1, 'minutes').valueOf(),
+      out = {
+        from: moment(new Date()).subtract(45, 'minutes').valueOf(),
         to: new Date().getTime(),
       }
+    } else {
+      const domain = chart.x.domain();
+      out = {
+        from: domain[0].getTime(),
+        to: domain[1].getTime(),
+      }
     }
-    const domain = chart.x.domain();
-    return {
-      from: domain[0].getTime(),
-      to: domain[1].getTime(),
-    }
-  },
-  roundedDateRange() {
-    const interval = this.computeInterval();
-    const range = this.computeDateRange();
-    const out = {
-      from: moment(range.from).round(1, interval.unit + 's'),
-      to: moment(range.to).round(1, interval.unit + 's'),
-    }
-    console.log('-------interval', interval)
     this.set('displayDateRange', {
-      from: out.from.format('YYYY-MM-DD hh:mm:ss'),
-      to: out.to.format('YYYY-MM-DD hh:mm:ss'),
+      from: moment(out.from).format('YYYY-MM-DD hh:mm:ss'),
+      to: moment(out.to).format('YYYY-MM-DD hh:mm:ss'),
     });
     return out;
   },
-  computeInterval: function() {
+  computedInterval: function() {
     const defaultInterval = intervals[0];
     if (!this.get('chart')) {
       return defaultInterval;
     }
-    const maxBarCount = this.get('maxBarCount');
+    const maxBuckets = this.get('maxBuckets');
     const {x} = this.get('chart');
-    if (!x) {
-      return defaultInterval;
-    }
-    const {from, to} = this.computeDateRange();
+    const {from, to} = this.computedDateRange();
     let interval = defaultInterval;
     intervals.some(t => {
-      // moment use plur words
+      // moment use plur
       // e.g. start.subtract(1, 'days').
       const start = moment(from);
       const shouldStop = t.values.some((v, idx) => {
-        const end = moment(to).subtract(v * maxBarCount, t.unit + 's');
+        const end = moment(to).subtract(v * maxBuckets, t.unit + 's');
         if(end.isAfter(start)) {
           // return false to continue
           return false;
@@ -99,21 +89,23 @@ export default Ember.Component.extend({
         t.set('valueIdx', idx)
         return true
       });
+      interval = t;
       if (shouldStop) {
         // return true to stop
+        console.log('used-----------', t.unit + t.get('values').objectAt(t.get('valueIdx')));
         return true;
+      } else {
+        // return true to continue
+        return false;
       }
-      interval = t;
-      return false;
     });
     return interval;
   },
 
   search() {
     const thiz = this;
-    const {abbr, unit, values, valueIdx} = this.computeInterval();
+    const {id, unit, values, valueIdx} = this.computedInterval();
     const value = values.objectAt(valueIdx);
-    const {from, to} = this.roundedDateRange();
     const options = {
       // index: 'cattle-system-2017.11.10',
       index: 'clusterid-cattle-system*',
@@ -123,17 +115,18 @@ export default Ember.Component.extend({
         size: 10,
         query: {
           range: {
-            '@timestamp': {
-              from: moment(from).floor(value, unit + 's').valueOf(),
-              to: moment(to).ceil(value, unit + 's').valueOf(),
-            },
+            // '@timestamp': {
+            //   from: moment(from).floor(value, unit + 's').valueOf(),
+            //   to: moment(to).ceil(value, unit + 's').valueOf(),
+            // },
+            '@timestamp': this.computedDateRange(),
           }
         },
         aggs: {
           count: {
             date_histogram: {
               field: '@timestamp',
-              interval: `${value}${abbr}`,
+              interval: `${value}${id}`,
             }
           }
         }
@@ -202,9 +195,9 @@ export default Ember.Component.extend({
       marginBottom: this.get('marginBottom'),
       marginLeft: this.get('marginLeft'),
       zoomEnd: this.zoomEnd(),
-      maxBarCount: this.get('maxBarCount'),
-      interval: this.computeInterval(),
-      timeRange: this.roundedDateRange(),
+      maxBuckets: this.get('maxBuckets'),
+      interval: this.computedInterval(),
+      timeRange: this.computedDateRange(),
     });
     this.set('chart', chart);
   },
@@ -214,8 +207,8 @@ export default Ember.Component.extend({
     this.search().then(res => {
       chart.update({
         data: res.chartData,
-        interval: this.computeInterval(),
-        timeRange: this.roundedDateRange(),
+        interval: this.computedInterval(),
+        timeRange: this.computedDateRange(),
       });
       this.set('updating', false);
     });

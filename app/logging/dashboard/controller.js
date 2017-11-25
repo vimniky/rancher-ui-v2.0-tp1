@@ -12,6 +12,7 @@ const pageSizes = [
 export default Ember.Controller.extend({
   tableData: null,
   quickTimeRanges: null,
+  quickTime: null,
   init() {
     this._super();
     this.set('pageSizes', pageSizes);
