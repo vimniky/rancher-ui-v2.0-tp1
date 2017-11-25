@@ -61,7 +61,7 @@ export default function(element, options = {}) {
 
   const barAttr = {
     class: 'bar',
-    width: d => x(d.date) >= 0 ? computeBarWidth(interval) : 0,
+    width: d => computeBarWidth(interval),
     height: d => {
       const h =  y(0) - y(d.count)
       return h;
@@ -115,6 +115,16 @@ export default function(element, options = {}) {
   bars.exit().remove();
 
   svg.append('g')
+    .append('rect')
+    .attr({
+      class: 'mask',
+      width: marginLeft,
+      height: height + marginTop + marginBottom,
+      transform: `translate(-${marginLeft},-10)`,
+      fill: '#fff',
+    })
+
+  svg.append('g')
     .attr('class', 'x axis')
     .attr('transform', `translate(0,${height})`)
     .call(xAxis);
@@ -134,8 +144,9 @@ export default function(element, options = {}) {
     const start = moment(domain[0]);
     const end = moment(domain[1]);
     const unit = interval.get('values').objectAt(interval.get('valueIdx'));
-    const value = end.diff(start, interval.get('unit') + 's');
-    const count = Math.ceil(value / unit);
+    const value = end.diff(start, interval.get('unit'));
+    // count can't be zero
+    const count = Math.ceil(value / unit) || 1;
     return Math.floor(width / count);
   }
 
@@ -143,7 +154,7 @@ export default function(element, options = {}) {
     // updata bar attr
     const timeDomain = [new Date(timeRange.from), new Date(timeRange.to)]
     x.domain(timeDomain);
-    barAttr.width = d => x(d.date) >= 0 ? computeBarWidth(interval) : 0
+    barAttr.width = d => computeBarWidth(interval)
     const maxCout = d3.max(data, d => d.count);
     y.domain([0, maxCout]);
     svg.select('.x.axis').call(xAxis);

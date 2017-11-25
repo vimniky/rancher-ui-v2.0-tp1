@@ -13,11 +13,11 @@ export default Ember.Component.extend({
   to: 1,
 
   buckets: null,
-  intervalId: 'm',
+  intervalId: null,
   marginTop: 5,
   marginRight: 20,
   marginBottom: 40,
-  marginLeft: 40,
+  marginLeft: 50,
   width: null,
   height: 150,
   barStroke: '#0075A8',
@@ -39,16 +39,27 @@ export default Ember.Component.extend({
     this.set('client', client);
   },
 
-  getInterValById(id) {
-    return this.get('intervals').filterBy('id', id).get('firstObject');
-  },
+  quickTimeChanged: function() {
+    const chart = this.get('char');
+    if (!chart) {
+      return;
+    }
+  }.observes('quickTime'),
+
+  currentInterval: function() {
+    return this.get('intervals').filterBy('id', this.get('intervalId')).get('firstObject');
+  }.property('intervalId'),
+
+  currentIntervalIdx: function() {
+    return this.get('intervals').indexOf(this.get('currentInterval'));
+  }.property('intervalId'),
 
   computedDateRange() {
     const chart = this.get('chart');
     let out
     if (!chart) {
       out = {
-        from: moment(new Date()).subtract(45, 'minutes').valueOf(),
+        from: moment().subtract(45, 'minutes').valueOf(),
         to: new Date().getTime(),
       }
     } else {
@@ -64,22 +75,23 @@ export default Ember.Component.extend({
     });
     return out;
   },
+
   computedInterval: function() {
-    const intervals = this.get('intervals');
-    const defaultInterval = intervals.objectAt(1);
-    if (!this.get('chart')) {
-      return defaultInterval;
+    let idx = this.get('currentIntervalIdx');
+    const intervals = this.get('intervals').slice(idx);
+    let interval = this.get('currentInterval');
+    const chart = this.get('chart');
+    if (!chart) {
+      return interval;
     }
     const maxBuckets = this.get('maxBuckets');
-    const {x} = this.get('chart');
     const {from, to} = this.computedDateRange();
-    let interval = defaultInterval;
     intervals.some(t => {
       // moment use plur
       // e.g. start.subtract(1, 'days').
       const start = moment(from);
       const shouldStop = t.values.some((v, idx) => {
-        const end = moment(to).subtract(v * maxBuckets, t.unit + 's');
+        const end = moment(to).subtract(v * maxBuckets, t.unit);
         if(end.isAfter(start)) {
           // return false to continue
           return false;
@@ -206,7 +218,6 @@ export default Ember.Component.extend({
     });
     this.set('chart', chart);
   },
-
   updateChart() {
     const chart = this.get('chart');
     this.search().then(res => {
@@ -218,7 +229,6 @@ export default Ember.Component.extend({
       this.set('updating', false);
     });
   },
-
   loader: null,
   actions: {
     loadMore() {
