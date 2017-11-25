@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   projects: Ember.inject.service(),
-  namespace: Ember.computed.reads('projects.namespace'),
+  namespace: Ember.computed.alias('projects.namespace'),
   currentLogging: null,
   model() {
     const store = this.get('loggingStore');
