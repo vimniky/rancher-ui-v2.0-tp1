@@ -1,19 +1,21 @@
 <div class="row">
-  <div class="col span-5-of-24">
+  <div class="col span-5-of-24 mt-0">
     {{logging-dashboard/logging-sidebar
         intervals=intervals
         intervalId=intervalId
         quickTimeIdx=quickTimeIdx
         quickTimes=quickTimes
+        intervalScaleTips=intervalScaleTips
     }}
   </div>
-  <div class="col span-19-of-24">
+  <div class="col span-19-of-24 mt-0">
     <section>
       {{logging-dashboard/logging-chart
           logs=logs
           intervalId=intervalId
           intervals=intervals
           quickTime=quickTime
+          intervalScaleTips=intervalScaleTips
       }}
     </section>
     <section class="mt-20">

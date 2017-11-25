@@ -23,6 +23,7 @@ export default Ember.Component.extend({
   barStroke: '#0075A8',
   barFill: '#A3C928',
   barStrokeWidth: 1,
+  interval: null,
   hits: 0,
   logs: null,
   updating: false,
@@ -46,13 +47,11 @@ export default Ember.Component.extend({
     }
   }.observes('quickTime'),
 
-  currentInterval: function() {
-    return this.get('intervals').filterBy('id', this.get('intervalId')).get('firstObject');
-  }.property('intervalId'),
-
-  currentIntervalIdx: function() {
-    return this.get('intervals').indexOf(this.get('currentInterval'));
-  }.property('intervalId'),
+  intervaIdChanged: function() {
+    Ember.run.next(() => {
+      this.updateChart();
+    });
+  }.observes('intervalId'),
 
   computedDateRange() {
     const chart = this.get('chart');
@@ -77,18 +76,12 @@ export default Ember.Component.extend({
   },
 
   computedInterval: function() {
-    let idx = this.get('currentIntervalIdx');
+    let interval = this.get('intervals').filterBy('id', this.get('intervalId')).get('firstObject');
+    let idx = this.get('intervals').indexOf(interval);
     const intervals = this.get('intervals').slice(idx);
-    let interval = this.get('currentInterval');
-    const chart = this.get('chart');
-    if (!chart) {
-      return interval;
-    }
     const maxBuckets = this.get('maxBuckets');
     const {from, to} = this.computedDateRange();
     intervals.some(t => {
-      // moment use plur
-      // e.g. start.subtract(1, 'days').
       const start = moment(from);
       const shouldStop = t.values.some((v, idx) => {
         const end = moment(to).subtract(v * maxBuckets, t.unit);
@@ -108,8 +101,31 @@ export default Ember.Component.extend({
         return false;
       }
     });
+
+    console.log('***********interval', interval.get('unit'), interval.get('valueIdx'), interval)
+    this.set('interval', interval);
     return interval;
   },
+  intervalScaleTips: null,
+  setIntervalScaleTips: function() {
+    const i = this.get('interval');
+    if (!i) {
+      return;
+    }
+    const id = i.get('id');
+    const idx = i.get('valueIdx');
+    if (id !== this.get('intervalId') || idx !== 0) {
+      const scale = i.get('values').objectAt(idx);
+      const unit = i.get('unit') + 's';
+      this.set('intervalScaleTips', Ember.Object.create({
+        short: `Scaled to ${scale} ${unit}`,
+        verbose: `This interval creates too many buckets to show in the selected time range, so it has been scaled to ${scale} ${unit}`,
+      }));
+    } else {
+      this.set('intervalScaleTips', null);
+    }
+    console.log('changed------------', this.get('intervalScaleTips'))
+  }.observes('interval.{id,valueIdx}'),
 
   search(notAggs = false) {
     const thiz = this;
@@ -186,7 +202,6 @@ export default Ember.Component.extend({
       }
       // todo
       const t = Ember.run.later(() => {
-        thiz.set('updating', true);
         thiz.updateChart();
       }, 1000);
       thiz.set('zoomTimer', t);
@@ -220,6 +235,7 @@ export default Ember.Component.extend({
   },
   updateChart() {
     const chart = this.get('chart');
+    this.set('updating', true);
     this.search().then(res => {
       chart.update({
         data: res.buckets,

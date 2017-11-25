@@ -82,7 +82,7 @@ export default function(element, options = {}) {
     .on('zoomstart', zoomStart)
     .on('zoomend', zoomEnd)
     .on('zoom', zoomed);
-  const svg = d3.select(element).append('svg')
+  const svg = d3.select(element).select('svg')
     .attr('width', width + marginLeft + marginRight)
     .attr('height', height + marginTop + marginBottom)
     .append('g')

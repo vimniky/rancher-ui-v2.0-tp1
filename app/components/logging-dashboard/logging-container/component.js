@@ -90,9 +90,10 @@ export default Ember.Component.extend({
   logs: null,
 
   intervals: null,
-  intervalId: 'h',
+  intervalId: 's',
   quickTime: null,
   quickTimeIdx: "1",
+  intervalScaleTips: null,
 
   quickTime: function() {
     return this.get('quickTimes').objectAt(this.get('quickTimeIdx'));

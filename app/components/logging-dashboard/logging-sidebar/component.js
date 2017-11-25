@@ -6,4 +6,13 @@ export default Ember.Component.extend({
   value: null,
   intervalId: null,
   intervals: null,
+
+  shortTips: function() {
+    return this.get('intervalScaleTips.short');
+  }.property('intervalScaleTips.short'),
+
+  verboseTips: function() {
+    return this.get('intervalScaleTips.verbose');
+  }.property('intervalScaleTips.verbose'),
+
 });
