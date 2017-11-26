@@ -13,7 +13,7 @@ export default Ember.Component.extend({
   to: 1,
 
   buckets: null,
-  intervalId: null,
+  intervalIdx: null,
   marginTop: 5,
   marginRight: 20,
   marginBottom: 40,
@@ -50,11 +50,11 @@ export default Ember.Component.extend({
     });
   }.observes('quickTime'),
 
-  intervaIdChanged: function() {
+  intervaIdxChanged: function() {
     Ember.run.next(() => {
       this.update();
     });
-  }.observes('intervalId'),
+  }.observes('intervalIdx'),
 
   getDateRange(isQuickTime) {
     const chart = this.get('chart');
@@ -65,7 +65,6 @@ export default Ember.Component.extend({
         from: moment().subtract(qt.get('value'), qt.get('unit')).toDate(),
         to: new Date(),
       }
-      console.log('---------1', out)
     } else {
       const domain = chart.x.domain();
       console.log(domain)
@@ -84,20 +83,20 @@ export default Ember.Component.extend({
   },
 
   getInterval: function(dateRange) {
-    let interval = this.get('intervals').filterBy('id', this.get('intervalId')).get('firstObject');
-    let idx = this.get('intervals').indexOf(interval);
+    const idx = this.get('intervalIdx');
+    let interval = this.get('intervals').objectAt(idx);
     const intervals = this.get('intervals').slice(idx);
     const maxBuckets = this.get('maxBuckets');
     const {from, to} = dateRange;
     intervals.some(t => {
       const start = moment(from);
-      const shouldStop = t.values.some((v, idx) => {
+      const shouldStop = t.values.some((v, vIdx) => {
         const end = moment(to).subtract(v * maxBuckets, t.unit);
         if(end.isAfter(start)) {
           // return false to continue
           return false;
         }
-        t.set('valueIdx', idx)
+        t.set('valueIdx', vIdx)
         return true
       });
       interval = t;
@@ -115,10 +114,10 @@ export default Ember.Component.extend({
 
   intervalScaleTips: null,
   setIntervalScaleTips(i) {
-    const id = i.get('id');
-    const idx = i.get('valueIdx');
-    if (id !== this.get('intervalId') || idx !== 0) {
-      const scale = i.get('values').objectAt(idx);
+    const idx = i.get('idx');
+    const vIdx = i.get('valueIdx');
+    if (idx !== this.get('intervalIdx') || vIdx !== 0) {
+      const scale = i.get('values').objectAt(vIdx);
       const unit = i.get('unit') + 's';
       this.set('intervalScaleTips', Ember.Object.create({
         short: `Scaled to ${scale} ${unit}`,
@@ -170,7 +169,7 @@ export default Ember.Component.extend({
 
   search({noAggs, dateRange, interval}) {
     const thiz = this;
-    const {id, unit, values, valueIdx} = interval;
+    const {key, unit, values, valueIdx} = interval;
     const value = values.objectAt(valueIdx);
     const query = {
       range: {
@@ -181,7 +180,7 @@ export default Ember.Component.extend({
       count: {
         date_histogram: {
           field: '@timestamp',
-          interval: `${value}${id}`,
+          interval: `${value}${key}`,
           // force empty bukect to be returned
           min_doc_count: 0,
           extended_bounds : {

@@ -12,9 +12,9 @@
     <div class="acc-label pt-0 mt-0">Interval</div>
     {{new-select
         class="input-sm text-capitalize"
-        value=intervalId
+        value=intervalIdx
         content=intervals
-        optionValuePath="id"
+        optionValuePath="idx"
     }}
     {{#if shortTips}}
       {{#tooltip-element

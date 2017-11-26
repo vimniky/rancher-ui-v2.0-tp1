@@ -1,9 +1,9 @@
-{{quickTime.label}}
+---{{intervalIdx}}
 <div class="row">
   <div class="col span-5-of-24 mt-0">
     {{logging-dashboard/logging-sidebar
         intervals=intervals
-        intervalId=intervalId
+        intervalIdx=intervalIdx
         quickTimeIdx=quickTimeIdx
         quickTimes=quickTimes
         intervalScaleTips=intervalScaleTips
@@ -13,7 +13,7 @@
     <section>
       {{logging-dashboard/logging-chart
           logs=logs
-          intervalId=intervalId
+          intervalIdx=intervalIdx
           intervals=intervals
           quickTime=quickTime
           intervalScaleTips=intervalScaleTips
