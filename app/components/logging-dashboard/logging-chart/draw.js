@@ -153,13 +153,13 @@ export default function(element, options = {}) {
 
   function zoomed() {
     const scale = zoom.scale();
+    svg.select('.x.axis').call(xAxis);
+    svg.select('.y.axis').call(yAxis);
     const attr = svg.selectAll('.bars .bar')
           .attr({
             x: d => x(d.date),
             y: d => y(d.count),
           });
-    svg.select('.x.axis').call(xAxis);
-    svg.select('.y.axis').call(yAxis);
   }
 
   function getBarWidth(data) {
@@ -245,6 +245,7 @@ export default function(element, options = {}) {
 
   return {
     update,
+    svg,
     x,
     y,
     xAxis,

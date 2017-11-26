@@ -45,6 +45,8 @@ export default Ember.Component.extend({
     if (!chart) {
       return;
     }
+    this.chart.svg.remove();
+    this.set('chart', null);
     this.update({
       dateRange: this.getDateRange(true),
     });
