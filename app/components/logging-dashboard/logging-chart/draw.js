@@ -9,6 +9,20 @@ const customTimeFormat = d3.time.format.multi([
   ['%Y', function() { return true; }],
 ]);
 
+function formatCount(count) {
+  const fmts = [
+    {value: 1000000, key: 'M'},
+    {value: 1000, key: 'K'},
+  ];
+  for (let i = 0; i < fmts.length; i++) {
+    const f = fmts[i];
+    if (count >= f.value) {
+      return (count / f.value).toFixed(0) + f.key;
+    }
+  }
+  return count;
+}
+
 export default function(element, options = {}) {
 
   let {
@@ -32,9 +46,9 @@ export default function(element, options = {}) {
 
   const timeDomain = d3.extent(data.map(d => d.date));
   const x = d3.time.scale()
-      .nice(data.length)
-      .domain(timeDomain)
-      .range([0, width]);
+        .domain(timeDomain)
+        .nice(data.length)
+        .range([0, width]);
 
   const y = d3.scale.linear()
         .domain([0, d3.max(data, d => d.count)])
@@ -52,6 +66,7 @@ export default function(element, options = {}) {
     .scale(y)
     .orient('left')
     .ticks(5)
+    .tickFormat(formatCount)
     .tickSize(6)
     .tickPadding(10);
 
