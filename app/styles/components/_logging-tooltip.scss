@@ -1,0 +1,57 @@
+.logging-tooltip {
+  $tooltip-bg: $light-grey;
+
+  background: $tooltip-bg;
+  position: absolute;
+  opacity: 0.9;
+  text-align: center;
+  margin-top: -20px;
+  font: 10px sans-serif;
+  pointer-events: none;
+  z-index: 9999;
+
+  $arrow-size: 10px;
+  $tooltip-border-color: $tooltip-bg;
+
+
+  &.arrow_box {
+	  border: 1px solid $tooltip-border-color;
+  }
+
+  &.arrow_box:after, &.arrow_box:before {
+	  top: 50%;
+	  border: solid transparent;
+	  content: " ";
+	  height: 0;
+	  width: 0;
+	  position: absolute;
+	  pointer-events: none;
+  }
+  &.arrow_box:after {
+	  border-color: rgba(52, 151, 218, 0);
+	  border-width: $arrow-size;
+	  margin-top: -$arrow-size;
+  }
+  &.arrow_box:before {
+	  border-color: rgba(52, 151, 218, 0);
+	  border-width:  $arrow-size + 1;
+	  margin-top: -($arrow-size + 1);
+  }
+
+  // arrow left tooltip
+  &.arrow_box.left:after, &.arrow_box.left:before {
+	  right: 100%;
+  };
+  &.arrow_box.left:after, &.arrow_box.left:before{
+	  border-right-color: $tooltip-border-color;
+  }
+
+  // arrow right tooltip
+  &.arrow_box.right:after, &.arrow_box.right:before {
+	  left: 100%;
+  };
+  &.arrow_box.right:after, &.arrow_box.right:before{
+	  border-left-color: $tooltip-border-color;
+  }
+
+}

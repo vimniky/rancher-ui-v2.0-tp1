@@ -1,3 +1,7 @@
+import createTooltip from './tooltip';
+
+const tooltip = createTooltip();
+
 const customTimeFormat = d3.time.format.multi([
   ['%Lms', function(d) { return d.getMilliseconds(); }],
   ['%Ss', function(d) { return d.getSeconds(); }],
@@ -22,6 +26,8 @@ function formatCount(count) {
   }
   return count;
 }
+
+
 
 export default function(element, options = {}) {
 
@@ -115,12 +121,15 @@ export default function(element, options = {}) {
     .selectAll('.bar')
     .attr(barAttr(data))
     .data(data);
+  tooltip(bars);
 
   // enter
-  bars
+  const enter = bars
     .enter()
     .append('rect')
     .attr(barAttr(data));
+
+  tooltip(enter);
   // exit
 
   bars.exit().remove();
@@ -173,15 +182,16 @@ export default function(element, options = {}) {
           .selectAll('.bar')
           .data(data)
           .attr(barAttr(data));
+    tooltip(bars);
 
     // remove
     bars.exit().remove();
 
     // enter
-    bars.enter()
+    const enter = bars.enter()
       .append('rect')
       .attr(barAttr(data));
-
+    tooltip(enter);
   }
 
   // function clicked() {

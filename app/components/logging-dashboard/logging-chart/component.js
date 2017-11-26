@@ -187,8 +187,8 @@ export default Ember.Component.extend({
             min : dateRange.from,
             max : dateRange.to,
           },
-        }
-      }
+        },
+      },
     };
     const size = this.get('pageSize') * this.get('to');
     const esQuery = {
