@@ -1,12 +1,12 @@
 .logging-tooltip {
-  $tooltip-bg: $light-grey;
+  $tooltip-bg: #fff;
 
   background: $tooltip-bg;
   position: absolute;
   opacity: 0.9;
   text-align: center;
   margin-top: -20px;
-  font: 10px sans-serif;
+  font: 14px;
   pointer-events: none;
   z-index: 9999;
 
@@ -15,7 +15,7 @@
 
 
   &.arrow_box {
-	  border: 1px solid $tooltip-border-color;
+	  border: 0px solid $tooltip-border-color;
   }
 
   &.arrow_box:after, &.arrow_box:before {
@@ -53,5 +53,19 @@
   &.arrow_box.right:after, &.arrow_box.right:before{
 	  border-left-color: $tooltip-border-color;
   }
-
+  .tooltip-from-now {
+    padding: 5px 0 0 0;
+    background: $light-grey;
+    border-bottom: 1px solid $accent-border;
+  }
+  .tooltip-count {
+    padding-top: 10px;
+    .value {
+      color: $link-color;
+    }
+  }
+  .tooltip-ts {
+    font-size: 12px;
+    padding-top: 2px;
+  }
 }

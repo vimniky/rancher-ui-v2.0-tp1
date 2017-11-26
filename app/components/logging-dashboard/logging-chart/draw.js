@@ -27,8 +27,6 @@ function formatCount(count) {
   return count;
 }
 
-
-
 export default function(element, options = {}) {
 
   let {

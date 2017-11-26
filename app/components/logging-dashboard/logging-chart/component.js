@@ -20,7 +20,7 @@ export default Ember.Component.extend({
   marginLeft: 50,
   width: null,
   height: 150,
-  barStroke: '#0075A8',
+  barStroke: '#27AA5E',
   barStrokeWidth: 1,
   barGap: 0,
   barFill: '#A3C928',
