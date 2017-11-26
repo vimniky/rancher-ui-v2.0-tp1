@@ -76,7 +76,7 @@ export default Ember.Component.extend({
       }
       console.log(out)
     }
-    const fmt = 'YYYY-MM-DD HH:mm:ss';
+    const fmt = 'MMMM Do YYYY, HH:mm:ss';
     this.set('displayDateRange', {
       from: moment(out.from).format(fmt),
       to: moment(out.to).format(fmt),
