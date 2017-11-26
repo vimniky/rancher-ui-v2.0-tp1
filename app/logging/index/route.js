@@ -2,11 +2,13 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   projects: Ember.inject.service(),
-  namespace: Ember.computed.alias('projects.namespace'),
+  namespace: Ember.computed.reads('projects.namespace'),
   currentLogging: null,
   model() {
     const store = this.get('loggingStore');
-    let ns = this.get('namespace');
+    let newNs = (this.controllerFor('authenticated.project').get('model.project.name') ||'').toLowerCase();
+    newNs = newNs === 'system' ? 'cattle-system' : newNs;
+    let ns = newNs || this.get('namespace');
     const isClusterLevel = ns === 'cattle-system';
     this.set('namespace', ns);
     this.set('isClusterLevel', isClusterLevel);
