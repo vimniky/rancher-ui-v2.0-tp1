@@ -1,5 +1,5 @@
 const customTimeFormat = d3.time.format.multi([
-  // ['%Lms', function(d) { return d.getMilliseconds(); }],
+  ['%Lms', function(d) { return d.getMilliseconds(); }],
   ['%Ss', function(d) { return d.getSeconds(); }],
   ['%I:%M', function(d) { return d.getMinutes(); }],
   ['%H:%M', function(d) { return  d.getHours(); }],
@@ -85,7 +85,7 @@ export default function(element, options = {}) {
   })
 
   const zoomMin = -Infinity;
-  const zoomMax = 1000;
+  const zoomMax = 100000;
   const zoom = d3.behavior.zoom()
     .x(x)
     .scaleExtent([zoomMin, zoomMax])

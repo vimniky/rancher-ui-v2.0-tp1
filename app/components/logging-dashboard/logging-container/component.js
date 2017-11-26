@@ -4,7 +4,7 @@ import Ember from 'ember';
 // weeky/w, month/M, and year/Y are not suported.
 // more: https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#time-units
 const INTERVALS = [
-
+  {unit: 'millisecond', label: 'millisecond', values: [1, 5, 10, 20, 50, 100, 200, 500], valueIdx: 0, key: 'ms'},
   {unit: 'second', label: 'second', values: [1, 5, 10, 15, 30], valueIdx: 0, key: 's'},
   {unit: 'minute', label: 'minute', values: [1, 3, 5, 10, 15, 30], valueIdx: 0, key: 'm'},
   {unit: 'hour', label: 'hourly', values: [1, 3, 5, 10], valueIdx: 0, key: 'h'},
@@ -19,6 +19,11 @@ const INTERVALS = [
 }).map(item => Ember.Object.create(item));
 
 const QUICKTIMES = [
+  {
+    label: 'Last 1 minutes',
+    value: 1,
+    unit: 'm',
+  },
   {
     label: 'Last 5 minutes',
     value: 5,
@@ -98,9 +103,9 @@ export default Ember.Component.extend({
   logs: null,
 
   intervals: null,
-  intervalIdx: localStorage.getItem('intervalIdx') || '0',
+  intervalIdx: localStorage.getItem('intervalIdx') || '2',
   quickTime: null,
-  quickTimeIdx: localStorage.getItem('quickTimeIdx') || '1',
+  quickTimeIdx: localStorage.getItem('quickTimeIdx') || '2',
   intervalScaleTips: null,
 
   setLastIntervalIdx: function() {
@@ -113,11 +118,10 @@ export default Ember.Component.extend({
     return this.get('quickTimes').objectAt(idx);
   }.property('quickTimeIdx'),
 
-  // filteredInterval: function() {
-  //   const q = this.get('quickTimes').objectAt(this.get('quickTimeIdx'));
-  //   const is = this.get('intervals');
-  //   is.filter(i => i.)
-  // }.property('quickTimeIdx'),
+  filteredInterval: function() {
+    const q = this.get('quickTimes').objectAt(this.get('quickTimeIdx'));
+    const is = this.get('intervals');
+  }.property('quickTimeIdx'),
 
   init() {
     this._super();
