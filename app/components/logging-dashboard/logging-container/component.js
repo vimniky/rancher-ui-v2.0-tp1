@@ -1,16 +1,18 @@
 import Ember from 'ember';
 
-const intervals = [
+// elasticsearch don't suported time units: d, h, m, s, ms, micros, nanos.
+// weeky/w, month/M, and year/Y are not suported.
+// more: https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#time-units
+const INTERVALS = [
   {unit: 'second', label: 'second', values: [1, 5, 10, 15, 30], valueIdx: 0, id: 's'},
   {unit: 'minute', label: 'minute', values: [1, 3, 5, 10, 15, 30], valueIdx: 0, id: 'm'},
   {unit: 'hour', label: 'hourly', values: [1, 3, 5, 10], valueIdx: 0, id: 'h'},
   {unit: 'day', label: 'daily', values: [1, 3, 7, 14], valueIdx: 0, id: 'd'},
-  {unit: 'week', label: 'weekly', values: [1, 3, 5, 10], valueIdx: 0, id: 'w'},
-  {unit: 'month', label: 'monthly', values: [1, 3, 5], valueIdx: 0, id: 'M'},
-  {unit: 'year', label: 'yearly', values: [1, 3, 5], valueIdx: 0, id: 'y'},
+  {unit: 'week', label: 'weekly', values: [1, 3, 5, 10].map(v => v * 7), valueIdx: 0, id: 'd'},
+  {unit: 'month', label: 'monthly', values: [1, 3, 5].map(v => v * 30), valueIdx: 0, id: 'd'},
 ].map(item => Ember.Object.create(item));
 
-const quickTimes = [
+const QUICKTIMES = [
   {
     label: 'Last 5 minutes',
     value: 5,
@@ -29,27 +31,27 @@ const quickTimes = [
   {
     label: 'Last 1 hour',
     value: 1,
-    unit: 'h',
+    unit: 'H',
   },
   {
     label: 'Last 3 hours',
-    value: 4,
-    unit: 'h',
+    value: 3,
+    unit: 'H',
   },
   {
     label: 'Last 12 hours',
     value: 12,
-    unit: 'h',
+    unit: 'H',
   },
   {
     label: 'Today',
-    value: 1,
-    unit: 'd',
+    value: 24,
+    unit: 'H',
   },
   {
     label: 'Last 3 day',
-    value: 3,
-    unit: 'd',
+    value: 72,
+    unit: 'H',
   },
   {
     label: 'This week',
@@ -92,7 +94,7 @@ export default Ember.Component.extend({
   intervals: null,
   intervalId: localStorage.getItem('intervalId') || 's',
   quickTime: null,
-  quickTimeIdx: "1",
+  quickTimeIdx: localStorage.getItem('quickTimeIdx') || '1',
   intervalScaleTips: null,
 
   setLastIntervalId: function() {
@@ -100,12 +102,14 @@ export default Ember.Component.extend({
   }.observes('intervalId'),
 
   quickTime: function() {
-    return this.get('quickTimes').objectAt(this.get('quickTimeIdx'));
+    const idx = this.get('quickTimeIdx');
+    localStorage.setItem('quickTimeIdx', idx);
+    return this.get('quickTimes').objectAt(idx);
   }.property('quickTimeIdx'),
 
   init() {
     this._super();
-    this.set('intervals', intervals);
-    this.set('quickTimes', quickTimes);
+    this.set('intervals', INTERVALS);
+    this.set('quickTimes', QUICKTIMES);
   },
 });

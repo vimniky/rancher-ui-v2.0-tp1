@@ -21,9 +21,9 @@ export default Ember.Component.extend({
   width: null,
   height: 150,
   barStroke: '#0075A8',
-  barFill: '#A3C928',
   barStrokeWidth: 1,
-  interval: null,
+  barGap: 0,
+  barFill: '#A3C928',
   hits: 0,
   logs: null,
   updating: false,
@@ -41,46 +41,54 @@ export default Ember.Component.extend({
   },
 
   quickTimeChanged: function() {
-    const chart = this.get('char');
+    const chart = this.get('chart');
     if (!chart) {
       return;
     }
+    this.update({
+      dateRange: this.getDateRange(true),
+    });
   }.observes('quickTime'),
 
   intervaIdChanged: function() {
     Ember.run.next(() => {
-      this.updateChart();
+      this.update();
     });
   }.observes('intervalId'),
 
-  computedDateRange() {
+  getDateRange(isQuickTime) {
     const chart = this.get('chart');
+    const qt = this.get('quickTime');
     let out
-    if (!chart) {
+    if (isQuickTime || !chart) {
       out = {
-        from: moment().subtract(45, 'minutes').valueOf(),
-        to: new Date().getTime(),
+        from: moment().subtract(qt.get('value'), qt.get('unit')).toDate(),
+        to: new Date(),
       }
+      console.log('---------1', out)
     } else {
       const domain = chart.x.domain();
+      console.log(domain)
       out = {
-        from: domain[0].getTime(),
-        to: domain[1].getTime(),
+        from: domain[0],
+        to: domain[1],
       }
+      console.log(out)
     }
+    const fmt = 'YYYY-MM-DD HH:mm:ss';
     this.set('displayDateRange', {
-      from: moment(out.from).format('YYYY-MM-DD hh:mm:ss'),
-      to: moment(out.to).format('YYYY-MM-DD hh:mm:ss'),
+      from: moment(out.from).format(fmt),
+      to: moment(out.to).format(fmt),
     });
     return out;
   },
 
-  computedInterval: function() {
+  getInterval: function(dateRange) {
     let interval = this.get('intervals').filterBy('id', this.get('intervalId')).get('firstObject');
     let idx = this.get('intervals').indexOf(interval);
     const intervals = this.get('intervals').slice(idx);
     const maxBuckets = this.get('maxBuckets');
-    const {from, to} = this.computedDateRange();
+    const {from, to} = dateRange;
     intervals.some(t => {
       const start = moment(from);
       const shouldStop = t.values.some((v, idx) => {
@@ -101,16 +109,12 @@ export default Ember.Component.extend({
         return false;
       }
     });
-
-    this.set('interval', interval);
+    this.setIntervalScaleTips(interval);
     return interval;
   },
+
   intervalScaleTips: null,
-  setIntervalScaleTips: function() {
-    const i = this.get('interval');
-    if (!i) {
-      return;
-    }
+  setIntervalScaleTips(i) {
     const id = i.get('id');
     const idx = i.get('valueIdx');
     if (id !== this.get('intervalId') || idx !== 0) {
@@ -123,31 +127,72 @@ export default Ember.Component.extend({
     } else {
       this.set('intervalScaleTips', null);
     }
-  }.observes('interval.{id,valueIdx}'),
+  },
 
-  search(notAggs = false) {
+
+  update(opt = {}) {
+    const nextOpt = {
+      noAggs: opt.noAggs || false,
+      dateRange: opt.dateRange || this.getDateRange(),
+    };
+    nextOpt.interval = this.getInterval(nextOpt.dateRange),
+
+    this.set('updating', true);
+    return this.search(nextOpt).then(res => {
+
+      const {
+        logs,
+        buckets,
+        total,
+      } = res;
+
+      this.set('updating', false);
+      this.set('logs', logs)
+
+      if (opt.noAggs) {
+        // don't update chart
+        return res;
+      }
+
+      this.set('buckets', buckets);
+      this.set('hits', total);
+
+      const chart = this.get('chart');
+      const data = res.buckets;
+      if (!chart) {
+        this.initChart()
+      } else {
+        chart.update({data});
+      }
+      return res;
+    });
+  },
+
+  search({noAggs, dateRange, interval}) {
     const thiz = this;
-    const {id, unit, values, valueIdx} = this.computedInterval();
+    const {id, unit, values, valueIdx} = interval;
     const value = values.objectAt(valueIdx);
     const query = {
       range: {
-        // '@timestamp': {
-        //   from: moment(from).floor(value, unit + 's').valueOf(),
-        //   to: moment(to).ceil(value, unit + 's').valueOf(),
-        // },
-        '@timestamp': this.computedDateRange(),
+        '@timestamp': dateRange,
       }
     };
-    const aggs = notAggs ? {} : {
+    const aggs = noAggs ? {} : {
       count: {
         date_histogram: {
           field: '@timestamp',
           interval: `${value}${id}`,
+          // force empty bukect to be returned
+          min_doc_count: 0,
+          extended_bounds : {
+            min : dateRange.from,
+            max : dateRange.to,
+          },
         }
       }
     };
     const size = this.get('pageSize') * this.get('to');
-    const options = {
+    const esQuery = {
       // index: 'cattle-system-2017.11.10',
       index: 'clusterid-cattle-system*',
       type: '',
@@ -158,9 +203,10 @@ export default Ember.Component.extend({
         aggs,
       }
     };
-    console.log('_search', options);
-    return this.get('client').search(options).then(function (body) {
+    console.log('esQuery', esQuery);
+    return this.get('client').search(esQuery).then(function (body) {
       const {hits, aggregations} = body;
+      console.log(body)
       const logs = hits.hits.map(h => {
         const s = h._source;
         return {
@@ -169,21 +215,20 @@ export default Ember.Component.extend({
           containerName: s.kubernetes.container_name,
         }
       });
-      thiz.set('hits', hits.total);
-      thiz.set('logs', logs)
       let buckets = [];
-      if (!notAggs) {
+      if (!noAggs) {
         buckets = aggregations.count.buckets.map(b => {
           return {
             count: b.doc_count,
             date: b.key,
+            dateString: b.key_as_string,
           }
         });
-        thiz.set('buckets', buckets);
       }
       return {
         buckets,
         logs,
+        total: hits.total,
       };
     }, function (error) {
       console.trace(error.message);
@@ -200,16 +245,14 @@ export default Ember.Component.extend({
       }
       // todo
       const t = Ember.run.later(() => {
-        thiz.updateChart();
+        thiz.update();
       }, 1000);
       thiz.set('zoomTimer', t);
     }
   },
 
   didInsertElement() {
-    this.search().then(res => {
-      this.initChart(res.buckets);
-    })
+    this.update();
   },
 
   initChart() {
@@ -222,27 +265,15 @@ export default Ember.Component.extend({
       marginTop: this.get('marginTop'),
       marginRight: this.get('marginRight'),
       marginBottom: this.get('marginBottom'),
+      barGap: this.get('barGap'),
       marginLeft: this.get('marginLeft'),
       barStroke: this.get('barStroke'),
       zoomEnd: this.zoomEnd(),
       maxBuckets: this.get('maxBuckets'),
-      interval: this.computedInterval(),
-      timeRange: this.computedDateRange(),
     });
     this.set('chart', chart);
   },
-  updateChart() {
-    const chart = this.get('chart');
-    this.set('updating', true);
-    this.search().then(res => {
-      chart.update({
-        data: res.buckets,
-        interval: this.computedInterval(),
-        timeRange: this.computedDateRange(),
-      });
-      this.set('updating', false);
-    });
-  },
+
   loader: null,
   actions: {
     loadMore() {
@@ -250,7 +281,9 @@ export default Ember.Component.extend({
         return this.get('loader');
       }
       this.incrementProperty('to');
-      const loader =  this.search(true).then(res => {
+      const loader =  this.update({
+        noAggs: true,
+      }).then(res => {
         this.set('loader', null);
       });
       this.set('loader', loader);
