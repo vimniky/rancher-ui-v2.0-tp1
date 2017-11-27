@@ -31,7 +31,7 @@ export default Ember.Component.extend({
   init() {
     this._super();
     const client = new $.es.Client({
-      hosts: 'https://localhost:8000/es',
+      hosts: 'https://127.0.0.1:8000/es',
       // httpAuth: 'username:passowrd',
     });
     if (!this.get('data')) {
