@@ -168,6 +168,22 @@ module.exports = function(environment) {
   {
     ENV.APP.apiServer = normalizeHost(server,8080);
   }
+  var loggingApiServer = process.env.LOGGING_SERVER;
+  if ( loggingApiServer )
+  {
+    ENV.APP.loggingApiServer = normalizeHost(loggingApiServer);
+  }
+  var monitoringApiServer = process.env.MONITORING_SERVER;
+  if ( monitoringApiServer )
+  {
+    ENV.APP.monitoringApiServer = normalizeHost(monitoringApiServer);
+  }
+  var esApiServer = process.env.ES_SERVER;
+  if ( esApiServer )
+  {
+    ENV.APP.esApiServer = normalizeHost(esApiServer);
+  }
+
   else if (environment === 'production')
   {
     ENV.APP.apiServer = '';
