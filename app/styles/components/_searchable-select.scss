@@ -43,7 +43,6 @@
   }
 
   .searchable-options {
-    cursor: pointer;
     max-height: 285px;
     overflow-y: scroll;
     background: white;
@@ -51,7 +50,7 @@
     box-sizing: border-box;
     width: 100%;
     z-index: 2;
-    @extend .b-1;
+    border: 1px solid $accent-border;
     border-top: none;
     padding: 2px 0 5px;
     input {
@@ -67,8 +66,8 @@
     }
   }
   .searchable-option, .searchable-prompt {
+    cursor: pointer;
     user-select: none;
-    cursor: default;
     display: flex;
     align-items: center;
     padding: 0px 0;
