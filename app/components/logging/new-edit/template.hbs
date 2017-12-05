@@ -47,15 +47,17 @@
   </section>
 {{/if}}
 
-{{#accordion-list classNames="mt-20" as | al expandFn | }}
-  {{logging/form-output-tags
-      classNames="accordion-wrapper"
-      tags=tags
-      initialTags=model.outputTags
-      expandAll=al.expandAll
-      expandFn=expandFn
-  }}
-{{/accordion-list}}
+{{#if model.enable}}
+  {{#accordion-list classNames="mt-20" as | al expandFn | }}
+    {{logging/form-output-tags
+        classNames="accordion-wrapper"
+        tags=tags
+        initialTags=model.outputTags
+        expandAll=al.expandAll
+        expandFn=expandFn
+    }}
+  {{/accordion-list}}
+{{/if}}
 
 {{#if model.enable}}
   {{logging/targets-nav

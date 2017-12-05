@@ -1,33 +1,35 @@
-<div class="col span-6 mr-0">
-  <div class="acc-label" style="padding-left: 60px">Notifier</div>
-  <div class="input-group">
-    <span class="input-group-addon pl-0">Send a</span>
-    {{new-select
-      classNames="text-capitalize form-control"
-      content=recipientTypes
-      value=recipientType
-    }}
+<section class="row">
+  <div class="col span-6 mr-0">
+    <div class="acc-label" style="padding-left: 60px">Notifier</div>
+    <div class="input-group">
+      <span class="input-group-addon pl-0">Send a</span>
+      {{new-select
+        classNames="text-capitalize form-control"
+        content=recipientTypes
+        value=recipientType
+      }}
+    </div>
   </div>
-</div>
 
-<div class="col span-6 ml-0">
-  <div class="acc-label clearfix" style="padding-left: 40px">
-    <div class="pull-left text-capitalize">
-      {{recipientLabel}}{{field-required}}
+  <div class="col span-6 ml-0">
+    <div class="acc-label clearfix" style="padding-left: 40px">
+      <div class="pull-left text-capitalize">
+        {{recipientLabel}}{{field-required}}
+      </div>
+      <div class="pull-right">
+        <a role="button" class="btn bg-transparent p-0" {{action 'showRecipientModal'}}>
+          {{t 'formRecipient.toggle.create'}}
+        </a>
+      </div>
     </div>
-    <div class="pull-right">
-      <a role="button" class="btn bg-transparent p-0" {{action 'showRecipientModal'}}>
-        {{t 'formRecipient.toggle.create'}}
-      </a>
+    <div class="input-group">
+      <span class="input-group-addon">to</span>
+      {{searchable-select
+          content=filteredRecipients
+          placeholder=recipientPlaceholder
+          value=model.recipientId
+          showSearch=showSearch
+      }}
     </div>
   </div>
-  <div class="input-group">
-    <span class="input-group-addon">to</span>
-    {{searchable-select
-        content=filteredRecipients
-        prompt=recipientPrompt
-        value=model.recipientId
-        showSearch=showSearch
-    }}
-  </div>
-</div>
+</section>

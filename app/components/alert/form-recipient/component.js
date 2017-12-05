@@ -76,7 +76,7 @@ export default Ember.Component.extend(AlertMixin, {
     return this.getRecipientLabel(this.get('recipientType'));
   }.property('recipientType'),
 
-  recipientPrompt: function() {
+  recipientPlaceholder: function() {
     const type = this.get('recipientType');
     return this.get('intl').t(`formRecipient.recipient.placeholder.reuse.${type}`);
   }.property('recipientType'),
