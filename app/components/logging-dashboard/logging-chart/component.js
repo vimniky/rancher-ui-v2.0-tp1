@@ -29,6 +29,7 @@ export default Ember.Component.extend({
   updating: false,
 
   init() {
+    console.log(this.get('app.environment'))
     this._super();
     const client = new $.es.Client({
       hosts: 'https://127.0.0.1:8000/es',
@@ -166,6 +167,8 @@ export default Ember.Component.extend({
         chart.update({data});
       }
       return res;
+    }).catch(res => {
+      this.set('updating', false);
     });
   },
 
@@ -207,7 +210,6 @@ export default Ember.Component.extend({
     console.log('esQuery', esQuery);
     return this.get('client').search(esQuery).then(function (body) {
       const {hits, aggregations} = body;
-      console.log(body)
       const logs = hits.hits.map(h => {
         const s = h._source;
         return {
@@ -217,7 +219,7 @@ export default Ember.Component.extend({
         }
       });
       let buckets = [];
-      if (!noAggs) {
+      if (!noAggs && aggregations) {
         buckets = aggregations.count.buckets.map(b => {
           return {
             count: b.doc_count,

@@ -6,6 +6,9 @@ export default Ember.Component.extend({
 
   hasCurrentTarget: function() {
     const cl = this.get('currentLogging');
+    if (!cl) {
+      return false
+    }
     return cl.get('enable') && cl.get('targetType');
   }.property('currentLogging.{targetType,enable}'),
 
