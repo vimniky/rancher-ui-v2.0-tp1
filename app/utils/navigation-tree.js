@@ -124,12 +124,12 @@ const navTree = [
         route: 'logging',
         ctx: [getProjectId],
       },
-      {
-        id: 'tools-dashboard',
-        localizedLabel: 'nav.tools.dashboard',
-        route: 'dashboard',
-        ctx: [getProjectId],
-      }
+      // {
+      //   id: 'tools-dashboard',
+      //   localizedLabel: 'nav.tools.dashboard',
+      //   route: 'dashboard',
+      //   ctx: [getProjectId],
+      // }
     ],
   },
 

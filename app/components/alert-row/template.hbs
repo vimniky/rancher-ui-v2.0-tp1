@@ -10,9 +10,7 @@
   {{model.description}}
 </td>
 <td data-title="{{dt.rules}}" class="clip">
-  {{#if (eq model.targetType 'metric')}}
-    <div class="text-small">{{model.targetType}}{{if (eq model.targetType 'metric') '' (concat '/' model.objectName)}}</div>
-  {{/if}}
+  <div class="text-small">{{model.targetType}}{{if (eq model.targetType 'metric') '' (concat '/' model.objectName)}}</div>
   <div class="text-small text-muted">{{model.rules}}</div>
 </td>
 <td data-title="{{dt.endpoint}}" >

@@ -47,7 +47,7 @@
   {{else}}
     <div class="col span-6">
       <div class="acc-label text-capitalize">{{model.recipientLabel}}{{field-required}}</div>
-      {{input classNames="form-control" value=value placeholder=model.recipientPlaceholder}}
+      {{input classNames="form-control" value=model.slackRecipient.channel placeholder=model.recipientPlaceholder}}
     </div>
   {{/if}}
 </section>
