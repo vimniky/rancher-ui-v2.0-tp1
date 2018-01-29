@@ -39,7 +39,6 @@ export default Ember.Component.extend({
   },
 
   disableDelete: function() {
-    console.log(this.get('items.length'))
     return this.get('minItems') >= this.get('items.length');
   }.property('minItems','items.length'),
 
